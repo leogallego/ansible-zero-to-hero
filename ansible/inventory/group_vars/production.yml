@@ -1,0 +1,7 @@
+---
+# Variables for all hosts in the production environment.
+
+parasol_environment: "production"
+parasol_log_level: "warning"
+parasol_monitoring_enabled: true
+parasol_backup_schedule: "hourly"

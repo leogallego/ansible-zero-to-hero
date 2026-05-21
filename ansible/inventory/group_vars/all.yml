@@ -1,0 +1,10 @@
+---
+# Variables that apply to every host in the inventory.
+# These provide organization-wide defaults.
+
+parasol_organization: "Parasol Tech"
+parasol_ntp_server: "ntp.parasol.example"
+parasol_dns_servers:
+  - "10.0.0.10"
+  - "10.0.0.11"
+parasol_admin_email: "platform-team@parasol.example"

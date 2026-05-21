@@ -1,0 +1,7 @@
+---
+# Variables for all hosts in the dev environment.
+
+parasol_environment: "dev"
+parasol_log_level: "debug"
+parasol_monitoring_enabled: false
+parasol_backup_schedule: "weekly"

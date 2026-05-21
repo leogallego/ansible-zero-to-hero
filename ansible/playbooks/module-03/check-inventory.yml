@@ -1,0 +1,53 @@
+---
+# Module 3 - Verify inventory structure
+# This playbook displays group membership and variables
+# to confirm that the inventory is correctly structured.
+# It targets localhost so it works in any lab environment.
+
+- name: Verify inventory structure and variables
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Display all groups in the inventory
+      ansible.builtin.debug:
+        msg: "Groups defined in inventory: {{ groups.keys() | list }}"
+        verbosity: 0
+
+    - name: Display hosts in each environment group
+      ansible.builtin.debug:
+        msg: >-
+          {{ item }} hosts:
+          {{ groups[item] | default([]) }}
+        verbosity: 0
+      loop:
+        - dev
+        - staging
+        - production
+
+    - name: Display hosts in each functional group
+      ansible.builtin.debug:
+        msg: >-
+          {{ item }} hosts:
+          {{ groups[item] | default([]) }}
+        verbosity: 0
+      loop:
+        - webservers
+        - dbservers
+
+    - name: Display variables from group_vars/all
+      ansible.builtin.debug:
+        msg:
+          - "Organization: {{ parasol_organization }}"
+          - "NTP server: {{ parasol_ntp_server }}"
+          - "DNS servers: {{ parasol_dns_servers }}"
+          - "Admin email: {{ parasol_admin_email }}"
+        verbosity: 0
+
+    - name: Display total host count
+      ansible.builtin.debug:
+        msg: >-
+          Total unique hosts in inventory:
+          {{ groups['all'] | length }}
+        verbosity: 0

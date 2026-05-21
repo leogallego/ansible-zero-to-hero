@@ -1,0 +1,6 @@
+---
+# Host-specific variables for the secondary production database server.
+
+parasol_db_role: "replica"
+parasol_db_max_connections: 200
+parasol_db_backup_retention_days: 7

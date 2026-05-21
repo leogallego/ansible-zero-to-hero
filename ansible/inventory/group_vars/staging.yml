@@ -1,0 +1,7 @@
+---
+# Variables for all hosts in the staging environment.
+
+parasol_environment: "staging"
+parasol_log_level: "info"
+parasol_monitoring_enabled: true
+parasol_backup_schedule: "daily"
