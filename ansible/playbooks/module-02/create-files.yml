@@ -1,0 +1,39 @@
+---
+# Module 2 - Create directories and files on localhost
+# This playbook demonstrates the ansible.builtin.file and
+# ansible.builtin.copy modules for managing files and directories.
+
+- name: Create directories and files
+  hosts: localhost
+  connection: local
+
+  tasks:
+    - name: Create project directory
+      ansible.builtin.file:
+        path: /tmp/ansible-demo
+        state: directory
+        mode: "0755"
+
+    - name: Create logs subdirectory
+      ansible.builtin.file:
+        path: /tmp/ansible-demo/logs
+        state: directory
+        mode: "0755"
+
+    - name: Create a welcome file
+      ansible.builtin.copy:
+        dest: /tmp/ansible-demo/README.txt
+        content: |
+          Welcome to Ansible!
+          This file was created by an Ansible playbook.
+        mode: "0644"
+
+    - name: Create an application config file
+      ansible.builtin.copy:
+        dest: /tmp/ansible-demo/app.conf
+        content: |
+          # Application configuration
+          app_name=demo
+          log_level=info
+          log_dir=/tmp/ansible-demo/logs
+        mode: "0644"

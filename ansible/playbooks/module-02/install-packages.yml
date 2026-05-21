@@ -1,0 +1,18 @@
+---
+# Module 2 - Install common packages on localhost
+# This playbook demonstrates the ansible.builtin.package module
+# to install packages in a distribution-agnostic way.
+
+- name: Install common utility packages
+  hosts: localhost
+  connection: local
+  become: true
+
+  tasks:
+    - name: Install utility packages
+      ansible.builtin.package:
+        name:
+          - tree
+          - curl
+          - jq
+        state: present
