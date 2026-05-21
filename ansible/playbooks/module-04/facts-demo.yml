@@ -1,0 +1,81 @@
+---
+# Module 4 - Ansible facts demonstration
+# This playbook gathers system facts and displays key values
+# using the ansible_facts['key'] bracket notation.
+#
+# Run with full facts:
+#   ansible-navigator run playbooks/module-04/facts-demo.yml --mode stdout
+#
+# Run with ansible-navigator interactive mode to explore facts:
+#   ansible-navigator run playbooks/module-04/facts-demo.yml
+
+- name: Gather and display system facts
+  hosts: localhost
+  connection: local
+  # gather_facts defaults to true -- we leave it on here
+  # to collect the full fact set
+
+  tasks:
+    - name: Display operating system information
+      ansible.builtin.debug:
+        msg:
+          - "Distribution: {{ ansible_facts['distribution'] }}"
+          - "Major version: {{ ansible_facts['distribution_major_version'] }}"
+          - "Full version: {{ ansible_facts['distribution_version'] }}"
+          - "OS family: {{ ansible_facts['os_family'] }}"
+        verbosity: 0
+
+    - name: Display hardware information
+      ansible.builtin.debug:
+        msg:
+          - "Architecture: {{ ansible_facts['architecture'] }}"
+          - "Processor count: {{ ansible_facts['processor_count'] }}"
+          - "Total memory (MB): {{ ansible_facts['memtotal_mb'] }}"
+        verbosity: 0
+
+    - name: Display network information
+      ansible.builtin.debug:
+        msg:
+          - "Hostname: {{ ansible_facts['hostname'] }}"
+          - "FQDN: {{ ansible_facts['fqdn'] }}"
+          - "Default IPv4: {{ ansible_facts['default_ipv4']['address'] | default('N/A') }}"
+        verbosity: 0
+
+    - name: Display all available fact keys (verbose only)
+      ansible.builtin.debug:
+        var: ansible_facts.keys() | list
+        verbosity: 2
+
+- name: Gather a minimal subset of facts
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Gather only network and hardware facts
+      ansible.builtin.setup:
+        gather_subset:
+          - "!all"
+          - "!min"
+          - network
+          - hardware
+      register: __subset_result
+
+    - name: Display facts from the minimal subset
+      ansible.builtin.debug:
+        msg:
+          - "--- Minimal subset: network + hardware ---"
+          - "Hostname: {{ ansible_facts['hostname'] }}"
+          - "Architecture: {{ ansible_facts['architecture'] }}"
+          - "Memory (MB): {{ ansible_facts['memtotal_mb'] }}"
+        verbosity: 0
+
+    - name: Explain gather_subset
+      ansible.builtin.debug:
+        msg:
+          - "By default, gather_facts collects everything -- this can be slow."
+          - "Use gather_subset to collect only what you need."
+          - "Common subsets: min, network, hardware, virtual, facter, ohai"
+          - "'!all' removes the default set; '!min' removes the minimum set."
+          - "Then you add back only the subsets you need."
+        verbosity: 0

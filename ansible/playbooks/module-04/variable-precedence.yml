@@ -1,0 +1,85 @@
+---
+# Module 4 - Variable precedence demonstration
+# This playbook defines the same variable at multiple levels
+# and displays which value wins at each precedence tier.
+# Run it with and without extra vars to see the full picture:
+#
+#   ansible-navigator run playbooks/module-04/variable-precedence.yml \
+#     --mode stdout
+#
+#   ansible-navigator run playbooks/module-04/variable-precedence.yml \
+#     --mode stdout -e "demo_message='Extra vars win!'"
+
+- name: Demonstrate variable precedence
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  # --- Play-level variables (scoped vars) ---
+  vars:
+    demo_message: "Defined in play vars"
+    play_only_var: "This variable exists only at play level"
+
+  tasks:
+    - name: Display the winning value of demo_message
+      ansible.builtin.debug:
+        msg: "demo_message = {{ demo_message }}"
+        verbosity: 0
+
+    - name: Display variable defined only in group_vars/all.yml
+      ansible.builtin.debug:
+        msg: "parasol_organization = {{ parasol_organization }}"
+        verbosity: 0
+
+    - name: Display variable defined in play vars
+      ansible.builtin.debug:
+        msg: "play_only_var = {{ play_only_var }}"
+        verbosity: 0
+
+    - name: Explain what happened
+      ansible.builtin.debug:
+        msg:
+          - "--- Precedence explanation ---"
+          - "group_vars/all.yml defines parasol_organization (inventory level)"
+          - "play vars defines demo_message (play/scoped level)"
+          - "If you passed -e demo_message=..., extra vars won (highest precedence)"
+          - ""
+          - "Simplified precedence chain (low to high):"
+          - "  1. Role defaults (defaults/main.yml)"
+          - "  2. Inventory vars (group_vars, host_vars)"
+          - "  3. Play vars / role vars"
+          - "  4. Task vars / block vars"
+          - "  5. set_fact / registered vars"
+          - "  6. Extra vars (-e) -- ALWAYS WIN"
+        verbosity: 0
+
+- name: Demonstrate set_fact overriding play vars
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    demo_message: "Defined in play vars (second play)"
+
+  tasks:
+    - name: Display demo_message before set_fact
+      ansible.builtin.debug:
+        msg: "Before set_fact: demo_message = {{ demo_message }}"
+        verbosity: 0
+
+    - name: Override demo_message with set_fact
+      ansible.builtin.set_fact:
+        demo_message: "Overridden by set_fact"
+
+    - name: Display demo_message after set_fact
+      ansible.builtin.debug:
+        msg: "After set_fact: demo_message = {{ demo_message }}"
+        verbosity: 0
+
+    - name: Explain set_fact precedence
+      ansible.builtin.debug:
+        msg:
+          - "set_fact has higher precedence than play vars."
+          - "It creates a host fact that persists for the rest of the play."
+          - "Only extra vars (-e) can override a set_fact value."
+        verbosity: 0

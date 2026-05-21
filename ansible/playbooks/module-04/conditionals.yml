@@ -1,0 +1,94 @@
+---
+# Module 4 - Conditionals with when, register, and facts
+# This playbook demonstrates conditional execution using
+# Ansible facts and registered variables.
+#
+# Run it:
+#   ansible-navigator run playbooks/module-04/conditionals.yml --mode stdout
+
+- name: Demonstrate conditionals with facts and registered variables
+  hosts: localhost
+  connection: local
+
+  vars:
+    demo_packages:
+      - name: curl
+        required: true
+      - name: fake-package-that-does-not-exist
+        required: false
+
+  tasks:
+    # --- Conditionals based on facts ---
+    - name: Display message for Red Hat family systems
+      ansible.builtin.debug:
+        msg: "This is a Red Hat family system ({{ ansible_facts['distribution'] }})"
+        verbosity: 0
+      when: ansible_facts['os_family'] == "RedHat"
+
+    - name: Display message for Debian family systems
+      ansible.builtin.debug:
+        msg: "This is a Debian family system ({{ ansible_facts['distribution'] }})"
+        verbosity: 0
+      when: ansible_facts['os_family'] == "Debian"
+
+    - name: Display message for systems with more than 1 GB of RAM
+      ansible.builtin.debug:
+        msg: "System has {{ ansible_facts['memtotal_mb'] }} MB of RAM (> 1024 MB)"
+        verbosity: 0
+      when: ansible_facts['memtotal_mb'] > 1024
+
+    # --- Conditionals with registered variables ---
+    - name: Check if /etc/os-release exists
+      ansible.builtin.stat:
+        path: /etc/os-release
+      register: __os_release_file
+
+    - name: Display os-release content (only if the file exists)
+      ansible.builtin.command:
+        cmd: head -5 /etc/os-release
+      register: __os_release_content
+      changed_when: false
+      when: __os_release_file.stat.exists
+
+    - name: Show os-release content
+      ansible.builtin.debug:
+        msg: "{{ __os_release_content.stdout_lines }}"
+        verbosity: 0
+      when: __os_release_content is defined and __os_release_content is not skipped
+
+    # --- Conditionals with boolean variables ---
+    - name: Display monitoring status from inventory
+      ansible.builtin.debug:
+        msg: >-
+          Monitoring is {{ 'enabled' if (parasol_monitoring_enabled | default(false)) else 'disabled' }}
+          for this host
+        verbosity: 0
+
+    # --- Combining conditions ---
+    - name: Display combined condition result
+      ansible.builtin.debug:
+        msg: "This is a 64-bit Red Hat family system"
+        verbosity: 0
+      when:
+        - ansible_facts['os_family'] == "RedHat"
+        - ansible_facts['architecture'] == "x86_64"
+
+    # --- Conditionals in loops ---
+    - name: Display only required packages
+      ansible.builtin.debug:
+        msg: "Required package: {{ item.name }}"
+        verbosity: 0
+      loop: "{{ demo_packages }}"
+      when: item.required
+
+    # --- Using register + failed_when for validation ---
+    - name: Check if a command succeeds
+      ansible.builtin.command:
+        cmd: echo "validation passed"
+      register: __validation_result
+      changed_when: false
+
+    - name: Report validation outcome
+      ansible.builtin.debug:
+        msg: "Validation {{ 'PASSED' if __validation_result.rc == 0 else 'FAILED' }}"
+        verbosity: 0
