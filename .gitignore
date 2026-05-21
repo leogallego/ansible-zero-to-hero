@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+
+# Ansible
+*.retry
+collections/ansible_collections/
+
+# MkDocs
+site/
+
+# IDE
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project temp files
+tmp/
+
+# Dev environment
+.ade/
+.tox/
+
+# Local design docs (kept on disk, not in repo)
+docs/superpowers/
