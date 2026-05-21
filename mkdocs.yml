@@ -1,0 +1,68 @@
+site_name: Ansible Zero to Hero
+site_description: A progressive course teaching Ansible from first principles to production-grade automation
+site_url: https://leogallego.github.io/ansible-zero-to-hero/
+repo_url: https://github.com/leogallego/ansible-zero-to-hero
+repo_name: leogallego/ansible-zero-to-hero
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - content.code.annotate
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: deep purple
+      accent: amber
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: deep purple
+      accent: amber
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+plugins:
+  - search
+  - i18n:
+      default_language: en
+      docs_structure: folder
+      languages:
+        - locale: en
+          default: true
+          name: English
+          build: true
+        - locale: es
+          name: Español
+          build: true
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - attr_list
+  - md_in_html
+
+nav:
+  - Home: index.md
+  - Modules:
+      - "1. Introduction": modules/1-introduction.md
+      - "2. Your First Playbook": modules/2-your-first-playbook.md
+      - "3. Managing Inventory": modules/3-managing-inventory.md
+      - "4. Variables and Facts": modules/4-variables-and-facts.md
+      - "5. Templates and Handlers": modules/5-templates-and-handlers.md
+      - "6. Roles and Collections": modules/6-roles-and-collections.md
+      - "7. Testing Your Automation": modules/7-testing-your-automation.md
+      - "8. Packaging and Deployment": modules/8-packaging-and-deployment.md
+      - "9. Scaling with AAP": modules/9-scaling-with-aap.md
