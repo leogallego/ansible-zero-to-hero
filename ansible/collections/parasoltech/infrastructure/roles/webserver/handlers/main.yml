@@ -1,0 +1,20 @@
+---
+# handlers/main.yml - Handlers for the webserver role
+
+- name: Validate webserver configuration
+  ansible.builtin.command:
+    cmd: "httpd -t"
+  changed_when: false
+  listen: "webserver_validate_config"
+
+- name: Reload webserver
+  ansible.builtin.service:
+    name: "{{ __webserver_service_name }}"
+    state: reloaded
+  listen: "webserver_reload"
+
+- name: Restart webserver
+  ansible.builtin.service:
+    name: "{{ __webserver_service_name }}"
+    state: restarted
+  listen: "webserver_restart"

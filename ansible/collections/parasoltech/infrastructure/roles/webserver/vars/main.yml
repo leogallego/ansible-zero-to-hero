@@ -1,0 +1,19 @@
+---
+# vars/main.yml - Internal constants for the webserver role
+#
+# These are NOT user-facing. They hold values that should
+# not be overridden through inventory or extra vars.
+# Internal variables use the __webserver_ prefix.
+
+# Default packages when no platform-specific override is found
+__webserver_packages_default:
+  - httpd
+
+# Service name (platform-specific overrides in vars/*.yml)
+__webserver_service_name: httpd
+
+# Configuration directory
+__webserver_config_dir: /etc/httpd/conf
+
+# Main configuration file name
+__webserver_config_file: httpd.conf

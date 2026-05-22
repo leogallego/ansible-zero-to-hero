@@ -1,0 +1,42 @@
+---
+# tasks/main.yml - Main entry point for the webserver role
+
+- name: Install web server packages
+  ansible.builtin.package:
+    name: "{{ webserver_packages | default(__webserver_packages_default) }}"
+    state: present
+
+- name: Ensure document root exists
+  ansible.builtin.file:
+    path: "{{ webserver_document_root }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Deploy web server configuration
+  ansible.builtin.template:
+    src: "{{ role_path }}/templates/webserver.conf.j2"
+    dest: "{{ __webserver_config_dir }}/{{ __webserver_config_file }}"
+    owner: root
+    group: root
+    mode: "0644"
+    backup: true
+  notify:
+    - webserver_validate_config
+    - webserver_reload
+
+- name: Deploy default index page
+  ansible.builtin.template:
+    src: "{{ role_path }}/templates/index.html.j2"
+    dest: "{{ webserver_document_root }}/index.html"
+    owner: root
+    group: root
+    mode: "0644"
+    backup: true
+
+- name: Ensure web server service is in the desired state
+  ansible.builtin.service:
+    name: "{{ __webserver_service_name }}"
+    state: "{{ webserver_service_enabled | ternary('started', 'stopped') }}"
+    enabled: "{{ webserver_service_enabled }}"

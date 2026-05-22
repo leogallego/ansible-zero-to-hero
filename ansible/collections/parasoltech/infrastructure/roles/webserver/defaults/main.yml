@@ -1,0 +1,26 @@
+---
+# defaults/main.yml - User-facing variables for the webserver role
+#
+# All variables are prefixed with "webserver_" to avoid
+# collisions when this role is used alongside other roles.
+
+# The HTTP port the web server listens on
+webserver_port: 80
+
+# The document root where web content is served from
+webserver_document_root: /var/www/html
+
+# The server name used in the virtual host configuration
+webserver_server_name: localhost
+
+# Whether to start and enable the web server service
+webserver_service_enabled: true
+
+# The maximum number of simultaneous client connections
+webserver_max_connections: 256
+
+# The admin email shown in server error pages
+# webserver_admin_email:
+
+# Packages to install (overridable per platform via vars/)
+# webserver_packages:

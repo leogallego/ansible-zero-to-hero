@@ -1,0 +1,22 @@
+{{ ansible_managed | comment }}
+#
+# Web server configuration for {{ webserver_server_name }}
+
+Listen {{ webserver_port }}
+
+ServerName {{ webserver_server_name }}
+DocumentRoot "{{ webserver_document_root }}"
+
+MaxRequestWorkers {{ webserver_max_connections }}
+
+{% if webserver_admin_email is defined %}
+ServerAdmin {{ webserver_admin_email }}
+{% endif %}
+
+<Directory "{{ webserver_document_root }}">
+    AllowOverride None
+    Require all granted
+</Directory>
+
+ErrorLog "logs/error_log"
+CustomLog "logs/access_log" combined

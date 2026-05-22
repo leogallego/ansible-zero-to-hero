@@ -1,0 +1,46 @@
+---
+argument_specs:
+  main:
+    short_description: Install and configure a web server
+    description:
+      - Install web server packages, deploy configuration from
+        a template, deploy a default index page, and manage the
+        service lifecycle.
+    options:
+      webserver_port:
+        type: int
+        default: 80
+        description: The HTTP port the web server listens on.
+      webserver_document_root:
+        type: str
+        default: /var/www/html
+        description: >-
+          The document root directory where web content is served from.
+      webserver_server_name:
+        type: str
+        default: localhost
+        description: >-
+          The server name used in the virtual host configuration.
+      webserver_service_enabled:
+        type: bool
+        default: true
+        description: >-
+          Whether to start and enable the web server service.
+      webserver_max_connections:
+        type: int
+        default: 256
+        description: >-
+          The maximum number of simultaneous client connections.
+      webserver_admin_email:
+        type: str
+        required: false
+        description: >-
+          The admin email shown in server error pages.
+          If not set, the server default is used.
+      webserver_packages:
+        type: list
+        elements: str
+        required: false
+        description: >-
+          List of packages to install. If not provided, the role
+          uses platform-specific defaults.
