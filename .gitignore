@@ -8,6 +8,7 @@ __pycache__/
 *.retry
 collections/ansible_collections/
 *-artifact-*.json
+ansible-navigator.log
 
 # MkDocs
 site/
