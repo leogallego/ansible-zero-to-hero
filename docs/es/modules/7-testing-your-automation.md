@@ -1,28 +1,28 @@
-# Modulo 7: Testing de tu Automatizacion
+# Módulo 7: Testing de tu Automatización
 
 ## Objetivos de Aprendizaje
 
-Al finalizar este modulo seras capaz de:
+Al finalizar este módulo serás capaz de:
 
-- Ejecutar `ansible-lint` para analisis estatico y configurar reglas de auto-correccion
-- Escribir y ejecutar tests de integracion con Molecule usando verificacion basada en aserciones
+- Ejecutar `ansible-lint` para análisis estático y configurar reglas de auto-corrección
+- Escribir y ejecutar tests de integración con Molecule usando verificación basada en aserciones
 - Crear tests funcionales con `pytest-ansible`
 - Orquestar matrices de tests con `tox-ansible`
-- Describir la piramide de testing de Ansible (lint -> unit -> integration)
+- Describir la pirámide de testing de Ansible (lint -> unit -> integration)
 
 ## La Historia Hasta Ahora
 
-La CoP en Parasol Tech tiene su primera coleccion -- `parasoltech.infrastructure` con un rol `webserver` que instala paquetes, despliega configuracion desde plantillas y gestiona el ciclo de vida del servicio. Varios equipos estan empezando a adoptarla.
+La CoP en Parasol Tech tiene su primera colección -- `parasoltech.infrastructure` con un rol `webserver` que instala paquetes, despliega configuración desde plantillas y gestiona el ciclo de vida del servicio. Varios equipos están empezando a adoptarla.
 
-Entonces algo se rompe. El equipo de monitoreo sobreescribe `webserver_port` con una cadena de texto en lugar de un entero, y la plantilla genera basura. Jordan lo detecta durante una revision de codigo, pero ya se habia desplegado a staging.
+Entonces algo se rompe. El equipo de monitoreo sobreescribe `webserver_port` con una cadena de texto en lugar de un entero, y la plantilla genera basura. Jordan lo detecta durante una revisión de código, pero ya se había desplegado a staging.
 
-"Tuvimos suerte," dice Alex. "La proxima vez podria ser produccion."
+"Tuvimos suerte," dice Alex. "La próxima vez podría ser producción."
 
-La CoP convoca una reunion de emergencia. El resultado: **ninguna automatizacion sin testear va a produccion.** Cada rol necesita tests automatizados. Cada pull request debe pasar linting, tests unitarios y tests de integracion antes de poder fusionarse. El equipo acuerda una estrategia de testing usando cuatro herramientas de la suite `ansible-dev-tools`: `ansible-lint`, Molecule, `pytest-ansible` y `tox-ansible`.
+La CoP convoca una reunión de emergencia. El resultado: **ninguna automatización sin testear va a producción.** Cada rol necesita tests automatizados. Cada pull request debe pasar linting, tests unitarios y tests de integración antes de poder fusionarse. El equipo acuerda una estrategia de testing usando cuatro herramientas de la suite `ansible-dev-tools`: `ansible-lint`, Molecule, `pytest-ansible` y `tox-ansible`.
 
-## La Piramide de Testing de Ansible
+## La Pirámide de Testing de Ansible
 
-El testing no es una unica cosa -- es un espectro de verificaciones a diferentes niveles de abstraccion y costo. La piramide de testing de Ansible organiza estos niveles desde los mas baratos y rapidos en la base hasta los mas completos y lentos en la cima:
+El testing no es una única cosa -- es un espectro de verificaciones a diferentes niveles de abstracción y costo. La pirámide de testing de Ansible organiza estos niveles desde los más baratos y rápidos en la base hasta los más completos y lentos en la cima:
 
 ```text
           /\
@@ -39,21 +39,21 @@ El testing no es una unica cosa -- es un espectro de verificaciones a diferentes
 /______________________\
 ```
 
-| Nivel | Herramienta | Que detecta | Velocidad |
+| Nivel | Herramienta | Qué detecta | Velocidad |
 |-------|-------------|-------------|-----------|
-| **Lint** | `ansible-lint` | Errores de sintaxis, modulos deprecados, violaciones de nomenclatura, FQCNs faltantes | Segundos |
-| **Unit** | `pytest-ansible` | Defaults incorrectos, argument specs rotos, errores de logica en modulos | Segundos |
-| **Integracion** | Molecule | Fallos del rol en sistemas reales, plantillas faltantes, errores de configuracion de servicios | Minutos |
+| **Lint** | `ansible-lint` | Errores de sintaxis, módulos deprecados, violaciones de nomenclatura, FQCNs faltantes | Segundos |
+| **Unit** | `pytest-ansible` | Defaults incorrectos, argument specs rotos, errores de lógica en módulos | Segundos |
+| **Integración** | Molecule | Fallos del rol en sistemas reales, plantillas faltantes, errores de configuración de servicios | Minutos |
 
-El principio es simple: detectar tanto como sea posible en los niveles inferiores, porque esos tests son rapidos, baratos y se ejecutan en cada guardado. Reserva los tests de integracion para lo que solo se puede validar aplicando realmente el rol.
+El principio es simple: detectar tanto como sea posible en los niveles inferiores, porque esos tests son rápidos, baratos y se ejecutan en cada guardado. Reserva los tests de integración para lo que solo se puede validar aplicando realmente el rol.
 
-## Analisis Estatico con ansible-lint
+## Análisis Estático con ansible-lint
 
-`ansible-lint` verifica tu contenido Ansible contra un conjunto completo de reglas -- desde formato YAML hasta uso de modulos deprecados pasando por convenciones de nomenclatura. Es la primera linea de defensa y detecta los errores mas comunes antes de que siquiera ejecutes un playbook.
+`ansible-lint` verifica tu contenido Ansible contra un conjunto completo de reglas -- desde formato YAML hasta uso de módulos deprecados pasando por convenciones de nomenclatura. Es la primera línea de defensa y detecta los errores más comunes antes de que siquiera ejecutes un playbook.
 
-### Configuracion
+### Configuración
 
-La coleccion incluye un archivo `.ansible-lint` en su raiz:
+La colección incluye un archivo `.ansible-lint` en su raíz:
 
 ```yaml
 ---
@@ -83,21 +83,21 @@ project_dir: .
 
 Configuraciones clave:
 
-- **`profile: production`** -- Usa el conjunto de reglas integrado mas estricto. Otras opciones son `min`, `basic`, `moderate`, `safety` y `shared`, cada una agregando mas reglas.
-- **`strict: true`** -- Las advertencias se tratan como errores. Si `ansible-lint` encuentra algo, el codigo de salida es distinto de cero.
-- **`enable_list`** -- Habilita explicitamente categorias de reglas para soporte de auto-correccion.
-- **`skip_list`** -- Suprime reglas especificas que no aplican (en este caso, la regla `galaxy[version-incorrect]` que marca versiones no publicadas en Galaxy).
+- **`profile: production`** -- Usa el conjunto de reglas integrado más estricto. Otras opciones son `min`, `basic`, `moderate`, `safety` y `shared`, cada una agregando más reglas.
+- **`strict: true`** -- Las advertencias se tratan como errores. Si `ansible-lint` encuentra algo, el código de salida es distinto de cero.
+- **`enable_list`** -- Habilita explícitamente categorías de reglas para soporte de auto-corrección.
+- **`skip_list`** -- Suprime reglas específicas que no aplican (en este caso, la regla `galaxy[version-incorrect]` que marca versiones no publicadas en Galaxy).
 
 ### Ejecutando ansible-lint
 
-Desde la raiz de la coleccion:
+Desde la raíz de la colección:
 
 ```bash
 cd ansible/collections/parasoltech/infrastructure
 ansible-lint
 ```
 
-Si no hay violaciones, la salida esta limpia. Si hay problemas, `ansible-lint` muestra el archivo, numero de linea, ID de regla y una descripcion:
+Si no hay violaciones, la salida está limpia. Si hay problemas, `ansible-lint` muestra el archivo, número de línea, ID de regla y una descripción:
 
 ```text
 roles/webserver/tasks/main.yml:5: fqcn[action-core]
@@ -107,53 +107,53 @@ roles/webserver/handlers/main.yml:8: name[casing]
   All names should start with an uppercase letter.
 ```
 
-### Auto-correccion
+### Auto-corrección
 
-Muchas reglas soportan correccion automatica. En lugar de editar manualmente cada archivo, ejecuta:
+Muchas reglas soportan corrección automática. En lugar de editar manualmente cada archivo, ejecuta:
 
 ```bash
 ansible-lint --fix
 ```
 
-`ansible-lint` reescribe los archivos in situ, corrigiendo lo que puede. Las correcciones automaticas comunes incluyen:
+`ansible-lint` reescribe los archivos in situ, corrigiendo lo que puede. Las correcciones automáticas comunes incluyen:
 
-- Reemplazar nombres cortos de modulos con FQCNs (`copy` se convierte en `ansible.builtin.copy`)
+- Reemplazar nombres cortos de módulos con FQCNs (`copy` se convierte en `ansible.builtin.copy`)
 - Convertir `yes`/`no` a `true`/`false`
-- Corregir formato YAML (espacios finales, indentacion)
+- Corregir formato YAML (espacios finales, indentación)
 
-Despues de la auto-correccion, revisa los cambios con `git diff` antes de hacer commit. No toda auto-correccion es perfecta -- siempre verifica.
+Después de la auto-corrección, revisa los cambios con `git diff` antes de hacer commit. No toda auto-corrección es perfecta -- siempre verifica.
 
-!!! tip "Integracion con el IDE"
-    `ansible-lint` se integra con VS Code a traves de la extension de Ansible. Las violaciones aparecen como subrayados ondulados en el editor, y la auto-correccion esta disponible a traves del menu de correccion rapida (Ctrl+.). Esto te da retroalimentacion instantanea mientras escribes.
+!!! tip "Integración con el IDE"
+    `ansible-lint` se integra con VS Code a través de la extensión de Ansible. Las violaciones aparecen como subrayados ondulados en el editor, y la auto-corrección está disponible a través del menú de corrección rápida (Ctrl+.). Esto te da retroalimentación instantánea mientras escribes.
 
-### Categorias de Reglas
+### Categorías de Reglas
 
-`ansible-lint` organiza las reglas en categorias:
+`ansible-lint` organiza las reglas en categorías:
 
-| Categoria | Ejemplos |
+| Categoría | Ejemplos |
 |-----------|----------|
-| **fqcn** | Usar FQCNs para todos los modulos |
-| **name** | Los nombres de tareas deben comenzar con mayuscula, usar forma imperativa |
+| **fqcn** | Usar FQCNs para todos los módulos |
+| **name** | Los nombres de tareas deben comenzar con mayúscula, usar forma imperativa |
 | **args** | Argumentos requeridos faltantes, argumentos deprecados usados |
-| **yaml** | Errores de indentacion, espacios finales, valores truthy |
+| **yaml** | Errores de indentación, espacios finales, valores truthy |
 | **no-changed-when** | Tareas `command`/`shell` sin `changed_when` |
-| **risky-file-permissions** | Tareas de archivos sin `mode` explicito |
-| **role-name** | Nombres de roles con guiones o caracteres invalidos |
-| **galaxy** | Problemas en metadatos de la coleccion |
+| **risky-file-permissions** | Tareas de archivos sin `mode` explícito |
+| **role-name** | Nombres de roles con guiones o caracteres inválidos |
+| **galaxy** | Problemas en metadatos de la colección |
 
-Cada categoria corresponde a reglas que ya has aprendido en este curso. `ansible-lint` las aplica automaticamente en lugar de depender de la revision de codigo.
+Cada categoría corresponde a reglas que ya has aprendido en este curso. `ansible-lint` las aplica automáticamente en lugar de depender de la revisión de código.
 
-## Testing de Integracion con Molecule
+## Testing de Integración con Molecule
 
-Mientras que `ansible-lint` detecta problemas estaticos, Molecule detecta los dinamicos -- problemas que solo aparecen cuando realmente aplicas un rol a un sistema. La plantilla se renderiza correctamente? El servicio arranca? El archivo de configuracion termina en el lugar correcto?
+Mientras que `ansible-lint` detecta problemas estáticos, Molecule detecta los dinámicos -- problemas que solo aparecen cuando realmente aplicas un rol a un sistema. La plantilla se renderiza correctamente? El servicio arranca? El archivo de configuración termina en el lugar correcto?
 
-Molecule proporciona un framework para testing de integracion de contenido Ansible. Crea entornos de prueba, aplica tus roles, ejecuta aserciones de verificacion y desmonta todo.
+Molecule proporciona un framework para testing de integración de contenido Ansible. Crea entornos de prueba, aplica tus roles, ejecuta aserciones de verificación y desmonta todo.
 
 ### Escenarios de Molecule
 
-Un **escenario** es una definicion de test completa. Cada escenario vive en su propio directorio bajo `extensions/molecule/` y contiene como minimo un archivo de configuracion `molecule.yml`. La mayoria de los escenarios tambien incluyen un playbook `converge.yml` y un playbook `verify.yml`.
+Un **escenario** es una definición de test completa. Cada escenario vive en su propio directorio bajo `extensions/molecule/` y contiene como mínimo un archivo de configuración `molecule.yml`. La mayoría de los escenarios también incluyen un playbook `converge.yml` y un playbook `verify.yml`.
 
-El escenario de la coleccion para el rol webserver esta en:
+El escenario de la colección para el rol webserver está en:
 
 ```text
 extensions/molecule/integration_webserver/
@@ -164,7 +164,7 @@ extensions/molecule/integration_webserver/
 
 #### molecule.yml
 
-La configuracion del escenario define el entorno de test y el ciclo de vida:
+La configuración del escenario define el entorno de test y el ciclo de vida:
 
 ```yaml
 ---
@@ -215,10 +215,10 @@ scenario:
 
 Secciones clave:
 
-- **`driver: delegated`** -- Usa el driver delegado en lugar de contenedores. Esto significa que Molecule ejecuta todo en localhost sin necesitar Docker o Podman. Es mas simple para aprender y funciona en cualquier entorno.
-- **`platforms`** -- Define los hosts de prueba. Con el driver delegado, `localhost` es la unica plataforma.
-- **`provisioner`** -- Configura como se ejecuta Ansible. La seccion de inventario establece las variables de conexion para localhost.
-- **`verifier: ansible`** -- Usa playbooks de Ansible para la verificacion en lugar de una herramienta separada como Testinfra.
+- **`driver: delegated`** -- Usa el driver delegado en lugar de contenedores. Esto significa que Molecule ejecuta todo en localhost sin necesitar Docker o Podman. Es más simple para aprender y funciona en cualquier entorno.
+- **`platforms`** -- Define los hosts de prueba. Con el driver delegado, `localhost` es la única plataforma.
+- **`provisioner`** -- Configura cómo se ejecuta Ansible. La sección de inventario establece las variables de conexión para localhost.
+- **`verifier: ansible`** -- Usa playbooks de Ansible para la verificación en lugar de una herramienta separada como Testinfra.
 - **`scenario.test_sequence`** -- La lista ordenada de etapas que `molecule test` ejecuta.
 
 #### converge.yml
@@ -242,17 +242,17 @@ El playbook converge aplica el rol bajo prueba:
         webserver_service_enabled: false
 ```
 
-Observa los valores especificos para testing:
+Observa los valores específicos para testing:
 
 - **Puerto 8080** en lugar de 80 (evita necesitar privilegios de root)
 - **`/tmp/molecule-webserver`** como document root (escribible sin root)
-- **`webserver_service_enabled: false`** (no se necesita un servicio httpd real para la verificacion)
+- **`webserver_service_enabled: false`** (no se necesita un servicio httpd real para la verificación)
 
 Estos valores hacen que el test sea portable -- se ejecuta en cualquier lugar sin privilegios elevados ni servicios instalados.
 
 ### Escribiendo Aserciones
 
-El playbook `verify.yml` contiene tareas de asercion que verifican postcondiciones -- cosas que deberian ser verdaderas despues de que el rol se ha ejecutado:
+El playbook `verify.yml` contiene tareas de aserción que verifican postcondiciones -- cosas que deberían ser verdaderas después de que el rol se ha ejecutado:
 
 ```yaml
 ---
@@ -309,10 +309,10 @@ El playbook `verify.yml` contiene tareas de asercion que verifican postcondicion
           index.html contiene la cabecera ansible_managed.
 ```
 
-El patron para cada asercion es:
+El patrón para cada aserción es:
 
-1. **Recopilar un hecho** -- usar `ansible.builtin.stat`, `ansible.builtin.slurp` u otro modulo de solo lectura para capturar estado
-2. **Verificar la condicion** -- usar `ansible.builtin.assert` con `that:`, `fail_msg:` y `success_msg:`
+1. **Recopilar un hecho** -- usar `ansible.builtin.stat`, `ansible.builtin.slurp` u otro módulo de solo lectura para capturar estado
+2. **Verificar la condición** -- usar `ansible.builtin.assert` con `that:`, `fail_msg:` y `success_msg:`
 
 !!! warning "Usa `ansible.builtin.slurp` en lugar de `command: cat`"
     `ansible.builtin.slurp` es idempotente y funciona correctamente en modo check. `command: cat` reporta `changed` por defecto y falla en modo check a menos que agregues `changed_when: false` y `check_mode: false`. Para leer contenidos de archivos en tests, siempre prefiere `slurp`.
@@ -321,14 +321,14 @@ El patron para cada asercion es:
 
 Cuando ejecutas `molecule test -s integration_webserver`, Molecule ejecuta diez etapas en secuencia:
 
-| Etapa | Que sucede |
+| Etapa | Qué sucede |
 |-------|-----------|
 | **1. Dependency** | Instala colecciones requeridas desde `requirements.yml` |
-| **2. Cleanup** | Ejecuta un playbook de limpieza (si esta definido) |
+| **2. Cleanup** | Ejecuta un playbook de limpieza (si está definido) |
 | **3. Destroy** | Desmonta cualquier entorno de prueba existente |
 | **4. Syntax** | Valida la sintaxis del playbook (como `ansible-playbook --syntax-check`) |
 | **5. Create** | Crea el entorno de prueba (con driver delegado, esto es un no-op) |
-| **6. Prepare** | Ejecuta un playbook de preparacion de prerequisitos (si esta definido) |
+| **6. Prepare** | Ejecuta un playbook de preparación de prerequisitos (si está definido) |
 | **7. Converge** | Ejecuta el playbook converge -- esto aplica el rol |
 | **8. Verify** | Ejecuta el playbook verify -- esto verifica las aserciones |
 | **9. Cleanup** | Limpia recursos de prueba |
@@ -354,17 +354,17 @@ molecule destroy -s integration_webserver
 ```
 
 !!! tip "Flujo de trabajo iterativo"
-    Durante el desarrollo, usa `molecule converge` y `molecule verify` por separado. Es mucho mas rapido que ejecutar el ciclo completo de `molecule test`, que destruye y recrea el entorno en cada ejecucion. Solo ejecuta `molecule test` cuando quieras una validacion desde cero (por ejemplo, en CI/CD).
+    Durante el desarrollo, usa `molecule converge` y `molecule verify` por separado. Es mucho más rápido que ejecutar el ciclo completo de `molecule test`, que destruye y recrea el entorno en cada ejecución. Solo ejecuta `molecule test` cuando quieras una validación desde cero (por ejemplo, en CI/CD).
 
 ## Testing Funcional con pytest-ansible
 
-Molecule prueba el rol como un todo -- aplica el rol a un sistema y verifica los resultados. Pero a veces necesitas tests mas granulares que validen piezas individuales en aislamiento. Ahi es donde entra `pytest-ansible`.
+Molecule prueba el rol como un todo -- aplica el rol a un sistema y verifica los resultados. Pero a veces necesitas tests más granulares que validen piezas individuales en aislamiento. Ahí es donde entra `pytest-ansible`.
 
-`pytest-ansible` es un plugin de pytest que conecta el framework `pytest` de Python con Ansible. Proporciona fixtures para ejecutar modulos de Ansible directamente desde codigo de test en Python, haciendo posible escribir tests rapidos y aislados para modulos, plugins e internos de roles.
+`pytest-ansible` es un plugin de pytest que conecta el framework `pytest` de Python con Ansible. Proporciona fixtures para ejecutar módulos de Ansible directamente desde código de test en Python, haciendo posible escribir tests rápidos y aislados para módulos, plugins e internos de roles.
 
 ### Estructura de Tests
 
-Los archivos de test de la coleccion estan bajo `tests/`:
+Los archivos de test de la colección están bajo `tests/`:
 
 ```text
 tests/
@@ -376,7 +376,7 @@ tests/
 
 #### conftest.py
 
-El archivo `conftest.py` configura el entorno para que `pytest-ansible` pueda encontrar los modulos de la coleccion:
+El archivo `conftest.py` configura el entorno para que `pytest-ansible` pueda encontrar los módulos de la colección:
 
 ```python
 import os
@@ -393,11 +393,11 @@ COLLECTIONS_PATH = os.path.join(PROJECT_ROOT, "collections")
 os.environ.setdefault("ANSIBLE_COLLECTIONS_PATH", COLLECTIONS_PATH)
 ```
 
-Esto se ejecuta antes de que se recopile cualquier test. Sin esto, Ansible no puede localizar modulos personalizados ni resolver FQCNs, resultando en errores de "module not found".
+Esto se ejecuta antes de que se recopile cualquier test. Sin esto, Ansible no puede localizar módulos personalizados ni resolver FQCNs, resultando en errores de "module not found".
 
 #### Tests Unitarios
 
-Los tests unitarios validan los archivos YAML del rol sin ejecutar ningun codigo Ansible. Parsean el YAML y verifican propiedades estructurales:
+Los tests unitarios validan los archivos YAML del rol sin ejecutar ningún código Ansible. Parsean el YAML y verifican propiedades estructurales:
 
 ```python
 import os
@@ -434,17 +434,17 @@ class TestWebserverDefaults:
         assert defaults["webserver_document_root"].startswith("/")
 ```
 
-Estos tests se ejecutan en milisegundos. Validan convenciones que es facil violar accidentalmente -- una nueva variable sin el prefijo del rol, un default que deberia ser entero pero es cadena, una ruta que deberia ser absoluta pero es relativa.
+Estos tests se ejecutan en milisegundos. Validan convenciones que es fácil violar accidentalmente -- una nueva variable sin el prefijo del rol, un default que debería ser entero pero es cadena, una ruta que debería ser absoluta pero es relativa.
 
-El archivo de test completo en el codigo companero tambien verifica:
+El archivo de test completo en el código compañero también verifica:
 
-- **Variables internas** (`vars/main.yml`) estan todas con prefijo `__webserver_`
+- **Variables internas** (`vars/main.yml`) están todas con prefijo `__webserver_`
 - **Argument specs** (`meta/argument_specs.yml`) cubren cada variable en defaults
 - **Consistencia de tipos** entre defaults y argument specs
 
 ### Ejecutando pytest
 
-Desde la raiz de la coleccion:
+Desde la raíz de la colección:
 
 ```bash
 cd ansible/collections/parasoltech/infrastructure
@@ -464,25 +464,25 @@ tests/unit/test_webserver_defaults.py::TestWebserverInternalVars::test_all_inter
 tests/unit/test_webserver_defaults.py::TestWebserverArgumentSpecs::test_defaults_covered_by_specs PASSED
 ```
 
-Flags utiles de pytest:
+Flags útiles de pytest:
 
-| Flag | Proposito |
+| Flag | Propósito |
 |------|-----------|
 | `-v` | Verbose -- muestra cada nombre de test y resultado |
 | `-s` | Sin captura -- muestra sentencias print y salida de debug |
 | `-x` | Detener en el primer fallo |
-| `--tb=short` | Tracebacks cortos para salida mas limpia |
-| `-k "patron"` | Ejecutar solo tests que coincidan con el patron |
+| `--tb=short` | Tracebacks cortos para salida más limpia |
+| `-k "patron"` | Ejecutar solo tests que coincidan con el patrón |
 
-## Orquestacion de Tests con tox-ansible
+## Orquestación de Tests con tox-ansible
 
-Ahora tienes tres herramientas de testing: `ansible-lint` para analisis estatico, `pytest` para tests unitarios y Molecule para tests de integracion. Ejecutarlos por separado funciona, pero es tedioso -- especialmente cuando necesitas probar contra multiples versiones de Python y Ansible.
+Ahora tienes tres herramientas de testing: `ansible-lint` para análisis estático, `pytest` para tests unitarios y Molecule para tests de integración. Ejecutarlos por separado funciona, pero es tedioso -- especialmente cuando necesitas probar contra múltiples versiones de Python y Ansible.
 
-`tox-ansible` resuelve esto. Es un plugin de tox (incluido en `ansible-dev-tools`) que escanea la estructura de tu coleccion y **genera automaticamente entornos de test** para linting, tests unitarios, tests de sanity y tests de integracion. No se necesitan definiciones manuales de entornos.
+`tox-ansible` resuelve esto. Es un plugin de tox (incluido en `ansible-dev-tools`) que escanea la estructura de tu colección y **genera automáticamente entornos de test** para linting, tests unitarios, tests de sanity y tests de integración. No se necesitan definiciones manuales de entornos.
 
-### Configuracion
+### Configuración
 
-El archivo de configuracion es `tox-ansible.ini` (no `tox.ini` -- esto mantiene tox-ansible separado de cualquier configuracion estandar de tox):
+El archivo de configuración es `tox-ansible.ini` (no `tox.ini` -- esto mantiene tox-ansible separado de cualquier configuración estándar de tox):
 
 ```ini
 [ansible]
@@ -505,11 +505,11 @@ skip =
     milestone
 ```
 
-Esa es toda la configuracion. La lista `skip` excluye versiones de Python y Ansible que no estan disponibles en tu entorno. Todo lo demas es convencion sobre configuracion -- el plugin descubre que testear escaneando la estructura de la coleccion.
+Esa es toda la configuración. La lista `skip` excluye versiones de Python y Ansible que no están disponibles en tu entorno. Todo lo demás es convención sobre configuración -- el plugin descubre qué testear escaneando la estructura de la colección.
 
 ### Auto-descubrimiento
 
-El plugin escanea la coleccion y genera entornos de test basado en lo que encuentra:
+El plugin escanea la colección y genera entornos de test basado en lo que encuentra:
 
 ```bash
 cd ansible/collections/parasoltech/infrastructure
@@ -526,20 +526,20 @@ sanity-py3.12-2.19           -> Sanity tests (ansible-test sanity)
 unit-py3.12-2.19             -> Unit tests (pytest)
 ```
 
-Cada nombre de entorno codifica tres piezas de informacion:
+Cada nombre de entorno codifica tres piezas de información:
 
 - **Tipo de test** -- `sanity`, `unit`, `integration` o `galaxy`
-- **Version de Python** -- `py3.12`, `py3.13`, etc.
-- **Version de Ansible** -- `2.19`, `2.20`, etc.
+- **Versión de Python** -- `py3.12`, `py3.13`, etc.
+- **Versión de Ansible** -- `2.19`, `2.20`, etc.
 
 El plugin los encuentra buscando:
 
 | Tipo de test | El plugin busca |
 |--------------|-----------------|
-| **sanity** | Cualquier estructura de coleccion (`galaxy.yml`) |
+| **sanity** | Cualquier estructura de colección (`galaxy.yml`) |
 | **unit** | Directorio `tests/unit/` con archivos de test Python |
 | **integration** | Directorio `extensions/molecule/` con escenarios |
-| **galaxy** | `galaxy.yml` en la raiz de la coleccion |
+| **galaxy** | `galaxy.yml` en la raíz de la colección |
 
 ### Ejecutando Tests
 
@@ -549,7 +549,7 @@ Ejecutar todos los tests:
 tox --ansible -c tox-ansible.ini
 ```
 
-Ejecutar tipos de test especificos:
+Ejecutar tipos de test específicos:
 
 ```bash
 # Solo tests de sanity
@@ -573,10 +573,10 @@ Para cada entorno, tox:
 4. Ejecuta el comando de test apropiado
 5. Reporta resultados
 
-Este es el mismo flujo de trabajo que se ejecuta en pipelines CI/CD. Si pasa localmente, pasara en CI.
+Este es el mismo flujo de trabajo que se ejecuta en pipelines CI/CD. Si pasa localmente, pasará en CI.
 
 !!! note "Siempre pasa `--ansible` y `-c tox-ansible.ini`"
-    Sin `--ansible`, el plugin no se activa y ninguno de los entornos auto-generados aparecera. Sin `-c tox-ansible.ini`, tox busca `tox.ini` y no encontrara la lista de skip.
+    Sin `--ansible`, el plugin no se activa y ninguno de los entornos auto-generados aparecerá. Sin `-c tox-ansible.ini`, tox busca `tox.ini` y no encontrará la lista de skip.
 
 ### La Interfaz Unificada
 
@@ -601,20 +601,20 @@ Un comando. Todos los tipos de test. Entornos consistentes. Esto es lo que la Co
 
 ### Ejercicio 1: Ejecutar ansible-lint
 
-Navega a la coleccion y ejecuta el linter:
+Navega a la colección y ejecuta el linter:
 
 ```bash
 cd ansible/collections/parasoltech/infrastructure
 ansible-lint
 ```
 
-Si hay violaciones, examina la salida cuidadosamente. Cada violacion incluye el archivo, numero de linea, ID de regla y descripcion. Intenta corregir los problemas manualmente, luego ejecuta `ansible-lint --fix` para ver que puede manejar la auto-correccion.
+Si hay violaciones, examina la salida cuidadosamente. Cada violación incluye el archivo, número de línea, ID de regla y descripción. Intenta corregir los problemas manualmente, luego ejecuta `ansible-lint --fix` para ver qué puede manejar la auto-corrección.
 
-### Ejercicio 2: Escribir una Nueva Asercion
+### Ejercicio 2: Escribir una Nueva Aserción
 
-Abre `extensions/molecule/integration_webserver/verify.yml` y agrega una nueva asercion que verifique que el directorio document root tiene los permisos correctos (modo `0755`). Usa la variable `__verify_docroot_stat` que ya esta registrada.
+Abre `extensions/molecule/integration_webserver/verify.yml` y agrega una nueva aserción que verifique que el directorio document root tiene los permisos correctos (modo `0755`). Usa la variable `__verify_docroot_stat` que ya está registrada.
 
-??? example "Solucion"
+??? example "Solución"
     ```yaml
     - name: Assert document root has correct permissions
       ansible.builtin.assert:
@@ -629,9 +629,9 @@ Abre `extensions/molecule/integration_webserver/verify.yml` y agrega una nueva a
 
 ### Ejercicio 3: Agregar un Test Unitario
 
-Abre `tests/unit/test_webserver_defaults.py` y agrega un test que verifique que `webserver_port` tiene un valor por defecto dentro de un rango de puertos valido (1-65535).
+Abre `tests/unit/test_webserver_defaults.py` y agrega un test que verifique que `webserver_port` tiene un valor por defecto dentro de un rango de puertos válido (1-65535).
 
-??? example "Solucion"
+??? example "Solución"
     ```python
     def test_port_in_valid_range(self, defaults):
         """webserver_port debe estar entre 1 y 65535."""
@@ -661,21 +661,21 @@ cd ansible/collections/parasoltech/infrastructure
 tox --ansible -c tox-ansible.ini list
 ```
 
-Ejecuta los tests unitarios a traves de tox y compara la salida con ejecutar `pytest` directamente. Observa como tox crea un entorno virtual aislado para la ejecucion del test.
+Ejecuta los tests unitarios a través de tox y compara la salida con ejecutar `pytest` directamente. Observa cómo tox crea un entorno virtual aislado para la ejecución del test.
 
 ## Resumen
 
-En este modulo:
+En este módulo:
 
-- Aprendiste la piramide de testing de Ansible -- lint, unit e integracion forman capas de comprobacion creciente y costo
-- Configuraste `ansible-lint` con un perfil de produccion, aprendiste a leer su salida y usaste auto-correccion para resolver violaciones automaticamente
+- Aprendiste la pirámide de testing de Ansible -- lint, unit e integración forman capas de comprobación creciente y costo
+- Configuraste `ansible-lint` con un perfil de producción, aprendiste a leer su salida y usaste auto-corrección para resolver violaciones automáticamente
 - Creaste un escenario de Molecule para el rol webserver con un driver delegado, un playbook converge que aplica el rol y un playbook verify con verificaciones basadas en aserciones
-- Entendiste el ciclo de vida de diez etapas de Molecule y cuando usar etapas individuales (`converge`, `verify`) versus el ciclo de vida completo (`test`)
-- Escribiste tests unitarios `pytest-ansible` que validan defaults del rol, variables internas y consistencia de argument specs sin ejecutar ningun codigo Ansible
-- Configuraste `tox-ansible` para auto-descubrir y orquestar todos los tipos de test a traves de un unico comando con convencion sobre configuracion
+- Entendiste el ciclo de vida de diez etapas de Molecule y cuándo usar etapas individuales (`converge`, `verify`) versus el ciclo de vida completo (`test`)
+- Escribiste tests unitarios `pytest-ansible` que validan defaults del rol, variables internas y consistencia de argument specs sin ejecutar ningún código Ansible
+- Configuraste `tox-ansible` para auto-descubrir y orquestar todos los tipos de test a través de un único comando con convención sobre configuración
 
-La CoP en Parasol Tech ahora tiene controles de calidad: `ansible-lint` detecta violaciones de estilo, los tests unitarios detectan problemas estructurales y los tests de integracion de Molecule detectan fallos en tiempo de ejecucion. Cada pull request a la coleccion `parasoltech.infrastructure` pasa por `tox --ansible` antes de poder fusionarse.
+La CoP en Parasol Tech ahora tiene controles de calidad: `ansible-lint` detecta violaciones de estilo, los tests unitarios detectan problemas estructurales y los tests de integración de Molecule detectan fallos en tiempo de ejecución. Cada pull request a la colección `parasoltech.infrastructure` pasa por `tox --ansible` antes de poder fusionarse.
 
-## Proximos Pasos
+## Próximos Pasos
 
-Siguiente: [Modulo 8 -- Empaquetado y Despliegue](8-packaging-and-deployment.md)
+Siguiente: [Módulo 8 -- Empaquetado y Despliegue](8-packaging-and-deployment.md)
