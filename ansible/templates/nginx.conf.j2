@@ -1,0 +1,70 @@
+{{ ansible_managed | comment }}
+#
+# Nginx configuration for {{ parasol_nginx_server_name | default('localhost') }}
+# Environment: {{ parasol_environment | default('unknown') }}
+
+{% if parasol_nginx_worker_processes is defined %}
+worker_processes {{ parasol_nginx_worker_processes }};
+{% else %}
+worker_processes auto;
+{% endif %}
+
+events {
+    worker_connections {{ parasol_nginx_worker_connections | default(1024) }};
+}
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    sendfile        on;
+    keepalive_timeout {{ parasol_nginx_keepalive_timeout | default(65) }};
+
+    # Logging
+    access_log /var/log/nginx/access.log;
+    error_log  /var/log/nginx/error.log {{ parasol_log_level | default('warn') }};
+
+{% if parasol_nginx_upstream_servers | default([]) | length > 0 %}
+    # Upstream pool for load balancing
+    upstream {{ parasol_nginx_upstream_name | default('app_backend') }} {
+{% for server in parasol_nginx_upstream_servers %}
+        server {{ server.address }}:{{ server.port | default(8080) }}{% if server.weight is defined %} weight={{ server.weight }}{% endif %};
+{% endfor %}
+    }
+{% endif %}
+
+    server {
+        listen {{ parasol_nginx_http_port | default(80) }};
+        server_name {{ parasol_nginx_server_name | default('localhost') }};
+
+{% if parasol_nginx_ssl_enabled | default(false) %}
+        # Redirect HTTP to HTTPS
+        return 301 https://$host$request_uri;
+    }
+
+    server {
+        listen {{ parasol_nginx_https_port | default(443) }} ssl;
+        server_name {{ parasol_nginx_server_name | default('localhost') }};
+
+        ssl_certificate     {{ parasol_nginx_ssl_cert }};
+        ssl_certificate_key {{ parasol_nginx_ssl_key }};
+        ssl_protocols       TLSv1.2 TLSv1.3;
+        ssl_ciphers         HIGH:!aNULL:!MD5;
+{% endif %}
+
+        root {{ parasol_nginx_document_root | default('/var/www/html') }};
+        index index.html;
+
+{% if parasol_nginx_upstream_servers | default([]) | length > 0 %}
+        location /api/ {
+            proxy_pass http://{{ parasol_nginx_upstream_name | default('app_backend') }};
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+        }
+{% endif %}
+
+        location / {
+            try_files $uri $uri/ =404;
+        }
+    }
+}

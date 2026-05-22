@@ -1,0 +1,128 @@
+---
+# Module 5 - Handler chains and execution order
+# This playbook demonstrates:
+#   - Multiple handlers notified by one task
+#   - Handler execution order (order defined in handlers section)
+#   - meta: flush_handlers to force immediate execution
+#   - Handlers only run when notified (changed tasks)
+#
+# Run it:
+#   ansible-navigator run playbooks/module-05/handler-chain.yml --mode stdout
+
+- name: Demonstrate handler chains and execution order
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    parasol_demo_dir: "/tmp/ansible-demo"
+
+  tasks:
+    - name: Ensure the demo directory exists
+      ansible.builtin.file:
+        path: "{{ parasol_demo_dir }}"
+        state: directory
+        mode: "0755"
+
+    # --- Part 1: Handler execution order ---
+    - name: Explain handler execution order
+      ansible.builtin.debug:
+        msg: >-
+          Handlers run in the order they are DEFINED in the handlers section,
+          not in the order they are notified. Watch the output below.
+        verbosity: 0
+
+    - name: Create a marker file to trigger handlers
+      ansible.builtin.copy:
+        dest: "{{ parasol_demo_dir }}/handler-demo.txt"
+        content: "Handler chain demonstration\n"
+        mode: "0644"
+      notify:
+        - Third handler (C)
+        - First handler (A)
+        - Second handler (B)
+
+    # --- Part 2: meta: flush_handlers ---
+    - name: Explain flush_handlers
+      ansible.builtin.debug:
+        msg: >-
+          Normally, handlers run at the END of the play. You can use
+          meta: flush_handlers to force them to run immediately.
+        verbosity: 0
+
+    - name: Flush handlers now (before continuing)
+      ansible.builtin.meta: flush_handlers
+
+    - name: Confirm handlers have already executed
+      ansible.builtin.debug:
+        msg: >-
+          If you see this AFTER the three handler messages above,
+          flush_handlers worked — handlers ran mid-play instead of at the end.
+        verbosity: 0
+
+    # --- Part 3: Handlers only fire on change ---
+    - name: Write the same file again (no change — idempotent)
+      ansible.builtin.copy:
+        dest: "{{ parasol_demo_dir }}/handler-demo.txt"
+        content: "Handler chain demonstration\n"
+        mode: "0644"
+      notify:
+        - Third handler (C)
+        - First handler (A)
+        - Second handler (B)
+
+    - name: Explain why handlers did NOT fire
+      ansible.builtin.debug:
+        msg: >-
+          The file content did not change, so the copy task reported ok
+          (not changed). Handlers only run when the notifying task reports
+          a change. This is what makes handlers idempotent.
+        verbosity: 0
+
+    # --- Part 4: Multiple tasks notifying the same handler ---
+    - name: Update the marker file content
+      ansible.builtin.copy:
+        dest: "{{ parasol_demo_dir }}/handler-demo.txt"
+        content: "Updated content for handler deduplication demo\n"
+        mode: "0644"
+      notify: Deduplicated handler
+
+    - name: Create a second marker file
+      ansible.builtin.copy:
+        dest: "{{ parasol_demo_dir }}/handler-demo-2.txt"
+        content: "Second file for handler deduplication demo\n"
+        mode: "0644"
+      notify: Deduplicated handler
+
+    - name: Explain handler deduplication
+      ansible.builtin.debug:
+        msg: >-
+          Two tasks notified the same handler, but it will only run ONCE
+          at the end of the play. Ansible deduplicates handler notifications.
+        verbosity: 0
+
+  handlers:
+    # Handlers run in the order they are DEFINED here,
+    # regardless of the order they were notified above.
+    - name: First handler (A)
+      ansible.builtin.debug:
+        msg: "[HANDLER A] I run first because I am defined first"
+        verbosity: 0
+
+    - name: Second handler (B)
+      ansible.builtin.debug:
+        msg: "[HANDLER B] I run second because I am defined second"
+        verbosity: 0
+
+    - name: Third handler (C)
+      ansible.builtin.debug:
+        msg: "[HANDLER C] I run third because I am defined third"
+        verbosity: 0
+
+    - name: Deduplicated handler
+      ansible.builtin.debug:
+        msg: >-
+          [HANDLER] I was notified by TWO tasks but I only run ONCE.
+          Handlers are deduplicated — multiple notifications result in
+          a single execution.
+        verbosity: 0

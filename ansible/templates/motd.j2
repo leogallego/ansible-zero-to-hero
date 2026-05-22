@@ -1,0 +1,15 @@
+{{ ansible_managed | comment }}
+
+=============================================
+  Welcome to {{ inventory_hostname }}
+  Organization: {{ parasol_organization | default('Unknown') }}
+  Environment:  {{ parasol_environment | default('unknown') | upper }}
+{% if parasol_admin_email is defined %}
+  Contact:      {{ parasol_admin_email }}
+{% endif %}
+=============================================
+{% if parasol_environment | default('') == 'production' %}
+
+  ** PRODUCTION SYSTEM — proceed with caution **
+
+{% endif %}

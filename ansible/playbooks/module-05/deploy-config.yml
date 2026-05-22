@@ -1,0 +1,76 @@
+---
+# Module 5 - Deploy configuration files using templates
+# This playbook demonstrates the template module with backup,
+# ansible_managed, handlers, and variable-driven config generation.
+#
+# Run it:
+#   ansible-navigator run playbooks/module-05/deploy-config.yml --mode stdout
+#
+# Since nginx is not installed in the lab, configs are deployed
+# to a demo directory and handlers simulate service actions.
+
+- name: Deploy configuration files with templates
+  hosts: localhost
+  connection: local
+  gather_facts: true
+
+  vars:
+    parasol_demo_dir: "/tmp/ansible-demo"
+    parasol_nginx_server_name: "web01.parasol.example"
+    parasol_nginx_http_port: 8080
+    parasol_nginx_worker_connections: 512
+    parasol_nginx_upstream_servers:
+      - address: "10.0.1.10"
+        port: 8080
+        weight: 3
+      - address: "10.0.1.11"
+        port: 8080
+        weight: 2
+      - address: "10.0.1.12"
+        port: 8080
+
+  tasks:
+    - name: Ensure the demo directory exists
+      ansible.builtin.file:
+        path: "{{ parasol_demo_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Deploy nginx configuration from template
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../../templates/nginx.conf.j2"
+        dest: "{{ parasol_demo_dir }}/nginx.conf"
+        mode: "0644"
+        backup: true
+      notify:
+        - Validate nginx configuration
+        - Reload nginx
+
+    - name: Deploy MOTD from template
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../../templates/motd.j2"
+        dest: "{{ parasol_demo_dir }}/motd"
+        mode: "0644"
+        backup: true
+      notify: Log MOTD update
+
+    - name: Display deployed files
+      ansible.builtin.debug:
+        msg: "Deployed configs are in {{ parasol_demo_dir }}/"
+        verbosity: 0
+
+  handlers:
+    - name: Validate nginx configuration
+      ansible.builtin.debug:
+        msg: "[HANDLER] Validating nginx configuration syntax..."
+        verbosity: 0
+
+    - name: Reload nginx
+      ansible.builtin.debug:
+        msg: "[HANDLER] Reloading nginx to apply new configuration"
+        verbosity: 0
+
+    - name: Log MOTD update
+      ansible.builtin.debug:
+        msg: "[HANDLER] MOTD file updated — change logged"
+        verbosity: 0
