@@ -1,0 +1,22 @@
+# MANIFEST.in — controls which files ansible-sign includes in the
+# checksum manifest.  Only files matched by 'include' / 'recursive-include'
+# directives will be checksummed and protected by the GPG signature.
+
+# Exclude version control and development artifacts
+global-exclude .git
+global-exclude .git/*
+prune .git
+
+# Include all playbooks
+recursive-include . *.yml
+recursive-include . *.yaml
+
+# Include documentation
+include README.md
+
+# Exclude test and temporary files
+prune .tox
+prune .venv
+prune tmp
+global-exclude *.pyc
+global-exclude __pycache__

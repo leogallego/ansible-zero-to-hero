@@ -1,0 +1,13 @@
+%echo Generating a GPG key for ansible-sign
+Key-Type: default
+Key-Length: 4096
+Subkey-Type: default
+Subkey-Length: default
+Name-Real: Parasol Tech Automation
+Name-Comment: content signing key
+Name-Email: automation@parasol.example
+Expire-Date: 1y
+%no-ask-passphrase
+%no-protection
+%commit
+%echo done
