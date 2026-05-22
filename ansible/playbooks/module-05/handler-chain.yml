@@ -15,7 +15,7 @@
   gather_facts: false
 
   vars:
-    parasol_demo_dir: "/tmp/ansible-demo"
+    parasol_demo_dir: "~/ansible-demo"
 
   tasks:
     - name: Ensure the demo directory exists

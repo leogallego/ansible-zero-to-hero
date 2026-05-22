@@ -11,7 +11,7 @@ Al finalizar este módulo serás capaz de:
 
 ## La Historia Hasta Ahora
 
-Lionel tiene tres playbooks funcionando, pero todos apuntan a `localhost`. En el mundo real, Parasol Tech tiene docenas de servidores distribuidos en tres entornos -- desarrollo, staging y producción -- ejecutando diferentes servicios. Servidores web, servidores de base de datos, servidores de aplicaciones -- cada entorno tiene su propio conjunto.
+Lionel tiene tres playbooks funcionando, pero todos apuntan a `localhost`. En el mundo real, Parasol Tech tiene docenas de servidores distribuidos en tres entornos (desarrollo, staging y producción) ejecutando diferentes servicios. Servidores web, servidores de base de datos, servidores de aplicaciones: cada entorno tiene su propio conjunto.
 
 Lionel necesita una forma de decirle a Ansible sobre todos estos hosts, organizarlos lógicamente y asignar diferentes valores de configuración según el entorno y el rol del servidor. Esto es lo que hace el **inventario**.
 
@@ -53,7 +53,7 @@ Aprendamos cómo representar esto en Ansible.
 
 ## Formatos de Inventario Estático
 
-Un **inventario estático** es un archivo que escribes y mantienes a mano. Ansible soporta dos formatos: INI y YAML. Ambos logran el mismo resultado -- la elección es cuestión de preferencia.
+Un **inventario estático** es un archivo que escribes y mantienes a mano. Ansible soporta dos formatos: INI y YAML. Ambos logran el mismo resultado; la elección es cuestión de preferencia.
 
 === "Formato YAML (recomendado)"
 
@@ -74,7 +74,7 @@ Un **inventario estático** es un archivo que escribes y mantienes a mano. Ansib
             db01.dev.parasol.example:
     ```
 
-    Los inventarios YAML usan la misma sintaxis que los playbooks. Los grupos se anidan bajo `children:` y los hosts se listan bajo `hosts:`. Los dos puntos al final de cada nombre de host son obligatorios -- marcan el host como una clave sin valores en línea.
+    Los inventarios YAML usan la misma sintaxis que los playbooks. Los grupos se anidan bajo `children:` y los hosts se listan bajo `hosts:`. Los dos puntos al final de cada nombre de host son obligatorios: marcan el host como una clave sin valores en línea.
 
 === "Formato INI"
 
@@ -96,7 +96,7 @@ Un **inventario estático** es un archivo que escribes y mantienes a mano. Ansib
 
 ### El Grupo `all`
 
-Cada host en un inventario de Ansible pertenece automáticamente al grupo `all`. No necesitas agregarlo explícitamente -- cualquier host definido en cualquier parte del inventario es miembro de `all`. Esto hace que `all` sea útil para variables que deben aplicarse a todos los hosts (lo veremos en breve con `group_vars/all.yml`).
+Cada host en un inventario de Ansible pertenece automáticamente al grupo `all`. No necesitas agregarlo explícitamente; cualquier host definido en cualquier parte del inventario es miembro de `all`. Esto hace que `all` sea útil para variables que deben aplicarse a todos los hosts (lo veremos en breve con `group_vars/all.yml`).
 
 También existe un grupo `ungrouped` que contiene hosts que no son miembros de ningún otro grupo (además de `all`).
 
@@ -195,11 +195,11 @@ Esta estructura le da a Lionel la máxima flexibilidad:
 | `hosts: dev` | Todos los hosts de desarrollo |
 
 !!! info "Un host puede pertenecer a múltiples grupos"
-    `web01.dev.parasol.example` es miembro de `dev_webservers`, `dev`, `webservers` y `all` -- todo al mismo tiempo. Esto es por diseño. La jerarquía de grupos crea conjuntos superpuestos que te permiten seleccionar hosts desde diferentes ángulos.
+    `web01.dev.parasol.example` es miembro de `dev_webservers`, `dev`, `webservers` y `all`, todo al mismo tiempo. Esto es por diseño. La jerarquía de grupos crea conjuntos superpuestos que te permiten seleccionar hosts desde diferentes ángulos.
 
 ### Convención de Nombres de Grupos
 
-Observa el patrón de nombres: `dev_webservers`, `staging_dbservers`, `prod_webservers`. Usar guiones bajos y prefijos consistentes mantiene los nombres de grupos predecibles y facilita la construcción de patrones. Nunca uses guiones en nombres de grupos -- pueden causar problemas con la resolución de variables.
+Observa el patrón de nombres: `dev_webservers`, `staging_dbservers`, `prod_webservers`. Usar guiones bajos y prefijos consistentes mantiene los nombres de grupos predecibles y facilita la construcción de patrones. Nunca uses guiones en nombres de grupos; pueden causar problemas con la resolución de variables.
 
 ## Variables de Host y de Grupo
 
@@ -214,7 +214,7 @@ Esta separación tiene beneficios prácticos:
 - Las variables son más fáciles de encontrar, leer y revisar
 - Puedes cambiar variables sin tocar la lista de hosts
 - Fomenta organizar las variables por alcance (todos los hosts vs. un grupo vs. un host)
-- Los diffs en control de versiones son más limpios -- puedes ver que una variable cambió sin navegar por la lista de hosts
+- Los diffs en control de versiones son más limpios: puedes ver que una variable cambió sin navegar por la lista de hosts
 
 ### Variables de Grupo (`group_vars/`)
 
@@ -235,7 +235,7 @@ ansible/inventory/
     └── db02.prod.parasol.example.yml
 ```
 
-**`group_vars/all.yml`** -- variables para todos los hosts:
+**`group_vars/all.yml`**: variables para todos los hosts:
 
 ```yaml
 ---
@@ -247,7 +247,7 @@ parasol_dns_servers:
 parasol_admin_email: "platform-team@parasol.example"
 ```
 
-**`group_vars/dev.yml`** -- variables solo para el entorno de desarrollo:
+**`group_vars/dev.yml`**: variables solo para el entorno de desarrollo:
 
 ```yaml
 ---
@@ -257,7 +257,7 @@ parasol_monitoring_enabled: false
 parasol_backup_schedule: "weekly"
 ```
 
-**`group_vars/production.yml`** -- variables para el entorno de producción:
+**`group_vars/production.yml`**: variables para el entorno de producción:
 
 ```yaml
 ---
@@ -305,7 +305,7 @@ Cubriremos el sistema completo de precedencia de variables en el Módulo 4. Por 
 
 ## Directorios de Inventario Estructurados
 
-Ya has visto la estructura -- hagámosla explícita. Un **directorio de inventario estructurado** separa hosts, variables de grupo y variables de host en sus propios archivos y directorios:
+Ya has visto la estructura. Hagámosla explícita. Un **directorio de inventario estructurado** separa hosts, variables de grupo y variables de host en sus propios archivos y directorios:
 
 ```text
 inventory/
@@ -322,11 +322,11 @@ inventory/
 
 ### ¿Por Qué No un Solo Archivo?
 
-*Puedes* poner todo en un solo archivo -- hosts, grupos y todas las variables en línea. Pero no deberías, por las mismas razones por las que no pones una aplicación entera en un solo archivo:
+*Puedes* poner todo en un solo archivo (hosts, grupos y todas las variables en línea). Pero no deberías, por las mismas razones por las que no pones una aplicación entera en un solo archivo:
 
 | Inventario en un solo archivo | Directorio estructurado |
 |------------------------------|------------------------|
-| Todo en un lugar -- difícil de navegar | Organizado por alcance -- fácil encontrar lo que necesitas |
+| Todo en un lugar, difícil de navegar | Organizado por alcance, fácil encontrar lo que necesitas |
 | Un cambio = un diff grande | Los cambios están aislados en archivos específicos |
 | Definiciones de variables mezcladas con listas de hosts | Separación limpia de responsabilidades |
 | Difícil compartir variables entre inventarios | Los archivos de `group_vars/` se pueden enlazar o usar como plantilla |
@@ -343,7 +343,7 @@ inventory = inventory/hosts.yml
 Cuando apuntas a un archivo dentro de un directorio que también contiene `group_vars/` y `host_vars/`, Ansible carga automáticamente las variables de esos directorios. Por eso el enfoque de directorio estructurado funciona sin ninguna configuración adicional.
 
 !!! info "Ruta de directorio vs. ruta de archivo"
-    También puedes apuntar `inventory` al directorio mismo (`inventory = inventory/`). El comportamiento es casi idéntico -- Ansible carga todos los archivos de inventario válidos en el directorio junto con `group_vars/` y `host_vars/`. Apuntar al archivo específico es más explícito y evita cargar archivos no deseados accidentalmente.
+    También puedes apuntar `inventory` al directorio mismo (`inventory = inventory/`). El comportamiento es casi idéntico: Ansible carga todos los archivos de inventario válidos en el directorio junto con `group_vars/` y `host_vars/`. Apuntar al archivo específico es más explícito y evita cargar archivos no deseados accidentalmente.
 
 ## Selección de Hosts
 
@@ -417,7 +417,7 @@ La opción `--graph` muestra la jerarquía de grupos como un árbol, lo cual es 
 
 ## Conceptos de Inventario Dinámico
 
-Todo lo que hemos cubierto hasta ahora es **inventario estático** -- escribes la lista de hosts a mano y la actualizas manualmente cuando se agregan o eliminan hosts. Esto funciona bien para entornos pequeños y estables.
+Todo lo que hemos cubierto hasta ahora es **inventario estático**: escribes la lista de hosts a mano y la actualizas manualmente cuando se agregan o eliminan hosts. Esto funciona bien para entornos pequeños y estables.
 
 Pero ¿qué pasa con entornos en la nube donde las máquinas virtuales se crean y destruyen automáticamente? ¿O entornos grandes con cientos de hosts gestionados por un CMDB (Base de Datos de Gestión de Configuración)?
 
@@ -513,7 +513,7 @@ Ejecuta el siguiente comando para ver todas las variables que Ansible asignaría
 ansible-navigator inventory --host db01.prod.parasol.example --mode stdout
 ```
 
-Observa cómo la salida incluye variables de `group_vars/all.yml`, `group_vars/production.yml` y `host_vars/db01.prod.parasol.example.yml` -- todas fusionadas.
+Observa cómo la salida incluye variables de `group_vars/all.yml`, `group_vars/production.yml` y `host_vars/db01.prod.parasol.example.yml`, todas fusionadas.
 
 ## Resumen
 
@@ -521,7 +521,7 @@ En este módulo:
 
 - Aprendiste los dos formatos de inventario estático (INI y YAML) y por qué se prefiere YAML
 - Construiste un inventario estructurado con grupos anidados por entorno y función
-- Separaste las variables en directorios `group_vars/` y `host_vars/` -- nunca en el archivo de hosts
+- Separaste las variables en directorios `group_vars/` y `host_vars/`, nunca en el archivo de hosts
 - Usaste patrones de host y `--limit` para seleccionar subconjuntos específicos de hosts
 - Viste cómo los comandos `ansible-navigator inventory` ayudan a verificar y explorar la estructura del inventario
 - Entendiste el concepto de inventario dinámico y cuándo usarlo

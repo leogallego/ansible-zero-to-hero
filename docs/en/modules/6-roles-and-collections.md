@@ -13,19 +13,19 @@ By the end of this module you will be able to:
 
 ## The Story So Far
 
-Lionel and Jordan have been writing playbooks, managing inventory across environments, using variables and facts, and deploying configuration files with templates and handlers. The automation works well -- but it lives in a growing pile of playbooks inside one directory, and other teams at Parasol Tech are starting to ask for access.
+Lionel and Jordan have been writing playbooks, managing inventory across environments, using variables and facts, and deploying configuration files with templates and handlers. The automation works well, but it lives in a growing pile of playbooks inside one directory, and other teams at Parasol Tech are starting to ask for access.
 
 "The database team wants our nginx setup," Lionel says. "And the monitoring team keeps copying our template tasks into their own playbooks. Every copy drifts a little."
 
 Jordan nods. "We need to package this. One source of truth for the web server configuration that any team can consume without copying files around."
 
-This week, Parasol Tech's leadership sponsors a **Community of Practice (CoP)** -- a cross-team group dedicated to automation standards. The CoP's first decision: all reusable automation must be packaged as **roles** inside **collections**. No more copy-pasted playbooks.
+This week, Parasol Tech's leadership sponsors a **Community of Practice (CoP)**, a cross-team group dedicated to automation standards. The CoP's first decision: all reusable automation must be packaged as **roles** inside **collections**. No more copy-pasted playbooks.
 
 ## What Are Roles?
 
-A role is a self-contained unit of automation with a standardized directory structure. Instead of putting everything in a single playbook, you split the automation into well-defined directories -- tasks, variables, templates, handlers, metadata -- each in its own file. Ansible knows how to assemble these pieces automatically.
+A role is a self-contained unit of automation with a standardized directory structure. Instead of putting everything in a single playbook, you split the automation into well-defined directories (tasks, variables, templates, handlers, metadata), each in its own file. Ansible knows how to assemble these pieces automatically.
 
-Think of a role as a function in programming. It takes inputs (variables), does work (tasks), and can be called from any playbook. The directory structure is the interface contract -- anyone reading the role knows exactly where to find each piece.
+Think of a role as a function in programming. It takes inputs (variables), does work (tasks), and can be called from any playbook. The directory structure is the interface contract: anyone reading the role knows exactly where to find each piece.
 
 ## Role Directory Structure
 
@@ -51,14 +51,14 @@ roles/webserver/
   README.md           # Documentation
 ```
 
-Not every directory is required. Ansible only uses the directories that exist. But the naming is strict -- `tasks/main.yml`, not `tasks/install.yml` -- because Ansible looks for `main.yml` by convention.
+Not every directory is required. Ansible only uses the directories that exist. But the naming is strict: `tasks/main.yml`, not `tasks/install.yml`, because Ansible looks for `main.yml` by convention.
 
 Each directory has a specific purpose:
 
 | Directory | Purpose |
 |-----------|---------|
 | `defaults/` | User-facing variables with default values. Lowest precedence. |
-| `vars/` | Internal variables and constants. High precedence -- hard to override. |
+| `vars/` | Internal variables and constants. High precedence, hard to override. |
 | `tasks/` | The task list that the role executes. |
 | `handlers/` | Handlers that tasks can notify. |
 | `templates/` | Jinja2 templates deployed by `ansible.builtin.template`. |
@@ -84,7 +84,7 @@ When a role grows large, you split `tasks/main.yml` into component files and inc
     file: "{{ role_path }}/tasks/service.yml"
 ```
 
-Notice the `{{ role_path }}` prefix. This is critical -- it ensures the path resolves to the correct role, even when one role includes another. Never use relative paths like `tasks/install.yml` without it.
+Notice the `{{ role_path }}` prefix. This is critical because it ensures the path resolves to the correct role, even when one role includes another. Never use relative paths like `tasks/install.yml` without it.
 
 !!! warning "Always use `{{ role_path }}` for file references"
     Relative paths in `include_tasks`, `include_vars`, and `template` resolve against the *including* role, not necessarily your role. Use `{{ role_path }}/tasks/`, `{{ role_path }}/vars/`, and `{{ role_path }}/templates/` to be explicit.
@@ -119,7 +119,7 @@ This applies to:
 
 ### Internal Variable Prefix
 
-Variables that are internal to the role -- not intended for users to override -- get a double underscore prefix:
+Variables that are internal to the role, not intended for users to override, get a double underscore prefix:
 
 ```yaml
 # vars/main.yml — internal constants
@@ -168,7 +168,7 @@ This is one of the most important distinctions in role design, and getting it wr
 
 ### `defaults/main.yml` -- The User Interface
 
-Variables in `defaults/main.yml` have the **lowest precedence** in Ansible's variable hierarchy. This means they can be overridden by almost anything -- inventory variables, group vars, host vars, play vars, extra vars. That is exactly what you want for user-facing configuration.
+Variables in `defaults/main.yml` have the **lowest precedence** in Ansible's variable hierarchy. This means they can be overridden by almost anything: inventory variables, group vars, host vars, play vars, extra vars. That is exactly what you want for user-facing configuration.
 
 Think of `defaults/main.yml` as the "API" of your role. It documents every knob the user can turn:
 
@@ -187,7 +187,7 @@ Notice the commented-out variables at the bottom. These are inputs that have no 
 
 ### `vars/main.yml` -- Internal Constants
 
-Variables in `vars/main.yml` have **high precedence** -- they override inventory variables, group vars, and most other sources. Only extra vars (`-e`) can override them.
+Variables in `vars/main.yml` have **high precedence**: they override inventory variables, group vars, and most other sources. Only extra vars (`-e`) can override them.
 
 This makes `vars/main.yml` the wrong place for user-facing defaults. If you put `webserver_port: 80` in `vars/main.yml`, users cannot override it from their inventory. They would need `-e webserver_port=8080` on every run, which defeats the purpose.
 
@@ -202,7 +202,7 @@ __webserver_config_dir: /etc/httpd/conf
 __webserver_config_file: httpd.conf
 ```
 
-These are implementation details -- the service name, the config directory path, the default package list. Users should not need to set these, and if they do override them by accident, bad things happen.
+These are implementation details: the service name, the config directory path, the default package list. Users should not need to set these, and if they do override them by accident, bad things happen.
 
 !!! danger "Never put user-facing defaults in `vars/main.yml`"
     The high precedence of `vars/` makes variables nearly impossible to override from inventory. Always use `defaults/main.yml` for anything users should be able to customize.
@@ -223,7 +223,7 @@ A collection is a distribution package for Ansible content. It bundles roles, pl
 
 Before collections, sharing Ansible content meant distributing standalone roles through Ansible Galaxy. This worked, but it had problems: no namespacing (two people could create a role named `nginx`), no dependency management between roles, and no way to bundle roles with custom modules or plugins.
 
-Collections solve all of these. A collection has a **namespace** and a **name** -- like `parasoltech.infrastructure` -- which guarantees uniqueness. It includes a `galaxy.yml` manifest that declares dependencies and versioning. And it can contain any combination of roles, modules, plugins, and documentation.
+Collections solve all of these. A collection has a **namespace** and a **name** (like `parasoltech.infrastructure`) that guarantees uniqueness. It includes a `galaxy.yml` manifest that declares dependencies and versioning. And it can contain any combination of roles, modules, plugins, and documentation.
 
 ### Collection Structure
 
@@ -244,7 +244,7 @@ parasoltech/infrastructure/
   docs/                 # Additional documentation
 ```
 
-The key file is `galaxy.yml` -- it is the identity card of the collection.
+The key file is `galaxy.yml`: it is the identity card of the collection.
 
 ## Scaffolding with ansible-creator
 
@@ -267,6 +267,9 @@ ansible-creator init collection <namespace>.<name> <destination-path>
 
 !!! tip "VS Code integration"
     If you use the Ansible VS Code extension, you can also scaffold collections through a graphical wizard. Click the Ansible icon in the sidebar, then select **Collection project**. The wizard calls `ansible-creator` behind the scenes and produces the same result.
+
+!!! note "What about `ansible-galaxy init`?"
+    You may also see `ansible-galaxy collection init` and `ansible-galaxy role init` used to scaffold collections and roles. These commands work, but `ansible-creator` is the newer, recommended tool because it generates a more complete project scaffold. Beyond the basic directory structure, `ansible-creator` includes devcontainer configurations, CI workflows, test infrastructure, and additional boilerplate that `ansible-galaxy init` does not provide. For new projects, prefer `ansible-creator`.
 
 ### Creating a Role Inside a Collection
 
@@ -398,7 +401,7 @@ cd ~/ansible/collections/parasoltech/infrastructure
 ade install -e .
 ```
 
-The `-e .` flag means **editable install** -- `ade` creates a symlink from the virtual environment into your working directory. When you edit files in the collection, the changes are immediately visible to Ansible without reinstalling.
+The `-e .` flag means **editable install**: `ade` creates a symlink from the virtual environment into your working directory. When you edit files in the collection, the changes are immediately visible to Ansible without reinstalling.
 
 Typical output looks like this:
 
@@ -421,7 +424,7 @@ To see what `ade` has installed and the full dependency graph:
 ade tree -v
 ```
 
-This shows your collection, its dependencies, and their dependencies -- useful for understanding what gets pulled in and for troubleshooting version conflicts.
+This shows your collection, its dependencies, and their dependencies. It is useful for understanding what gets pulled in and for troubleshooting version conflicts.
 
 ### Handling System Dependencies
 
@@ -437,9 +440,18 @@ $ ade install -e .
 
 Install the listed packages with your system package manager (`dnf install`, `apt install`, etc.), then re-run `ade install -e .`.
 
+!!! warning "Immutable environments"
+    In container-based environments like devcontainers or Red Hat Dev Spaces, you cannot install system packages at runtime with `dnf install`. If `ade` reports missing system packages, the recommended approach is to add them to the container image itself:
+
+    - **Devcontainer**: Add a `postCreateCommand` or custom `Dockerfile` in `.devcontainer/` to install the packages during container build.
+    - **Dev Spaces**: Add the packages to the `devfile.yaml` container component image.
+    - **Custom EE**: Include them in your `execution-environment.yml` system dependencies.
+
+    The `community-ansible-dev-tools` base image already includes the most common system dependencies.
+
 ## Argument Validation
 
-Every role should validate its inputs. If a user passes `webserver_port: "eighty"` instead of an integer, the role should fail immediately with a clear message -- not halfway through, when a template renders `Listen eighty` and the web server refuses to start.
+Every role should validate its inputs. If a user passes `webserver_port: "eighty"` instead of an integer, the role should fail immediately with a clear message, not halfway through when a template renders `Listen eighty` and the web server refuses to start.
 
 Ansible provides argument validation through `meta/argument_specs.yml`. This file declares the type, default value, and constraints for every role input.
 
@@ -496,7 +508,7 @@ argument_specs:
           uses platform-specific defaults.
 ```
 
-The `main` key matches the entrypoint -- `tasks/main.yml`. If your role has multiple entrypoints (e.g., `tasks/install.yml` and `tasks/configure.yml` called separately), each gets its own entry under `argument_specs`.
+The `main` key matches the entrypoint, `tasks/main.yml`. If your role has multiple entrypoints (e.g., `tasks/install.yml` and `tasks/configure.yml` called separately), each gets its own entry under `argument_specs`.
 
 ### What Validation Catches
 
@@ -507,7 +519,7 @@ When Ansible loads a role with argument specs, it checks:
 - **Choices**: Is the value one of an allowed set? (Use `choices: [a, b, c]`)
 - **Elements**: For list types, what type should each element be?
 
-If validation fails, Ansible stops before running any tasks and reports the error. This is fail-fast behavior -- catching errors at the top instead of midway through the role.
+If validation fails, Ansible stops before running any tasks and reports the error. This is fail-fast behavior: catching errors at the top instead of midway through the role.
 
 ### The Connection to defaults/main.yml
 
@@ -557,7 +569,7 @@ Short names like `copy`, `template`, or `package` work because Ansible searches 
 
 FQCNs eliminate this ambiguity. `ansible.builtin.copy` always means the copy module from `ansible.builtin`. `community.general.filesystem` always means the filesystem module from `community.general`. There is never any doubt.
 
-Throughout this course we have used FQCNs from the start -- `ansible.builtin.template`, `ansible.builtin.service`, `ansible.builtin.debug`. This is intentional. It is a habit worth building early, even when short names would work.
+Throughout this course we have used FQCNs from the start: `ansible.builtin.template`, `ansible.builtin.service`, `ansible.builtin.debug`. This is intentional. It is a habit worth building early, even when short names would work.
 
 ## Semantic Versioning
 
@@ -586,7 +598,15 @@ Semantic versioning lets consumers specify dependency constraints with confidenc
 
 **Ansible Galaxy** ([galaxy.ansible.com](https://galaxy.ansible.com)) is the public community registry for Ansible collections. Anyone can browse, download, and publish collections.
 
-**Automation Hub** is the enterprise equivalent -- a curated, supported registry included with the Ansible Automation Platform. Organizations use private Automation Hub instances to distribute internal collections (like `parasoltech.infrastructure`).
+**Automation Hub** is the enterprise equivalent: a curated, supported registry included with the Ansible Automation Platform. Organizations use private Automation Hub instances to distribute internal collections (like `parasoltech.infrastructure`).
+
+!!! info "Automation Hub: two versions"
+    Red Hat offers two versions of Automation Hub:
+
+    - **Ansible Automation Hub** (console.redhat.com): A hosted, hybrid-cloud service providing Red Hat certified and validated collections. Available to all AAP subscribers.
+    - **Private Automation Hub**: A self-hosted instance you run inside your organization to distribute internal collections, curate approved content, and host container images for Execution Environments.
+
+    Most organizations use both: the hosted hub for upstream certified content and a private instance for internal automation.
 
 ### Installing Collections from Galaxy
 
@@ -630,7 +650,7 @@ This produces a file like `parasoltech-infrastructure-1.0.0.tar.gz` that can be 
 ansible-galaxy collection publish parasoltech-infrastructure-1.0.0.tar.gz
 ```
 
-For internal distribution at Parasol Tech, the CoP publishes to a private Automation Hub instead. The workflow is similar -- build the tarball, then push it to the Hub.
+For internal distribution at Parasol Tech, the CoP publishes to a private Automation Hub instead. The workflow is similar: build the tarball, then push it to the Hub.
 
 ## Building the webserver Role
 
@@ -683,7 +703,7 @@ The double underscore prefix marks these as internal. The service name, config d
 
 ### tasks/main.yml
 
-The task list ties everything together. Notice how it uses patterns from every previous module -- package management (Module 2), templates with backup (Module 5), handlers (Module 5), and variable-driven logic (Module 4):
+The task list ties everything together. Notice how it uses patterns from every previous module: package management (Module 2), templates with backup (Module 5), handlers (Module 5), and variable-driven logic (Module 4):
 
 ```yaml
 ---
@@ -759,7 +779,7 @@ Key patterns to notice:
   listen: "webserver_restart"
 ```
 
-Notice `changed_when: false` on the validation command -- it is a read-only check, so it should never report a change.
+Notice `changed_when: false` on the validation command. It is a read-only check, so it should never report a change.
 
 ### Templates
 
@@ -812,7 +832,7 @@ Notice how `{{ ansible_managed | comment('<!--', '-->') }}` uses custom comment 
 
 ### Using the Role in a Playbook
 
-A playbook that uses this role is short -- the complexity is inside the role:
+A playbook that uses this role is short because the complexity is inside the role:
 
 ```yaml
 ---
@@ -857,7 +877,7 @@ ansible-creator init collection parasoltech.monitoring \
   ~/ansible/collections/parasoltech/monitoring
 ```
 
-Explore the generated files. Compare the structure to the `parasoltech.infrastructure` collection. Notice how `ansible-creator` generates the same layout every time -- consistent scaffolding means consistent collections.
+Explore the generated files. Compare the structure to the `parasoltech.infrastructure` collection. Notice how `ansible-creator` generates the same layout every time. Consistent scaffolding means consistent collections.
 
 ### Exercise 3: Use ade for Dependency Management
 

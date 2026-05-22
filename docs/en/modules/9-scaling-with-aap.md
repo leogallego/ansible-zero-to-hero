@@ -13,7 +13,7 @@ By the end of this module you will be able to:
 
 ## The Story So Far
 
-The CoP at Parasol Tech has come a long way. The team has a tested, linted, and signed collection -- `parasoltech.infrastructure`. It ships inside a custom Execution Environment built with `ansible-builder`. Every change passes through `ansible-lint`, Molecule, pytest, and tox-ansible before merging. Content is signed with `ansible-sign` so that nobody can tamper with playbooks between review and execution.
+The CoP at Parasol Tech has come a long way. The team has a tested, linted, and signed collection: `parasoltech.infrastructure`. It ships inside a custom Execution Environment built with `ansible-builder`. Every change passes through `ansible-lint`, Molecule, pytest, and tox-ansible before merging. Content is signed with `ansible-sign` so that nobody can tamper with playbooks between review and execution.
 
 But a new problem is emerging. Lionel runs the webserver deployment from a laptop. Jordan runs the patching playbook from a different laptop. A third team member runs ad-hoc commands from a jump host. Nobody has visibility into what ran, when, who ran it, or whether it succeeded. There is no audit trail, no access control, and no way to schedule recurring jobs.
 
@@ -33,14 +33,14 @@ AAP has three main components:
 
 **Automation Controller** (formerly Ansible Tower) is the central management layer. It provides:
 
-- **Job Templates** -- reusable definitions for running playbooks with specific inventories, credentials, and variables
-- **Workflows** -- multi-step automation pipelines that chain job templates together with conditional logic
-- **Inventories** -- centralized host management with static sources, dynamic providers, and synced inventory from external systems
-- **Credentials** -- secure storage for SSH keys, API tokens, cloud credentials, and vault passwords -- no more secrets on individual laptops
-- **RBAC** -- teams, roles, and granular permissions that control who can run what on which hosts
-- **Audit logging** -- every job execution is recorded with who triggered it, what ran, when it started, how long it took, and what the result was
-- **Scheduling** -- run jobs on a recurring schedule without human intervention
-- **REST API** -- everything available in the UI is also available via API, enabling integration with CI/CD pipelines, ticketing systems, and custom tooling
+- **Job Templates**: reusable definitions for running playbooks with specific inventories, credentials, and variables
+- **Workflows**: multi-step automation pipelines that chain job templates together with conditional logic
+- **Inventories**: centralized host management with static sources, dynamic providers, and synced inventory from external systems
+- **Credentials**: secure storage for SSH keys, API tokens, cloud credentials, and vault passwords. No more secrets on individual laptops
+- **RBAC**: teams, roles, and granular permissions that control who can run what on which hosts
+- **Audit logging**: every job execution is recorded with who triggered it, what ran, when it started, how long it took, and what the result was
+- **Scheduling**: run jobs on a recurring schedule without human intervention
+- **REST API**: everything available in the UI is also available via API, enabling integration with CI/CD pipelines, ticketing systems, and custom tooling
 
 Controller is where the CoP will do most of their work. It replaces the pattern of "SSH into a server and run `ansible-playbook`" with a governed, auditable workflow.
 
@@ -48,9 +48,9 @@ Controller is where the CoP will do most of their work. It replaces the pattern 
 
 **Private Automation Hub** is the organization's internal content repository. It serves two purposes:
 
-1. **Collection registry** -- Teams publish collections to Hub instead of sharing tarballs or pointing at Git repositories. Other teams install collections from Hub using `ansible-galaxy`. Hub can host certified collections (from Red Hat and partners), validated community collections, and the organization's own private collections like `parasoltech.infrastructure`.
+1. **Collection registry**: Teams publish collections to Hub instead of sharing tarballs or pointing at Git repositories. Other teams install collections from Hub using `ansible-galaxy`. Hub can host certified collections (from Red Hat and partners), validated community collections, and the organization's own private collections like `parasoltech.infrastructure`.
 
-2. **EE container registry** -- Hub stores Execution Environment images. Controller pulls EE images from Hub when running jobs, ensuring every execution uses the approved, tested image. This is where the EE built in Module 8 would be published for production use.
+2. **EE container registry**: Hub stores Execution Environment images. Controller pulls EE images from Hub when running jobs, ensuring every execution uses the approved, tested image. This is where the EE built in Module 8 would be published for production use.
 
 Hub solves the content distribution problem. Instead of each team maintaining their own copy of collections and EE images, there is a single, governed source of truth.
 
@@ -58,9 +58,9 @@ Hub solves the content distribution problem. Instead of each team maintaining th
 
 **Event-Driven Ansible (EDA)** extends automation from "human triggers a job" to "events trigger jobs automatically." EDA introduces:
 
-- **Event sources** -- integrations that listen for events from monitoring systems (Prometheus, Datadog), ticketing systems (ServiceNow), cloud providers (AWS CloudWatch), messaging systems (Kafka), webhooks, and more
-- **Rulebooks** -- YAML files that define conditions and actions: "when this event occurs, run this job template"
-- **Decision Environments** -- container images (similar to EEs) that bundle the Python dependencies needed by event source plugins
+- **Event sources**: integrations that listen for events from monitoring systems (Prometheus, Datadog), ticketing systems (ServiceNow), cloud providers (AWS CloudWatch), messaging systems (Kafka), webhooks, and more
+- **Rulebooks**: YAML files that define conditions and actions: "when this event occurs, run this job template"
+- **Decision Environments**: container images (similar to EEs) that bundle the Python dependencies needed by event source plugins
 
 A simple rulebook looks like this:
 
@@ -81,7 +81,7 @@ A simple rulebook looks like this:
           organization: "Parasol Tech"
 ```
 
-EDA is powerful but it is an advanced topic. This module focuses on Controller and Hub -- the components the CoP needs first. EDA becomes relevant once the team has stable job templates and workflows that can be triggered programmatically.
+EDA is powerful but it is an advanced topic. This module focuses on Controller and Hub, the components the CoP needs first. EDA becomes relevant once the team has stable job templates and workflows that can be triggered programmatically.
 
 !!! note "EDA scope"
     Event-Driven Ansible is a full topic on its own. This module introduces the concept so you understand where it fits in the platform. For hands-on EDA work, refer to the [EDA documentation](https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/).
@@ -112,7 +112,7 @@ The [Red Hat Developer Sandbox](https://developers.redhat.com/products/ansible/g
 
 ## From CLI to Controller
 
-Everything you have done on the command line maps directly to a Controller concept. The transition is not about learning new automation -- it is about managing the same automation through a governed platform.
+Everything you have done on the command line maps directly to a Controller concept. The transition is not about learning new automation; it is about managing the same automation through a governed platform.
 
 | CLI Concept | Controller Equivalent | What Changes |
 |-------------|----------------------|--------------|
@@ -125,7 +125,7 @@ Everything you have done on the command line maps directly to a Controller conce
 | Running from cron | **Schedule** on Job Template | Built-in scheduler with recurrence rules, no cron management needed |
 | Checking terminal output | **Job output log** + **Notifications** | Full stdout capture, log retention, and notifications to Slack, email, webhook, etc. |
 
-The key insight: Controller does not change *what* Ansible does. It changes *how you manage* what Ansible does. Your playbooks, roles, collections, and EEs work exactly the same way -- Controller adds governance, audit, and collaboration on top.
+The key insight: Controller does not change *what* Ansible does. It changes *how you manage* what Ansible does. Your playbooks, roles, collections, and EEs work exactly the same way. Controller adds governance, audit, and collaboration on top.
 
 ### Projects
 
@@ -148,14 +148,14 @@ Developer signs content → Pushes to Git → Controller syncs Project → Verif
 
 A **Job Template** is the most fundamental unit of work in Controller. It bundles everything needed to run a playbook:
 
-- **Project** -- which Git repository contains the playbook
-- **Playbook** -- which playbook file to run (selected from the Project)
-- **Inventory** -- which hosts to target
-- **Credentials** -- which keys/tokens to use for authentication
-- **Execution Environment** -- which EE image to use for the runtime
-- **Extra Variables** -- default variables to pass to the playbook
-- **Limit** -- optional host pattern to restrict execution
-- **Verbosity** -- the `-v` level (0-5)
+- **Project**: which Git repository contains the playbook
+- **Playbook**: which playbook file to run (selected from the Project)
+- **Inventory**: which hosts to target
+- **Credentials**: which keys/tokens to use for authentication
+- **Execution Environment**: which EE image to use for the runtime
+- **Extra Variables**: default variables to pass to the playbook
+- **Limit**: optional host pattern to restrict execution
+- **Verbosity**: the `-v` level (0-5)
 
 ### Creating a Job Template
 
@@ -184,7 +184,7 @@ For example, a survey for the webserver deployment might include:
 - **Web server port** (integer): default `8080`, minimum `1024`, maximum `65535`
 - **Enable TLS** (boolean): default `true`
 
-Surveys turn a generic job template into a self-service interface. A team member who does not know Ansible can deploy a web server by filling out a form -- the survey maps their answers to extra variables that the playbook consumes.
+Surveys turn a generic job template into a self-service interface. A team member who does not know Ansible can deploy a web server by filling out a form. The survey maps their answers to extra variables that the playbook consumes.
 
 !!! tip "Survey variables map to extra vars"
     Survey answers are injected as extra variables. If your playbook uses `webserver_port`, create a survey question with the variable name `webserver_port`. The playbook code does not change at all.
@@ -195,8 +195,8 @@ After creating a job template, you can:
 
 - **Launch** it immediately from the UI or via the API
 - **Schedule** it to run at specific times (daily, weekly, on a cron expression)
-- **Monitor** running jobs in real time -- the output streams live, just like watching a terminal
-- **Review** completed jobs -- every run is stored with its full output, start/end time, and status
+- **Monitor** running jobs in real time; the output streams live, just like watching a terminal
+- **Review** completed jobs: every run is stored with its full output, start/end time, and status
 
 The job detail view shows the same output you would see from `ansible-playbook` on the command line, plus metadata about the execution environment, credentials used, and which user triggered the run.
 
@@ -265,12 +265,12 @@ Workflows support more than linear chains. Nodes can fan out (one node triggers 
 
 Controller inventories serve the same purpose as the inventory files from Module 3, but with additional capabilities:
 
-- **Static hosts** -- add hosts and groups directly in the UI, equivalent to editing `hosts.yml`
-- **Inventory Sources** -- sync hosts from external systems automatically:
-    - **SCM (Git)** -- pull inventory files from a repository (your structured `inventory/` directory works directly)
-    - **Cloud providers** -- discover hosts from AWS, Azure, GCP, VMware, OpenStack
-    - **Custom scripts** -- run a dynamic inventory script that returns JSON
-- **Smart Inventories** -- create dynamic groups based on host facts and filters
+- **Static hosts**: add hosts and groups directly in the UI, equivalent to editing `hosts.yml`
+- **Inventory Sources**: sync hosts from external systems automatically:
+    - **SCM (Git)**: pull inventory files from a repository (your structured `inventory/` directory works directly)
+    - **Cloud providers**: discover hosts from AWS, Azure, GCP, VMware, OpenStack
+    - **Custom scripts**: run a dynamic inventory script that returns JSON
+- **Smart Inventories**: create dynamic groups based on host facts and filters
 
 For the CoP, the most natural starting point is an SCM inventory source that points to the same Git repository as the Project. This keeps the inventory files the team already wrote (in Module 3) as the source of truth, while making them available in Controller.
 
@@ -283,7 +283,7 @@ Inventory variables in Controller follow the same precedence rules as CLI Ansibl
 
 ### Credentials
 
-Credentials are one of Controller's most important features. They store secrets -- SSH keys, passwords, API tokens, vault passwords, cloud provider credentials -- encrypted in the database.
+Credentials are one of Controller's most important features. They store secrets (SSH keys, passwords, API tokens, vault passwords, cloud provider credentials) encrypted in the database.
 
 Key credential types:
 
@@ -316,13 +316,13 @@ For Parasol Tech, there might be one organization for each division:
 
 ### Teams
 
-A **Team** is a group of users within an organization. Teams are how you assign permissions at scale -- instead of giving permissions to each user individually, you assign permissions to a team and add users to that team.
+A **Team** is a group of users within an organization. Teams are how you assign permissions at scale: instead of giving permissions to each user individually, you assign permissions to a team and add users to that team.
 
 The CoP might create teams like:
 
-- `Platform Admins` -- full access to all resources
-- `Platform Developers` -- can create and edit job templates, but cannot modify credentials or inventories
-- `Platform Operators` -- can launch job templates and view results, but cannot edit them
+- `Platform Admins`: full access to all resources
+- `Platform Developers`: can create and edit job templates, but cannot modify credentials or inventories
+- `Platform Operators`: can launch job templates and view results, but cannot edit them
 
 ### Roles and Permissions
 
@@ -330,7 +330,7 @@ Controller has a granular permission model. For each resource type (Job Template
 
 | Role | Capabilities |
 |------|-------------|
-| **Admin** | Full control -- create, edit, delete, execute, and grant permissions to others |
+| **Admin** | Full control: create, edit, delete, execute, and grant permissions to others |
 | **Use** | Can use the resource (e.g., attach a credential to a job template) but cannot edit it |
 | **Execute** | Can launch a job template or workflow but cannot edit its configuration |
 | **Read** | Can view the resource but cannot modify or execute it |
@@ -381,7 +381,7 @@ Controller needs to know where to pull EE images from. There are two approaches:
 
 **From a container registry (recommended for production):**
 
-1. Push the EE image to a container registry (Private Automation Hub, Quay.io, or any OCI registry) -- as shown in Module 8
+1. Push the EE image to a container registry (Private Automation Hub, Quay.io, or any OCI registry), as shown in Module 8
 2. In Controller, create an **Execution Environment** resource pointing to the image URL (e.g., `hub.parasol.example/ee-images/parasoltech-ee:1.0.0`)
 3. If the registry requires authentication, create a **Container Registry** credential and attach it to the EE
 
@@ -401,7 +401,7 @@ Module 8:  Build EE → Test locally with ansible-navigator
 Module 9:  Push EE to registry → Controller pulls and uses it for every job
 ```
 
-Every execution -- whether triggered by a user, a schedule, a workflow, or an API call -- uses the same EE image with the same dependencies. The "works on my machine" problem is eliminated at the platform level, not just the individual developer level.
+Every execution, whether triggered by a user, a schedule, a workflow, or an API call, uses the same EE image with the same dependencies. The "works on my machine" problem is eliminated at the platform level, not just the individual developer level.
 
 ### EE Lifecycle
 
@@ -436,7 +436,7 @@ This is where the content signing from Module 8 closes the loop. When a Project 
 2. Configure the Project to use this credential for content verification
 3. On every sync, Controller runs the equivalent of `ansible-sign project gpg-verify .` on the repository content
 
-If verification succeeds, the Project syncs normally and its content is available. If verification fails -- because a file was modified, added, or removed after signing -- the sync fails. No job templates can run the unverified content.
+If verification succeeds, the Project syncs normally and its content is available. If verification fails (because a file was modified, added, or removed after signing), the sync fails. No job templates can run the unverified content.
 
 ```text
 Complete supply chain:
@@ -514,7 +514,7 @@ Create a Job Template that ties together the Project and Inventory:
 
 3. Launch the job template
 4. Watch the output in real time
-5. After completion, review the job details -- note the start time, end time, user, and status
+5. After completion, review the job details: note the start time, end time, user, and status
 
 ### Exercise 5: Build a Simple Workflow
 
@@ -548,7 +548,7 @@ Explore the RBAC model:
 In this module you:
 
 - Learned that Ansible Automation Platform provides a centralized control plane with three components: **Controller** for orchestration and governance, **Automation Hub** for content distribution, and **Event-Driven Ansible** for event-based automation
-- Mapped every CLI concept to its Controller equivalent -- playbooks become Job Templates, inventory files become Inventories with Sources, SSH keys become Credentials, and scripts become Schedules
+- Mapped every CLI concept to its Controller equivalent: playbooks become Job Templates, inventory files become Inventories with Sources, SSH keys become Credentials, and scripts become Schedules
 - Created Job Templates that bundle a playbook, inventory, credentials, EE, and variables into a reusable, launchable unit of work
 - Built Workflows that chain job templates with success, failure, and always edges to create robust multi-step automation pipelines with approval gates
 - Configured Inventories from static hosts and SCM sources, and used Credentials to securely store and inject secrets without exposing them to users
@@ -560,7 +560,7 @@ The CoP at Parasol Tech now has a complete automation practice. Content is devel
 
 ## Course Conclusion
 
-Lionel leans back and looks at the dashboard. The deployment workflow ran overnight -- Project synced, GPG signatures verified, web servers deployed across three environments, health checks passed, notifications sent to the team channel. No one had to SSH into anything. No one typed `ansible-playbook` at 2 AM.
+Lionel leans back and looks at the dashboard. The deployment workflow ran overnight. Project synced, GPG signatures verified, web servers deployed across three environments, health checks passed, notifications sent to the team channel. No one had to SSH into anything. No one typed `ansible-playbook` at 2 AM.
 
 It is hard to believe this started with a single ad-hoc command on a laptop.
 
@@ -584,16 +584,16 @@ The core journey is complete, but there is more to explore:
 
 **Domain tracks (Modules 10-11)**
 
-- [Module 10 -- Linux Systems](10-linux-systems.md): Apply everything you have learned to Linux system administration -- user management, hardening, patching, and compliance at scale
+- [Module 10 -- Linux Systems](10-linux-systems.md): Apply everything you have learned to Linux system administration: user management, hardening, patching, and compliance at scale
 - [Module 11 -- Network Automation](11-network-automation.md): Extend Ansible to network devices with `network_cli`, resource modules, and integration with NetBox as a source of truth
 
-These tracks are optional and self-contained. They do not introduce new core concepts -- they apply the skills from modules 1-9 to specific domains.
+These tracks are optional and self-contained. They do not introduce new core concepts; they apply the skills from modules 1-9 to specific domains.
 
 **Community and certification**
 
-- **Contribute to Ansible** -- The Ansible community thrives on contributions. Start by improving documentation, submitting bug reports, or sharing roles on [Ansible Galaxy](https://galaxy.ansible.com/). Join the community on [forum.ansible.com](https://forum.ansible.com/).
-- **Red Hat Certification** -- Validate your skills with the [Red Hat Certified Engineer (RHCE)](https://www.redhat.com/en/services/certification/rhce) exam, which includes Ansible automation, or the [Red Hat Certified Specialist in Developing Automation with Ansible Automation Platform](https://www.redhat.com/en/services/certification/red-hat-certified-specialist-developing-automation-ansible-automation-platform) exam.
-- **Ansible Development Tools** -- Continue exploring `adt` and its components. The tools evolve rapidly -- check the [Ansible Development Tools documentation](https://ansible.readthedocs.io/projects/dev-tools/) for the latest features.
+- **Contribute to Ansible**: The Ansible community thrives on contributions. Start by improving documentation, submitting bug reports, or sharing roles on [Ansible Galaxy](https://galaxy.ansible.com/). Join the community on [forum.ansible.com](https://forum.ansible.com/).
+- **Red Hat Certification**: Validate your skills with the [Red Hat Certified Engineer (RHCE)](https://www.redhat.com/en/services/certification/rhce) exam, which includes Ansible automation, or the [Red Hat Certified Specialist in Developing Automation with Ansible Automation Platform](https://www.redhat.com/en/services/certification/red-hat-certified-specialist-developing-automation-ansible-automation-platform) exam.
+- **Ansible Development Tools**: Continue exploring `adt` and its components. The tools evolve rapidly; check the [Ansible Development Tools documentation](https://ansible.readthedocs.io/projects/dev-tools/) for the latest features.
 
 **Keep practicing**
 

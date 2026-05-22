@@ -11,7 +11,7 @@ By the end of this module you will be able to:
 
 ## The Story So Far
 
-Lionel has three working playbooks, but they all target `localhost`. In the real world, Parasol Tech has dozens of servers spread across three environments -- development, staging, and production -- running different services. Web servers, database servers, application servers -- each environment has its own set.
+Lionel has three working playbooks, but they all target `localhost`. In the real world, Parasol Tech has dozens of servers spread across three environments (development, staging, and production) running different services. Web servers, database servers, application servers: each environment has its own set.
 
 Lionel needs a way to tell Ansible about all of these hosts, organize them logically, and assign different configuration values depending on the environment and the server's role. This is what the **inventory** does.
 
@@ -53,7 +53,7 @@ Let's learn how to represent this in Ansible.
 
 ## Static Inventory Formats
 
-A **static inventory** is a file you write and maintain by hand. Ansible supports two formats: INI and YAML. Both achieve the same result -- the choice is a matter of preference.
+A **static inventory** is a file you write and maintain by hand. Ansible supports two formats: INI and YAML. Both achieve the same result; the choice is a matter of preference.
 
 === "YAML format (recommended)"
 
@@ -74,7 +74,7 @@ A **static inventory** is a file you write and maintain by hand. Ansible support
             db01.dev.parasol.example:
     ```
 
-    YAML inventories use the same syntax as playbooks. Groups are nested under `children:`, and hosts are listed under `hosts:`. The trailing colon after each hostname is required -- it marks the host as a key with no inline values.
+    YAML inventories use the same syntax as playbooks. Groups are nested under `children:`, and hosts are listed under `hosts:`. The trailing colon after each hostname is required: it marks the host as a key with no inline values.
 
 === "INI format"
 
@@ -96,7 +96,7 @@ A **static inventory** is a file you write and maintain by hand. Ansible support
 
 ### The `all` Group
 
-Every host in an Ansible inventory automatically belongs to the `all` group. You do not need to add hosts to it explicitly -- any host defined anywhere in the inventory is a member of `all`. This makes `all` useful for variables that should apply to every host (we will see this shortly with `group_vars/all.yml`).
+Every host in an Ansible inventory automatically belongs to the `all` group. You do not need to add hosts to it explicitly; any host defined anywhere in the inventory is a member of `all`. This makes `all` useful for variables that should apply to every host (we will see this shortly with `group_vars/all.yml`).
 
 There is also an `ungrouped` group that contains hosts which are not members of any other group (besides `all`).
 
@@ -195,11 +195,11 @@ This structure gives Lionel maximum flexibility:
 | `hosts: dev` | All dev hosts |
 
 !!! info "A host can belong to multiple groups"
-    `web01.dev.parasol.example` is a member of `dev_webservers`, `dev`, `webservers`, and `all` -- all at the same time. This is by design. The group hierarchy creates overlapping sets that let you target hosts from different angles.
+    `web01.dev.parasol.example` is a member of `dev_webservers`, `dev`, `webservers`, and `all`, all at the same time. This is by design. The group hierarchy creates overlapping sets that let you target hosts from different angles.
 
 ### Group Naming Convention
 
-Notice the naming pattern: `dev_webservers`, `staging_dbservers`, `prod_webservers`. Using underscores and consistent prefixes keeps group names predictable and makes it easy to construct patterns. Never use dashes in group names -- they can cause issues with variable resolution.
+Notice the naming pattern: `dev_webservers`, `staging_dbservers`, `prod_webservers`. Using underscores and consistent prefixes keeps group names predictable and makes it easy to construct patterns. Never use dashes in group names; they can cause issues with variable resolution.
 
 ## Host Variables and Group Variables
 
@@ -214,7 +214,7 @@ This separation has practical benefits:
 - Variables are easier to find, read, and review
 - You can change variables without touching the host list
 - It encourages organizing variables by scope (all hosts vs. one group vs. one host)
-- Version control diffs are cleaner -- you can see that a variable changed without wading through the host list
+- Version control diffs are cleaner: you can see that a variable changed without wading through the host list
 
 ### Group Variables (`group_vars/`)
 
@@ -235,7 +235,7 @@ ansible/inventory/
     └── db02.prod.parasol.example.yml
 ```
 
-**`group_vars/all.yml`** -- variables for every host:
+**`group_vars/all.yml`**: variables for every host:
 
 ```yaml
 ---
@@ -247,7 +247,7 @@ parasol_dns_servers:
 parasol_admin_email: "platform-team@parasol.example"
 ```
 
-**`group_vars/dev.yml`** -- variables for the dev environment only:
+**`group_vars/dev.yml`**: variables for the dev environment only:
 
 ```yaml
 ---
@@ -257,7 +257,7 @@ parasol_monitoring_enabled: false
 parasol_backup_schedule: "weekly"
 ```
 
-**`group_vars/production.yml`** -- variables for the production environment:
+**`group_vars/production.yml`**: variables for the production environment:
 
 ```yaml
 ---
@@ -305,7 +305,7 @@ We will cover the full variable precedence system in Module 4. For now, remember
 
 ## Structured Inventory Directories
 
-You have already seen the structure -- let's make it explicit. A **structured inventory directory** separates hosts, group variables, and host variables into their own files and directories:
+You have already seen the structure. Let's make it explicit. A **structured inventory directory** separates hosts, group variables, and host variables into their own files and directories:
 
 ```text
 inventory/
@@ -322,11 +322,11 @@ inventory/
 
 ### Why Not a Single File?
 
-You *can* put everything in one file -- hosts, groups, and all variables inline. But you should not, for the same reasons you don't put an entire application in a single file:
+You *can* put everything in one file (hosts, groups, and all variables inline). But you should not, for the same reasons you don't put an entire application in a single file:
 
 | Single file inventory | Structured directory |
 |----------------------|---------------------|
-| Everything in one place -- hard to navigate | Organized by scope -- easy to find what you need |
+| Everything in one place, hard to navigate | Organized by scope, easy to find what you need |
 | One change = one big diff | Changes are isolated to specific files |
 | Variable definitions mixed with host lists | Clean separation of concerns |
 | Hard to share variables across inventories | `group_vars/` files can be symlinked or templated |
@@ -343,7 +343,7 @@ inventory = inventory/hosts.yml
 When you point to a file inside a directory that also contains `group_vars/` and `host_vars/`, Ansible automatically loads variables from those directories. This is why the structured directory approach works without any extra configuration.
 
 !!! info "Directory vs. file path"
-    You can also point `inventory` at the directory itself (`inventory = inventory/`). The behavior is nearly identical -- Ansible loads all valid inventory files in the directory along with `group_vars/` and `host_vars/`. Pointing to the specific file is more explicit and avoids accidentally loading unintended files.
+    You can also point `inventory` at the directory itself (`inventory = inventory/`). The behavior is nearly identical: Ansible loads all valid inventory files in the directory along with `group_vars/` and `host_vars/`. Pointing to the specific file is more explicit and avoids accidentally loading unintended files.
 
 ## Targeting Hosts
 
@@ -417,7 +417,7 @@ The `--graph` option shows the group hierarchy as a tree, which is a great way t
 
 ## Dynamic Inventory Concepts
 
-Everything we have covered so far is **static inventory** -- you write the host list by hand and update it manually when hosts are added or removed. This works well for small, stable environments.
+Everything we have covered so far is **static inventory**: you write the host list by hand and update it manually when hosts are added or removed. This works well for small, stable environments.
 
 But what about cloud environments where virtual machines are created and destroyed automatically? Or large environments with hundreds of hosts managed by a CMDB (Configuration Management Database)?
 
@@ -513,7 +513,7 @@ Run the following command to see all variables that Ansible would assign to a sp
 ansible-navigator inventory --host db01.prod.parasol.example --mode stdout
 ```
 
-Notice how the output includes variables from `group_vars/all.yml`, `group_vars/production.yml`, and `host_vars/db01.prod.parasol.example.yml` -- all merged together.
+Notice how the output includes variables from `group_vars/all.yml`, `group_vars/production.yml`, and `host_vars/db01.prod.parasol.example.yml`, all merged together.
 
 ## Summary
 
@@ -521,7 +521,7 @@ In this module you:
 
 - Learned the two static inventory formats (INI and YAML) and why YAML is preferred
 - Built a structured inventory with groups nested by environment and function
-- Separated variables into `group_vars/` and `host_vars/` directories -- never in the hosts file
+- Separated variables into `group_vars/` and `host_vars/` directories, never in the hosts file
 - Used host patterns and `--limit` to target specific subsets of hosts
 - Saw how `ansible-navigator inventory` commands help verify and explore the inventory structure
 - Understood the concept of dynamic inventory and when to use it

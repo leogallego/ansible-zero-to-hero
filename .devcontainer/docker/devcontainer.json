@@ -1,5 +1,5 @@
 {
-  "name": "Ansible Zero to Hero",
+  "name": "Ansible Zero to Hero (Docker)",
   "image": "ghcr.io/ansible/community-ansible-dev-tools:latest",
   "containerUser": "root",
   "runArgs": [

@@ -17,7 +17,7 @@ Lionel's teammate Jordan joins the Parasol Tech platform team. Together they loo
 
 ## Variable Types and Where to Define Them
 
-Variables in Ansible are key-value pairs that let you parameterize your automation. Instead of hardcoding a package name or a file path, you reference a variable -- and the value comes from whatever context the playbook is running in.
+Variables in Ansible are key-value pairs that let you parameterize your automation. Instead of hardcoding a package name or a file path, you reference a variable, and the value comes from whatever context the playbook is running in.
 
 ### Where Variables Come From
 
@@ -25,7 +25,7 @@ There are several places you can define variables, each with a different scope a
 
 | Location | Scope | When to use |
 |----------|-------|-------------|
-| `defaults/main.yml` (in a role) | Role defaults | Lowest precedence -- safe defaults that users can override |
+| `defaults/main.yml` (in a role) | Role defaults | Lowest precedence; safe defaults that users can override |
 | `group_vars/*.yml` | All hosts in a group | Environment- or function-specific values |
 | `host_vars/*.yml` | A single host | Per-host overrides (DB primary vs. replica, etc.) |
 | `vars/main.yml` (in a role) | Role internals | Constants and magic values that users should not change |
@@ -33,7 +33,7 @@ There are several places you can define variables, each with a different scope a
 | `vars:` in a task | Task scope | Values specific to that task |
 | `set_fact` | Host scope (runtime) | Computed or dynamic values |
 | `register` | Host scope (runtime) | Captured output from a task |
-| Extra vars (`-e`) | Global | Overrides from the command line -- highest precedence |
+| Extra vars (`-e`) | Global | Overrides from the command line; highest precedence |
 
 You already used several of these in Module 3 without thinking about it. The `group_vars/all.yml` file defines `parasol_organization`, `parasol_ntp_server`, and `parasol_dns_servers` for every host. The `group_vars/dev.yml` file sets `parasol_environment: "dev"` and `parasol_log_level: "debug"` for all dev hosts.
 
@@ -43,7 +43,7 @@ Good variable names prevent collisions and make the source obvious:
 
 - **Prefix with context**: `parasol_ntp_server`, not just `ntp_server`. If you later add a role called `ntp`, an unprefixed `ntp_server` would collide with the role's own variables.
 - **Use snake_case**: `parasol_backup_schedule`, not `parasolBackupSchedule` or `parasol-backup-schedule`.
-- **No special characters** other than underscores -- dashes and dots break variable resolution.
+- **No special characters** other than underscores; dashes and dots break variable resolution.
 
 When working inside a role (Module 6), you will prefix every variable with the role name. For now, Parasol Tech prefixes everything with `parasol_` as an organizational namespace.
 
@@ -100,7 +100,7 @@ ansible-navigator run playbooks/module-04/variable-precedence.yml \
   --mode stdout -e "demo_message='Extra vars win!'"
 ```
 
-The output changes because extra vars sit at the top of the precedence chain. This is why extra vars are reserved for overrides and troubleshooting -- they bypass every other definition.
+The output changes because extra vars sit at the top of the precedence chain. This is why extra vars are reserved for overrides and troubleshooting: they bypass every other definition.
 
 ### Precedence Rules to Remember
 
@@ -115,11 +115,11 @@ The output changes because extra vars sit at the top of the precedence chain. Th
     If you find yourself using more than four levels for the same variable, your design needs simplification.
 
 !!! danger "Never put defaults in `vars/main.yml`"
-    Variables in `vars/main.yml` (role vars) have higher precedence than inventory variables. If you put a default value there, users cannot override it from `group_vars/` or `host_vars/` -- the role var always wins. User-facing defaults belong in `defaults/main.yml`.
+    Variables in `vars/main.yml` (role vars) have higher precedence than inventory variables. If you put a default value there, users cannot override it from `group_vars/` or `host_vars/` because the role var always wins. User-facing defaults belong in `defaults/main.yml`.
 
 ## Ansible Facts
 
-**Facts** are variables that Ansible discovers automatically about the target system. They describe what the system *is* -- its operating system, IP addresses, CPU count, memory, disk layout, and more. Facts represent **as-is information** (what is true right now), as opposed to variables, which represent **to-be information** (what you want the system to become).
+**Facts** are variables that Ansible discovers automatically about the target system. They describe what the system *is*: its operating system, IP addresses, CPU count, memory, disk layout, and more. Facts represent **as-is information** (what is true right now), as opposed to variables, which represent **to-be information** (what you want the system to become).
 
 ### Accessing Facts
 
@@ -135,7 +135,7 @@ ansible_facts['default_ipv4']        # Default IPv4 address info (dict)
 ```
 
 !!! warning "Always use bracket notation"
-    You will see older code and tutorials using `ansible_distribution` or `ansible_facts.distribution` (dot notation). **Always use `ansible_facts['distribution']`** -- bracket notation is explicit, unambiguous, and the recommended practice.
+    You will see older code and tutorials using `ansible_distribution` or `ansible_facts.distribution` (dot notation). **Always use `ansible_facts['distribution']`**. Bracket notation is explicit, unambiguous, and the recommended practice.
 
 ### Common Fact Categories
 
@@ -208,7 +208,7 @@ If your play does not need facts, you can disable gathering to speed things up:
         verbosity: 0
 ```
 
-This is especially useful when targeting many hosts -- fact gathering runs on every host and can add significant time to playbook execution.
+This is especially useful when targeting many hosts, since fact gathering runs on every host and can add significant time to playbook execution.
 
 ### Minimal Fact Subsets
 
@@ -236,7 +236,7 @@ The companion playbook `facts-demo.yml` includes a second play that demonstrates
 
 ## Registered Variables and set_fact
 
-Sometimes you need data that is not available until runtime -- the output of a command, the existence of a file, or a value computed from other variables. Ansible provides two mechanisms for this: `register` and `set_fact`.
+Sometimes you need data that is not available until runtime: the output of a command, the existence of a file, or a value computed from other variables. Ansible provides two mechanisms for this: `register` and `set_fact`.
 
 ### Registering Task Output
 
@@ -254,7 +254,7 @@ The `register` keyword captures the full result of a task into a variable:
     verbosity: 0
 ```
 
-The registered variable (`__myapp_config`) is a dictionary containing the module's return values. Different modules return different structures -- check the module documentation to see what keys are available.
+The registered variable (`__myapp_config`) is a dictionary containing the module's return values. Different modules return different structures; check the module documentation to see what keys are available.
 
 !!! tip "Naming registered variables"
     Prefix internal (non-user-facing) registered variables with double underscore: `__myapp_config`, not `myapp_config`. This signals that the variable is an implementation detail, not something a user should set or override.
@@ -363,8 +363,8 @@ ansible-navigator run playbooks/module-04/facts-demo.yml
 
 In interactive mode:
 
-1. The main screen shows the play list -- press a number to select a play
-2. Each play shows its tasks -- press a number to select a task
+1. The main screen shows the play list; press a number to select a play
+2. Each play shows its tasks; press a number to select a task
 3. The task detail screen shows the full result, including all registered variables and facts
 4. Press `0` to see the host detail with all variable values
 
@@ -503,7 +503,7 @@ Run the conditionals playbook:
 ansible-navigator run playbooks/module-04/conditionals.yml --mode stdout
 ```
 
-Observe which tasks are executed and which are skipped. The output depends on your system -- on a Fedora system, the Red Hat family tasks will execute and the Debian tasks will be skipped (and vice versa on Ubuntu).
+Observe which tasks are executed and which are skipped. The output depends on your system. On a Fedora system, the Red Hat family tasks will execute and the Debian tasks will be skipped (and vice versa on Ubuntu).
 
 ### Exercise 4: Add Your Own Variables
 

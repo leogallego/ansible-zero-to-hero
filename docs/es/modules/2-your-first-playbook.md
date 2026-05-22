@@ -11,7 +11,7 @@ Al finalizar este módulo serás capaz de:
 
 ## La Historia Hasta Ahora
 
-Lionel ha ejecutado algunos comandos ad-hoc y ve el potencial. Pero los comandos individuales no son repetibles -- si Lionel necesita instalar los mismos tres paquetes en un nuevo servidor el mes que viene, tendrá que recordar los comandos exactos de memoria o buscarlos en una wiki. Lo que se necesita es una forma de definir un conjunto de tareas una vez y ejecutarlas de manera confiable, siempre.
+Lionel ha ejecutado algunos comandos ad-hoc y ve el potencial. Pero los comandos individuales no son repetibles: si Lionel necesita instalar los mismos tres paquetes en un nuevo servidor el mes que viene, tendrá que recordar los comandos exactos de memoria o buscarlos en una wiki. Lo que se necesita es una forma de definir un conjunto de tareas una vez y ejecutarlas de manera confiable, siempre.
 
 Es hora de escribir un playbook.
 
@@ -19,7 +19,7 @@ Es hora de escribir un playbook.
 
 Un **playbook** es un archivo YAML que describe el estado deseado de uno o más sistemas. Es la unidad fundamental de automatización reutilizable en Ansible.
 
-Un playbook contiene uno o más **plays**. Cada play apunta a un conjunto de hosts y define una lista ordenada de **tasks** (tareas) para ejecutar en esos hosts. Cada task invoca un **módulo** -- los mismos módulos que usaste con comandos ad-hoc en el Módulo 1.
+Un playbook contiene uno o más **plays**. Cada play apunta a un conjunto de hosts y define una lista ordenada de **tasks** (tareas) para ejecutar en esos hosts. Cada task invoca un **módulo**, los mismos módulos que usaste con comandos ad-hoc en el Módulo 1.
 
 Esta es la estructura general:
 
@@ -43,12 +43,12 @@ Terminología clave:
 | Término | Definición |
 |---------|-----------|
 | **Playbook** | Un archivo YAML que contiene uno o más plays |
-| **Play** | Una asociación de hosts con tasks -- "en estos hosts, hacer estas cosas" |
+| **Play** | Una asociación de hosts con tasks: "en estos hosts, hacer estas cosas" |
 | **Task** | Una acción individual que invoca un módulo con parámetros específicos |
 | **Módulo** | Una unidad de código que realiza una operación específica (instalar un paquete, copiar un archivo, gestionar un servicio) |
 
 !!! info "Un play vs. muchos plays"
-    Los playbooks simples a menudo contienen un solo play. A medida que tu automatización crece, usarás múltiples plays para apuntar a diferentes grupos de hosts en el mismo playbook -- por ejemplo, un play para configurar el servidor de base de datos y otro para configurar los servidores web.
+    Los playbooks simples a menudo contienen un solo play. A medida que tu automatización crece, usarás múltiples plays para apuntar a diferentes grupos de hosts en el mismo playbook. Por ejemplo, un play para configurar el servidor de base de datos y otro para configurar los servidores web.
 
 ## Fundamentos de YAML para Ansible
 
@@ -56,7 +56,7 @@ Los playbooks de Ansible están escritos en YAML (YAML Ain't Markup Language). S
 
 ### Indentación
 
-YAML usa indentación para representar estructura -- como Python, pero con **solo espacios, nunca tabulaciones**. Ansible usa **indentación de 2 espacios** por convención.
+YAML usa indentación para representar estructura, como Python, pero con **solo espacios, nunca tabulaciones**. Ansible usa **indentación de 2 espacios** por convención.
 
 ```yaml
 # Correcto: indentación de 2 espacios
@@ -155,36 +155,36 @@ Recorramos un playbook real línea por línea. Abre el archivo `ansible/playbook
 
 Esto es lo que hace cada parte:
 
-**`---`** -- marca el inicio del documento YAML.
+**`---`**: marca el inicio del documento YAML.
 
-**`# Module 2 - ...`** -- comentarios. Los comentarios en YAML comienzan con `#` y son ignorados por Ansible.
+**`# Module 2 - ...`**: comentarios. Los comentarios en YAML comienzan con `#` y son ignorados por Ansible.
 
-**`- name: Install common utility packages`** -- el inicio de un **play**. El guion indica que este es el primer elemento de una lista (un playbook es una lista de plays). El `name` le da al play una descripción legible que aparece en la salida cuando lo ejecutas.
+**`- name: Install common utility packages`**: el inicio de un **play**. El guion indica que este es el primer elemento de una lista (un playbook es una lista de plays). El `name` le da al play una descripción legible que aparece en la salida cuando lo ejecutas.
 
-**`hosts: localhost`** -- indica a Ansible qué hosts apunta este play. Aquí apuntamos solo a `localhost` -- la máquina en la que estamos trabajando.
+**`hosts: localhost`**: indica a Ansible qué hosts apunta este play. Aquí apuntamos solo a `localhost`, la máquina en la que estamos trabajando.
 
-**`connection: local`** -- indica a Ansible que ejecute las tareas directamente en la máquina local en lugar de conectarse por SSH. Esto es lo que quieres cuando apuntas a localhost.
+**`connection: local`**: indica a Ansible que ejecute las tareas directamente en la máquina local en lugar de conectarse por SSH. Esto es lo que quieres cuando apuntas a localhost.
 
-**`become: true`** -- indica a Ansible que escale privilegios (equivalente a `sudo`). Instalar paquetes requiere acceso root, así que lo necesitamos.
+**`become: true`**: indica a Ansible que escale privilegios (equivalente a `sudo`). Instalar paquetes requiere acceso root, así que lo necesitamos.
 
-**`tasks:`** -- comienza la lista de tareas para este play.
+**`tasks:`**: comienza la lista de tareas para este play.
 
-**`- name: Install utility packages`** -- el inicio de una **task**. Cada task debería tener un nombre descriptivo en forma imperativa -- te dice qué hace la task cuando lees la salida.
+**`- name: Install utility packages`**: el inicio de una **task**. Cada task debería tener un nombre descriptivo en forma imperativa; te dice qué hace la task cuando lees la salida.
 
-**`ansible.builtin.package:`** -- el **módulo** que usa esta task. `ansible.builtin.package` es un módulo genérico de gestión de paquetes que funciona en diferentes distribuciones de Linux (llama a `dnf` en Fedora/RHEL, `apt` en Debian/Ubuntu, etc.). Nota que usamos el Fully Qualified Collection Name.
+**`ansible.builtin.package:`**: el **módulo** que usa esta task. `ansible.builtin.package` es un módulo genérico de gestión de paquetes que funciona en diferentes distribuciones de Linux (llama a `dnf` en Fedora/RHEL, `apt` en Debian/Ubuntu, etc.). Nota que usamos el Fully Qualified Collection Name.
 
-**`name:` (bajo el módulo)** -- un parámetro del módulo `package` que especifica qué paquetes instalar. Pasamos una lista de tres paquetes.
+**`name:` (bajo el módulo)**: un parámetro del módulo `package` que especifica qué paquetes instalar. Pasamos una lista de tres paquetes.
 
-**`state: present`** -- otro parámetro del módulo. `present` significa "asegúrate de que estos paquetes estén instalados". Si ya están instalados, Ansible no hace nada. Si faltan, Ansible los instala.
+**`state: present`**: otro parámetro del módulo. `present` significa "asegúrate de que estos paquetes estén instalados". Si ya están instalados, Ansible no hace nada. Si faltan, Ansible los instala.
 
 !!! tip "Por qué `ansible.builtin.package` en lugar de `ansible.builtin.dnf`?"
     El módulo `package` detecta automáticamente el gestor de paquetes del sistema y llama al correcto. Esto hace tu playbook portable entre distribuciones. Usa módulos específicos de distribución (`dnf`, `apt`) solo cuando necesites funcionalidades específicas de ese gestor de paquetes.
 
-### Los Otros Playbooks de Acompañamiento
+### El Otro Playbook de Acompañamiento
 
-El directorio `ansible/playbooks/module-02/` contiene dos playbooks más para practicar:
+El directorio `ansible/playbooks/module-02/` también contiene el playbook `create-files.yml` para practicar.
 
-**`create-files.yml`** -- demuestra la creación de directorios y archivos:
+**`create-files.yml`** demuestra la creación de directorios y archivos:
 
 ```yaml
 ---
@@ -195,19 +195,19 @@ El directorio `ansible/playbooks/module-02/` contiene dos playbooks más para pr
   tasks:
     - name: Create project directory
       ansible.builtin.file:
-        path: /tmp/ansible-demo
+        path: ~/ansible-demo
         state: directory
         mode: "0755"
 
     - name: Create logs subdirectory
       ansible.builtin.file:
-        path: /tmp/ansible-demo/logs
+        path: ~/ansible-demo/logs
         state: directory
         mode: "0755"
 
     - name: Create a welcome file
       ansible.builtin.copy:
-        dest: /tmp/ansible-demo/README.txt
+        dest: ~/ansible-demo/README.txt
         content: |
           Welcome to Ansible!
           This file was created by an Ansible playbook.
@@ -215,49 +215,25 @@ El directorio `ansible/playbooks/module-02/` contiene dos playbooks más para pr
 
     - name: Create an application config file
       ansible.builtin.copy:
-        dest: /tmp/ansible-demo/app.conf
+        dest: ~/ansible-demo/app.conf
         content: |
           # Application configuration
           app_name=demo
           log_level=info
-          log_dir=/tmp/ansible-demo/logs
+          log_dir=~/ansible-demo/logs
         mode: "0644"
 ```
 
-Nota que este playbook no usa `become: true` -- crear archivos en `/tmp` no requiere privilegios de root.
+Nota que este playbook no usa `become: true` porque estamos escribiendo en el directorio home del usuario, lo cual no requiere privilegios de root.
 
 El módulo `ansible.builtin.file` gestiona archivos y directorios. Con `state: directory`, crea un directorio. El módulo `ansible.builtin.copy` crea archivos con contenido específico usando el parámetro `content`.
 
-**`manage-service.yml`** -- demuestra la gestión de servicios del sistema:
-
-```yaml
----
-- name: Manage the chronyd service
-  hosts: localhost
-  connection: local
-  become: true
-
-  tasks:
-    - name: Ensure chronyd is installed
-      ansible.builtin.package:
-        name: chrony
-        state: present
-
-    - name: Ensure chronyd is started and enabled
-      ansible.builtin.service:
-        name: chronyd
-        state: started
-        enabled: true
-```
-
-El módulo `ansible.builtin.service` gestiona servicios del sistema. `state: started` asegura que el servicio esté en ejecución, y `enabled: true` asegura que se inicie automáticamente al arrancar.
-
-!!! warning "Limitaciones en contenedores"
-    El playbook `manage-service.yml` requiere que `systemd` esté en ejecución, lo cual no es el caso en la mayoría de los contenedores. Si estás trabajando en el devcontainer, este playbook fallará con un error sobre el gestor de servicios. Eso es esperado -- este playbook está diseñado para funcionar en una máquina virtual o sistema bare-metal. Aun así puedes leerlo y comprender los conceptos. Los playbooks `install-packages.yml` y `create-files.yml` funcionarán en el devcontainer.
+!!! info "Gestión de servicios"
+    La gestión de servicios con `ansible.builtin.service` funciona en sistemas con un sistema de inicio (systemd). En un entorno de contenedor como el devcontainer, los servicios no están disponibles. Usarás la gestión de servicios en módulos posteriores cuando trabajes con hosts reales o máquinas virtuales.
 
 ## Ejecutando Playbooks con ansible-navigator
 
-En el Módulo 1 ejecutaste comandos ad-hoc con `ansible`. Para playbooks, usaremos **`ansible-navigator`** -- una herramienta que proporciona una interfaz de usuario de texto enriquecida (TUI) para ejecutar e inspeccionar contenido de Ansible.
+En el Módulo 1 ejecutaste comandos ad-hoc con `ansible`. Para playbooks, usaremos **`ansible-navigator`**, una herramienta que proporciona una interfaz de usuario de texto enriquecida (TUI) para ejecutar e inspeccionar contenido de Ansible.
 
 ### Por qué ansible-navigator?
 
@@ -278,7 +254,7 @@ cd ansible
 ansible-navigator run playbooks/module-02/install-packages.yml --mode stdout
 ```
 
-La opción `--mode stdout` ejecuta el playbook en modo de salida estándar -- la salida va directamente a tu terminal, similar a `ansible-playbook`. Esta es la forma más simple de ejecutar un playbook.
+La opción `--mode stdout` ejecuta el playbook en modo de salida estándar: la salida va directamente a tu terminal, similar a `ansible-playbook`. Esta es la forma más simple de ejecutar un playbook.
 
 Deberías ver una salida como esta:
 
@@ -297,10 +273,10 @@ localhost                  : ok=2    changed=1    unreachable=0    failed=0    s
 
 Desglosemos la salida:
 
-- **PLAY** -- muestra el nombre del play de tu playbook
-- **TASK [Gathering Facts]** -- Ansible recopila automáticamente información del sistema antes de ejecutar tus tareas (viste esto con `ansible.builtin.setup` en el Módulo 1). Este es un comportamiento por defecto que puede desactivarse.
-- **TASK [Install utility packages]** -- tu tarea se ejecutó y reporta `changed`, lo que significa que los paquetes fueron instalados
-- **PLAY RECAP** -- un resumen mostrando cuántas tareas tuvieron éxito (`ok`), cuántas realizaron cambios (`changed`), y si alguna falló
+- **PLAY**: muestra el nombre del play de tu playbook
+- **TASK [Gathering Facts]**: Ansible recopila automáticamente información del sistema antes de ejecutar tus tareas (viste esto con `ansible.builtin.setup` en el Módulo 1). Este es un comportamiento por defecto que puede desactivarse.
+- **TASK [Install utility packages]**: tu tarea se ejecutó y reporta `changed`, lo que significa que los paquetes fueron instalados
+- **PLAY RECAP**: un resumen mostrando cuántas tareas tuvieron éxito (`ok`), cuántas realizaron cambios (`changed`), y si alguna falló
 
 ### Modo TUI Interactivo
 
@@ -330,6 +306,19 @@ Cuando termines de explorar, presiona ++esc++ hasta salir de vuelta a tu termina
 | interactivo | (por defecto) | Explorar resultados, depurar, aprender |
 
 A lo largo de este curso usaremos ambos modos. Cuando mostremos salida en el texto del módulo, usamos `--mode stdout` por claridad. Cuando ejecutes ejercicios por tu cuenta, prueba el modo interactivo para explorar.
+
+!!! tip "Configurar valores por defecto de navigator"
+    Puedes crear un archivo `ansible-navigator.yml` en el directorio de tu proyecto para establecer valores por defecto y evitar escribir opciones cada vez:
+
+    ```yaml
+    ---
+    ansible-navigator:
+      mode: stdout
+      playbook-artifact:
+        enable: false
+    ```
+
+    Con esta configuración, `ansible-navigator run` usa el modo stdout por defecto sin generar archivos de artefactos. Consulta la [documentación de ansible-navigator](https://ansible.readthedocs.io/projects/navigator/) para ver todas las opciones disponibles.
 
 ## Modo Check y Modo Diff
 
@@ -365,7 +354,7 @@ PLAY RECAP *********************************************************************
 localhost                  : ok=5    changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 ```
 
-La salida muestra `changed` para cada task -- pero nada cambió realmente en el sistema. El modo check te dice "estas tasks *harían* cambios si las ejecutaras de verdad."
+La salida muestra `changed` para cada task, pero nada cambió realmente en el sistema. El modo check te dice "estas tasks *harían* cambios si las ejecutaras de verdad."
 
 !!! info "No todos los módulos soportan el modo check"
     La mayoría de los módulos de Ansible soportan el modo check, pero algunos (particularmente `ansible.builtin.command` y `ansible.builtin.shell`) no lo hacen por defecto porque Ansible no puede predecir qué haría un comando arbitrario. Los módulos bien diseñados reportan con precisión en modo check.
@@ -383,7 +372,7 @@ Cuando un archivo se crea o modifica, la salida incluye un diff mostrando el ant
 ```text
 TASK [Create a welcome file] ***************************************************
 --- before
-+++ after: /tmp/ansible-demo/README.txt
++++ after: ~/ansible-demo/README.txt
 @@ -0,0 +1,2 @@
 +Welcome to Ansible!
 +This file was created by an Ansible playbook.
@@ -399,7 +388,7 @@ La previsualización más poderosa combina ambas opciones:
 ansible-navigator run playbooks/module-02/create-files.yml --mode stdout --check --diff
 ```
 
-Esto te muestra exactamente qué *cambiaría* sin hacer ningún cambio -- la forma más segura de previsualizar tu automatización antes de aplicarla a sistemas en producción.
+Esto te muestra exactamente qué *cambiaría* sin hacer ningún cambio. Es la forma más segura de previsualizar tu automatización antes de aplicarla a sistemas en producción.
 
 ## Entendiendo la Idempotencia
 
@@ -420,7 +409,7 @@ PLAY RECAP *********************************************************************
 localhost                  : ok=5    changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 ```
 
-Cuatro tasks reportaron `changed` -- los directorios y archivos fueron creados.
+Cuatro tasks reportaron `changed`: los directorios y archivos fueron creados.
 
 **Segunda ejecución (mismo comando):**
 
@@ -439,14 +428,14 @@ Cero cambios la segunda vez. Los directorios y archivos ya existen con el conten
 
 La idempotencia significa:
 
-- **Re-ejecuciones seguras** -- puedes ejecutar un playbook tantas veces como quieras sin romper nada. Si una ejecución de playbook se interrumpe a mitad de camino, simplemente ejecútalo de nuevo.
-- **Detección de desviaciones** -- si alguien cambia manualmente un archivo que Ansible gestiona, la siguiente ejecución del playbook lo devolverá al estado deseado y reportará `changed`.
-- **Confianza** -- sabes exactamente en qué estado están tus sistemas porque el playbook define el estado deseado y Ansible lo aplica.
+- **Re-ejecuciones seguras**: puedes ejecutar un playbook tantas veces como quieras sin romper nada. Si una ejecución de playbook se interrumpe a mitad de camino, simplemente ejecútalo de nuevo.
+- **Detección de desviaciones**: si alguien cambia manualmente un archivo que Ansible gestiona, la siguiente ejecución del playbook lo devolverá al estado deseado y reportará `changed`.
+- **Confianza**: sabes exactamente en qué estado están tus sistemas porque el playbook define el estado deseado y Ansible lo aplica.
 
-Esto es fundamentalmente diferente de los scripts de shell. Un script que ejecuta `mkdir /tmp/ansible-demo` fallará en la segunda ejecución porque el directorio ya existe. El módulo `ansible.builtin.file` con `state: directory` verifica si el directorio existe primero y solo lo crea si es necesario.
+Esto es fundamentalmente diferente de los scripts de shell. Un script que ejecuta `mkdir ~/ansible-demo` fallará en la segunda ejecución porque el directorio ya existe. El módulo `ansible.builtin.file` con `state: directory` verifica si el directorio existe primero y solo lo crea si es necesario.
 
 !!! tip "changed=0 es el objetivo"
-    Cuando ejecutas un playbook contra un sistema que ya está en el estado deseado, el resultado ideal es `changed=0`. Esto confirma que tu automatización es precisa y el sistema coincide con el estado declarado. Si ves cambios inesperados en una re-ejecución, investiga -- algo está cambiando el sistema fuera de Ansible, o una task no es verdaderamente idempotente.
+    Cuando ejecutas un playbook contra un sistema que ya está en el estado deseado, el resultado ideal es `changed=0`. Esto confirma que tu automatización es precisa y el sistema coincide con el estado declarado. Si ves cambios inesperados en una re-ejecución, investiga: algo está cambiando el sistema fuera de Ansible, o una task no es verdaderamente idempotente.
 
 ## Ejercicios
 
@@ -478,15 +467,15 @@ Ejecuta el playbook `create-files.yml` con `--check` y `--diff`:
 ansible-navigator run playbooks/module-02/create-files.yml --mode stdout --check --diff
 ```
 
-Si ya has ejecutado el playbook una vez, la salida debería mostrar `changed=0` en modo check -- los archivos ya existen. Elimina el directorio `/tmp/ansible-demo` (`rm -rf /tmp/ansible-demo`) y ejecuta el comando check+diff de nuevo para ver qué *crearía* Ansible.
+Si ya has ejecutado el playbook una vez, la salida debería mostrar `changed=0` en modo check porque los archivos ya existen. Elimina el directorio `~/ansible-demo` (`rm -rf ~/ansible-demo`) y ejecuta el comando check+diff de nuevo para ver qué *crearía* Ansible.
 
 ### Ejercicio 4: Escribe tu propio playbook
 
 Crea un nuevo playbook llamado `ansible/playbooks/module-02/my-playbook.yml` que:
 
-1. Cree un directorio en `/tmp/my-project`
-2. Cree un archivo en `/tmp/my-project/hello.txt` con el contenido que quieras
-3. Cree un subdirectorio en `/tmp/my-project/data`
+1. Cree un directorio en `~/my-project`
+2. Cree un archivo en `~/my-project/hello.txt` con el contenido que quieras
+3. Cree un subdirectorio en `~/my-project/data`
 
 Ejecútalo, verifica que los archivos fueron creados, luego ejecútalo de nuevo para confirmar la idempotencia.
 
@@ -499,9 +488,9 @@ En este módulo:
 - Recorriste un playbook completo línea por línea
 - Ejecutaste playbooks con `ansible-navigator` tanto en modo stdout como en modo TUI interactivo
 - Usaste el modo check (`--check`) y el modo diff (`--diff`) para previsualizar cambios de forma segura
-- Observaste la idempotencia en acción -- ejecutar un playbook dos veces produce cero cambios la segunda vez
+- Observaste la idempotencia en acción: ejecutar un playbook dos veces produce cero cambios la segunda vez
 
-Lionel ahora tiene tres playbooks que pueden ejecutarse repetidamente para lograr un estado del sistema consistente. Pero todos apuntan a `localhost` -- ¿qué pasa cuando Lionel necesita gestionar múltiples servidores en diferentes entornos?
+Lionel ahora tiene dos playbooks que pueden ejecutarse repetidamente para lograr un estado del sistema consistente. Pero todos apuntan a `localhost`. ¿Qué pasa cuando Lionel necesita gestionar múltiples servidores en diferentes entornos?
 
 ## Próximos Pasos
 

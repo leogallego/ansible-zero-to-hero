@@ -12,7 +12,7 @@ By the end of this module you will be able to:
 
 ## The Story So Far
 
-The CoP at Parasol Tech has built a tested, linted collection -- `parasoltech.infrastructure` with a `webserver` role, Molecule integration tests, pytest unit tests, and tox-ansible orchestration. Every pull request passes quality gates before it can be merged.
+The CoP at Parasol Tech has built a tested, linted collection, `parasoltech.infrastructure`, with a `webserver` role, Molecule integration tests, pytest unit tests, and tox-ansible orchestration. Every pull request passes quality gates before it can be merged.
 
 But then the trouble starts. A new team member runs the webserver playbook on their laptop and gets a different result. Their local Python environment is missing a dependency. Another team member works on a different OS and gets a version conflict in `ansible.posix`. The staging server has an older version of `ansible-core` than what the team tested with.
 
@@ -22,14 +22,14 @@ Jordan sighs. "It passed on *our* machines. The staging server has a completely 
 
 The CoP identifies two problems:
 
-1. **Portability** -- the automation works only when the execution environment matches the one the developer tested against. Every machine has different Python packages, system libraries, and Ansible versions.
-2. **Integrity** -- anyone with push access to the Git repository can modify playbooks. There is no way to prove that the content running in production is the same content the CoP reviewed and approved.
+1. **Portability**: the automation works only when the execution environment matches the one the developer tested against. Every machine has different Python packages, system libraries, and Ansible versions.
+2. **Integrity**: anyone with push access to the Git repository can modify playbooks. There is no way to prove that the content running in production is the same content the CoP reviewed and approved.
 
 The solutions: **Execution Environments** for portability, and **content signing** for integrity.
 
 ## Execution Environments
 
-An Execution Environment (EE) is a container image that bundles everything Ansible needs to run: `ansible-core`, Python dependencies, system packages, and collections. When you run a playbook inside an EE, the execution uses the container's environment -- not whatever happens to be installed on the host machine.
+An Execution Environment (EE) is a container image that bundles everything Ansible needs to run: `ansible-core`, Python dependencies, system packages, and collections. When you run a playbook inside an EE, the execution uses the container's environment, not whatever happens to be installed on the host machine.
 
 This solves the "works on my machine" problem. The container image is immutable and versioned. If it works in development, it works in staging. If it works in staging, it works in production. Every execution uses the exact same dependencies.
 
@@ -88,7 +88,7 @@ version: 3
 
 images:
   base_image:
-    name: quay.io/ansible/creator-ee:latest
+    name: ghcr.io/ansible/community-ee-base:latest
 
 dependencies:
   galaxy: requirements.yml
@@ -119,20 +119,20 @@ Common base images:
 
 | Image | Contents |
 |-------|----------|
-| `quay.io/ansible/creator-ee:latest` | Full dev tools suite -- `ansible-core`, `ansible-lint`, `molecule`, and more |
-| `quay.io/ansible/ansible-runner:latest` | Minimal runtime -- `ansible-core` and `ansible-runner` only |
+| `ghcr.io/ansible/community-ee-base:latest` | `ansible-core`, Python, and common dependencies for building custom EEs |
+| `ghcr.io/ansible/community-ee-minimal:latest` | Minimal runtime with `ansible-core` only, for lightweight production EEs |
 | `registry.redhat.io/ansible-automation-platform/ee-minimal-rhel9` | Red Hat supported minimal EE for production |
 | `registry.redhat.io/ansible-automation-platform/ee-supported-rhel9` | Red Hat supported EE with certified collections |
 
-For development, `creator-ee` is convenient because it includes all the dev tools. For production, use a minimal base image to reduce attack surface and image size.
+For development, `community-ee-base` is a good starting point because it includes common dependencies. For production, use a minimal base image to reduce attack surface and image size.
 
 #### `dependencies`
 
 Three types of dependencies can be declared:
 
-- **`galaxy`** -- Points to a `requirements.yml` file listing Ansible collections. These are installed with `ansible-galaxy collection install` during the build.
-- **`python`** -- A list of Python packages (or a path to a `requirements.txt` file). These are installed with `pip` during the build.
-- **`system`** -- A list of system packages (or a path to a `bindep.txt` file). These are installed with the system package manager (`dnf`, `apt`, etc.) during the build.
+- **`galaxy`**: Points to a `requirements.yml` file listing Ansible collections. These are installed with `ansible-galaxy collection install` during the build.
+- **`python`**: A list of Python packages (or a path to a `requirements.txt` file). These are installed with `pip` during the build.
+- **`system`**: A list of system packages (or a path to a `bindep.txt` file). These are installed with the system package manager (`dnf`, `apt`, etc.) during the build.
 
 The separation is important. Collections go in `galaxy`, their Python dependencies go in `python`, and their system library dependencies go in `system`. This mirrors how you would install dependencies manually, but `ansible-builder` automates it inside the container build.
 
@@ -146,7 +146,7 @@ version: 3
 
 images:
   base_image:
-    name: quay.io/ansible/creator-ee:latest
+    name: ghcr.io/ansible/community-ee-base:latest
 
 dependencies:
   galaxy: requirements.yml
@@ -173,12 +173,12 @@ options:
   package_manager_path: /usr/bin/dnf
 ```
 
-- **`additional_build_files`** -- Copies extra files into the build context. Useful for custom configuration files, scripts, or local collection tarballs.
-- **`additional_build_steps`** -- Injects custom Containerfile instructions at specific points in the build (`prepend_base`, `append_base`, `prepend_galaxy`, `append_galaxy`, `prepend_builder`, `append_builder`, `prepend_final`, `append_final`).
-- **`options`** -- Build options like image tags and the package manager path.
+- **`additional_build_files`**: Copies extra files into the build context. Useful for custom configuration files, scripts, or local collection tarballs.
+- **`additional_build_steps`**: Injects custom Containerfile instructions at specific points in the build (`prepend_base`, `append_base`, `prepend_galaxy`, `append_galaxy`, `prepend_builder`, `append_builder`, `prepend_final`, `append_final`).
+- **`options`**: Build options like image tags and the package manager path.
 
 !!! tip "Keep it simple"
-    For most use cases, you only need `images`, `dependencies`, and maybe `options.tags`. The advanced sections exist for edge cases -- do not add complexity until you need it.
+    For most use cases, you only need `images`, `dependencies`, and maybe `options.tags`. The advanced sections exist for edge cases, so do not add complexity until you need it.
 
 ## Building with ansible-builder
 
@@ -212,7 +212,7 @@ The generated Containerfile has four stages:
 | **Builder** | Installs Python packages, compiles any native extensions |
 | **Final** | Assembles the final image from the previous stages |
 
-This multi-stage approach keeps the final image small. Build tools and compilation artifacts are discarded -- only the runtime dependencies make it into the final image.
+This multi-stage approach keeps the final image small. Build tools and compilation artifacts are discarded; only the runtime dependencies make it into the final image.
 
 !!! note "Inspect before you build"
     Running `ansible-builder create` is a dry run. It generates the Containerfile without building anything. Use it to verify your EE definition is correct before committing to a full build, which can take several minutes.
@@ -265,7 +265,7 @@ version: 3
 
 images:
   base_image:
-    name: quay.io/ansible/creator-ee:latest
+    name: ghcr.io/ansible/community-ee-base:latest
 
 dependencies:
   python_interpreter:
@@ -351,7 +351,7 @@ Execution Environments solve the portability problem. Content signing solves the
 2. Writing those checksums to a manifest file
 3. Signing the manifest with a GPG key
 
-Anyone with the matching public key can then verify that the content has not been tampered with -- no files modified, no files added, no files removed.
+Anyone with the matching public key can then verify that the content has not been tampered with: no files modified, no files added, no files removed.
 
 ### GPG Key Setup
 
@@ -399,7 +399,7 @@ ssb   rsa3072 2026-05-21 [E]
 
 ### The MANIFEST.in File
 
-Before signing, you need a `MANIFEST.in` file that tells `ansible-sign` which files to include in the checksum manifest. This file uses Python's `distlib.manifest` syntax -- the same format used by Python packaging tools.
+Before signing, you need a `MANIFEST.in` file that tells `ansible-sign` which files to include in the checksum manifest. This file uses Python's `distlib.manifest` syntax, the same format used by Python packaging tools.
 
 The signing example at `ansible/execution-environments/signing-example/MANIFEST.in`:
 
@@ -501,11 +501,11 @@ Developer workstation          Git repository          AAP Controller
                                                   └──────────────────┘
 ```
 
-1. **Developer signs** -- After the CoP reviews and approves changes, a trusted signer runs `ansible-sign project gpg-sign .` on the project directory.
-2. **Push to Git** -- The signed content (including `.ansible-sign/`) is committed and pushed to the repository.
-3. **AAP Project Sync** -- Ansible Automation Platform's Controller pulls the repository.
-4. **AAP verifies** -- Controller is configured with the public GPG key as a credential. During Project Sync, it runs the equivalent of `ansible-sign project gpg-verify .` on the pulled content.
-5. **Execute or reject** -- If verification succeeds, the content is trusted and can run. If it fails, the sync fails and no job templates can execute -- the content is blocked.
+1. **Developer signs**: After the CoP reviews and approves changes, a trusted signer runs `ansible-sign project gpg-sign .` on the project directory.
+2. **Push to Git**: The signed content (including `.ansible-sign/`) is committed and pushed to the repository.
+3. **AAP Project Sync**: Ansible Automation Platform's Controller pulls the repository.
+4. **AAP verifies**: Controller is configured with the public GPG key as a credential. During Project Sync, it runs the equivalent of `ansible-sign project gpg-verify .` on the pulled content.
+5. **Execute or reject**: If verification succeeds, the content is trusted and can run. If it fails, the sync fails and no job templates can execute. The content is blocked.
 
 This means that even if an attacker compromises the Git repository and modifies a playbook, the content will not execute. The checksums will not match, the GPG signature will be invalid, and AAP will reject the content.
 
@@ -516,9 +516,9 @@ This means that even if an attacker compromises the Git repository and modifies 
 
 Once the EE image is built and tested, the next step is publishing it to a container registry where AAP Controller can pull it. The typical destinations are:
 
-- **Private Automation Hub** -- The organization's internal registry, part of AAP. This is the recommended destination for production EE images.
-- **Quay.io** -- Red Hat's public/private container registry.
-- **Any OCI-compatible registry** -- Harbor, Docker Hub, GitLab Container Registry, etc.
+- **Private Automation Hub**: The organization's internal registry, part of AAP. This is the recommended destination for production EE images.
+- **Quay.io**: Red Hat's public/private container registry.
+- **Any OCI-compatible registry**: Harbor, Docker Hub, GitLab Container Registry, etc.
 
 ### Push to a Registry
 
@@ -646,7 +646,7 @@ Verify the signature:
 ansible-sign project gpg-verify .
 ```
 
-Now modify a file and verify again -- the verification should fail.
+Now modify a file and verify again. The verification should fail.
 
 ??? example "Solution"
     ```bash
@@ -695,4 +695,4 @@ The CoP at Parasol Tech now has a complete pipeline: code is tested (Module 7), 
 
 ## Next Steps
 
-Next: [Module 9 -- Scaling with AAP](9-scaling-with-aap.md)
+Next: [Module 9: Scaling with AAP](9-scaling-with-aap.md)

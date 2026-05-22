@@ -13,13 +13,13 @@ By the end of this module you will be able to:
 
 Lionel and Jordan have parameterized the Parasol Tech playbooks with variables and facts. Every environment reads its own values from `group_vars/`, and playbooks adapt dynamically using `when` conditions. But there is a new problem.
 
-"We need to deploy configuration files," Lionel says. "Nginx config, MOTD banners, application settings -- each one needs different values per environment. I could use `ansible.builtin.copy` with a static file, but then I need a separate file for dev, staging, and production. That does not scale."
+"We need to deploy configuration files," Lionel says. "Nginx config, MOTD banners, application settings, and each one needs different values per environment. I could use `ansible.builtin.copy` with a static file, but then I need a separate file for dev, staging, and production. That does not scale."
 
 "That is exactly what templates are for," Jordan replies. "You write one template with placeholders, and Ansible fills in the values at deploy time. And when the config changes, handlers restart the service automatically."
 
 ## Jinja2 Template Basics
 
-Ansible uses the **Jinja2** templating engine. A Jinja2 template is a text file -- any format (YAML, INI, TOML, XML, plain text) -- with special delimiters that Ansible evaluates at runtime.
+Ansible uses the **Jinja2** templating engine. A Jinja2 template is a text file in any format (YAML, INI, TOML, XML, plain text) with special delimiters that Ansible evaluates at runtime.
 
 ### The Three Delimiters
 
@@ -31,7 +31,7 @@ Ansible uses the **Jinja2** templating engine. A Jinja2 template is a text file 
 
 ### Variables in Templates
 
-Any variable available to the play -- inventory variables, facts, registered variables, `set_fact` values -- is available inside templates:
+Any variable available to the play (inventory variables, facts, registered variables, `set_fact` values) is available inside templates:
 
 ```jinja
 # Simple variable substitution
@@ -39,7 +39,7 @@ server_name {{ parasol_nginx_server_name }};
 listen {{ parasol_nginx_http_port | default(80) }};
 ```
 
-The `| default(80)` is a **filter** -- it provides a fallback value if the variable is not defined. Filters are one of Jinja2's most useful features.
+The `| default(80)` is a **filter**: it provides a fallback value if the variable is not defined. Filters are one of Jinja2's most useful features.
 
 ### Filters
 
@@ -70,7 +70,7 @@ The companion template `motd.j2` uses several of these:
 =============================================
 ```
 
-Notice how `upper` is chained after `default` -- filters can be piped together. The `| comment` filter on `ansible_managed` wraps the managed-by string in the appropriate comment syntax for the file format.
+Notice how `upper` is chained after `default`. Filters can be piped together. The `| comment` filter on `ansible_managed` wraps the managed-by string in the appropriate comment syntax for the file format.
 
 ### Conditionals in Templates
 
@@ -202,7 +202,7 @@ Every template should start with the `{{ ansible_managed | comment }}` marker. T
 # Ansible managed
 ```
 
-This is critical in operations. If someone opens a configuration file on a server and sees this marker, they know not to edit it by hand -- the next Ansible run will overwrite their changes.
+This is critical in operations. If someone opens a configuration file on a server and sees this marker, they know not to edit it by hand, because the next Ansible run will overwrite their changes.
 
 ```jinja
 {{ ansible_managed | comment }}
@@ -240,7 +240,7 @@ Templates must produce the same output when run with the same inputs. If you inc
 The rendered file will be different on every run, even if nothing else changed. This means the `template` task will always report `changed`, which triggers handlers unnecessarily and makes it impossible to tell whether a real configuration change occurred.
 
 !!! danger "Timestamps break idempotency"
-    Never use `ansible_facts['date_time']`, `now()`, or any time-based value in a template. The `ansible_managed` marker already tells operators the file is managed by Ansible -- that is sufficient.
+    Never use `ansible_facts['date_time']`, `now()`, or any time-based value in a template. The `ansible_managed` marker already tells operators the file is managed by Ansible, and that is sufficient.
 
 ### Use `mode` with Quoted Strings
 
@@ -277,9 +277,9 @@ handlers:
       state: reloaded
 ```
 
-The handler `Reload nginx` will only execute if the template task reports `changed` -- meaning the rendered file is different from what was already on disk. If the file has not changed, the handler is not notified and the service is left alone.
+The handler `Reload nginx` will only execute if the template task reports `changed`, meaning the rendered file is different from what was already on disk. If the file has not changed, the handler is not notified and the service is left alone.
 
-This is the key insight: **handlers make service restarts idempotent**. You do not restart nginx on every run -- only when the configuration actually changed.
+This is the key insight: **handlers make service restarts idempotent**. You do not restart nginx on every run, only when the configuration actually changed.
 
 ### Notifying Multiple Handlers
 
@@ -322,7 +322,7 @@ tasks:
     notify: Reload nginx
 ```
 
-Even if both templates change, the `Reload nginx` handler runs only once. This is exactly what you want -- you do not want to reload nginx twice in the same play.
+Even if both templates change, the `Reload nginx` handler runs only once. This is exactly what you want. You do not want to reload nginx twice in the same play.
 
 ## When Handlers Run
 
@@ -402,14 +402,14 @@ handlers:
       verbosity: 0
 ```
 
-The handlers run in order A, B, C -- following the definition order in `handlers:`, not the notification order. This lets you control execution sequence by arranging handlers in the right order in the `handlers:` section.
+The handlers run in order A, B, C, following the definition order in `handlers:`, not the notification order. This lets you control execution sequence by arranging handlers in the right order in the `handlers:` section.
 
 !!! tip "Ordering handlers intentionally"
     If you need `Validate config` to run before `Reload service`, define `Validate config` first in the `handlers:` section. The notification order in `notify:` does not matter.
 
 ### Handlers and Failures
 
-If a task fails during the play, pending handlers **do not run** by default. This is a safety measure -- if something went wrong, you probably do not want to reload the service.
+If a task fails during the play, pending handlers **do not run** by default. This is a safety measure: if something went wrong, you probably do not want to reload the service.
 
 You can override this behavior at the play level:
 
@@ -473,8 +473,8 @@ ansible-navigator run playbooks/module-05/deploy-config.yml --mode stdout
 Examine the generated files:
 
 ```bash
-cat /tmp/ansible-demo/nginx.conf
-cat /tmp/ansible-demo/motd
+cat ~/ansible-demo/nginx.conf
+cat ~/ansible-demo/motd
 ```
 
 Look at the top of each file. Do you see the `# Ansible managed` comment? This is the `{{ ansible_managed | comment }}` marker in action.
@@ -563,7 +563,7 @@ In this module you:
 - Explored handler execution order (definition order, not notification order), deduplication, and `meta: flush_handlers`
 - Used `force_handlers` to ensure critical handlers run even when later tasks fail
 
-Lionel and Jordan now deploy configuration files as templates. One `nginx.conf.j2` works across dev, staging, and production -- each environment fills in its own values from inventory variables. When the config changes, handlers reload the service automatically. When it does not change, nothing happens. The automation is idempotent and self-documenting.
+Lionel and Jordan now deploy configuration files as templates. One `nginx.conf.j2` works across dev, staging, and production, and each environment fills in its own values from inventory variables. When the config changes, handlers reload the service automatically. When it does not change, nothing happens. The automation is idempotent and self-documenting.
 
 ## Next Steps
 

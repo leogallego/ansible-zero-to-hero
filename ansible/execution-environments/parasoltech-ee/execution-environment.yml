@@ -3,7 +3,7 @@ version: 3
 
 images:
   base_image:
-    name: quay.io/ansible/creator-ee:latest
+    name: ghcr.io/ansible/community-ee-base:latest
 
 dependencies:
   galaxy: requirements.yml

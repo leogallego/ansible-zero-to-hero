@@ -12,7 +12,7 @@ Al finalizar este módulo serás capaz de:
 
 ## La Historia Hasta Ahora
 
-La CoP en Parasol Tech ha construido una colección probada y verificada -- `parasoltech.infrastructure` con un rol `webserver`, tests de integración con Molecule, tests unitarios con pytest y orquestación con tox-ansible. Cada pull request pasa por las puertas de calidad antes de poder fusionarse.
+La CoP en Parasol Tech ha construido una colección probada y verificada, `parasoltech.infrastructure`, con un rol `webserver`, tests de integración con Molecule, tests unitarios con pytest y orquestación con tox-ansible. Cada pull request pasa por las puertas de calidad antes de poder fusionarse.
 
 Pero entonces empiezan los problemas. Un nuevo miembro del equipo ejecuta el playbook del webserver en su portátil y obtiene un resultado diferente. Su entorno local de Python carece de una dependencia. Otro miembro del equipo trabaja en un sistema operativo distinto y tiene un conflicto de versiones en `ansible.posix`. El servidor de staging tiene una versión de `ansible-core` más antigua que la que el equipo usó para las pruebas.
 
@@ -22,14 +22,14 @@ Jordan suspira. "Pasó en *nuestras* máquinas. El servidor de staging tiene un 
 
 La CoP identifica dos problemas:
 
-1. **Portabilidad** -- la automatización funciona solo cuando el entorno de ejecución coincide con el que el desarrollador usó para probar. Cada máquina tiene diferentes paquetes de Python, bibliotecas del sistema y versiones de Ansible.
-2. **Integridad** -- cualquier persona con acceso de push al repositorio Git puede modificar los playbooks. No hay forma de demostrar que el contenido que se ejecuta en producción es el mismo que la CoP revisó y aprobó.
+1. **Portabilidad**: la automatización funciona solo cuando el entorno de ejecución coincide con el que el desarrollador usó para probar. Cada máquina tiene diferentes paquetes de Python, bibliotecas del sistema y versiones de Ansible.
+2. **Integridad**: cualquier persona con acceso de push al repositorio Git puede modificar los playbooks. No hay forma de demostrar que el contenido que se ejecuta en producción es el mismo que la CoP revisó y aprobó.
 
 Las soluciones: **Execution Environments** para la portabilidad, y **firma de contenido** para la integridad.
 
 ## Execution Environments
 
-Un Execution Environment (EE) es una imagen de contenedor que empaqueta todo lo que Ansible necesita para ejecutarse: `ansible-core`, dependencias de Python, paquetes del sistema y colecciones. Cuando ejecutas un playbook dentro de un EE, la ejecución utiliza el entorno del contenedor -- no lo que esté instalado en la máquina anfitriona.
+Un Execution Environment (EE) es una imagen de contenedor que empaqueta todo lo que Ansible necesita para ejecutarse: `ansible-core`, dependencias de Python, paquetes del sistema y colecciones. Cuando ejecutas un playbook dentro de un EE, la ejecución utiliza el entorno del contenedor, no lo que esté instalado en la máquina anfitriona.
 
 Esto resuelve el problema de "funciona en mi máquina". La imagen del contenedor es inmutable y versionada. Si funciona en desarrollo, funciona en staging. Si funciona en staging, funciona en producción. Cada ejecución utiliza exactamente las mismas dependencias.
 
@@ -88,7 +88,7 @@ version: 3
 
 images:
   base_image:
-    name: quay.io/ansible/creator-ee:latest
+    name: ghcr.io/ansible/community-ee-base:latest
 
 dependencies:
   galaxy: requirements.yml
@@ -119,20 +119,20 @@ Imágenes base comunes:
 
 | Imagen | Contenido |
 |--------|-----------|
-| `quay.io/ansible/creator-ee:latest` | Suite completa de herramientas dev -- `ansible-core`, `ansible-lint`, `molecule` y más |
-| `quay.io/ansible/ansible-runner:latest` | Runtime mínimo -- solo `ansible-core` y `ansible-runner` |
+| `ghcr.io/ansible/community-ee-base:latest` | `ansible-core`, Python y dependencias comunes para construir EEs personalizados |
+| `ghcr.io/ansible/community-ee-minimal:latest` | Runtime mínimo con solo `ansible-core`, para EEs de producción ligeros |
 | `registry.redhat.io/ansible-automation-platform/ee-minimal-rhel9` | EE mínimo soportado por Red Hat para producción |
 | `registry.redhat.io/ansible-automation-platform/ee-supported-rhel9` | EE soportado por Red Hat con colecciones certificadas |
 
-Para desarrollo, `creator-ee` es conveniente porque incluye todas las herramientas de desarrollo. Para producción, usa una imagen base mínima para reducir la superficie de ataque y el tamaño de la imagen.
+Para desarrollo, `community-ee-base` es un buen punto de partida porque incluye dependencias comunes. Para producción, usa una imagen base mínima para reducir la superficie de ataque y el tamaño de la imagen.
 
 #### `dependencies`
 
 Se pueden declarar tres tipos de dependencias:
 
-- **`galaxy`** -- Apunta a un archivo `requirements.yml` que lista colecciones Ansible. Se instalan con `ansible-galaxy collection install` durante la construcción.
-- **`python`** -- Una lista de paquetes Python (o una ruta a un archivo `requirements.txt`). Se instalan con `pip` durante la construcción.
-- **`system`** -- Una lista de paquetes del sistema (o una ruta a un archivo `bindep.txt`). Se instalan con el gestor de paquetes del sistema (`dnf`, `apt`, etc.) durante la construcción.
+- **`galaxy`**: Apunta a un archivo `requirements.yml` que lista colecciones Ansible. Se instalan con `ansible-galaxy collection install` durante la construcción.
+- **`python`**: Una lista de paquetes Python (o una ruta a un archivo `requirements.txt`). Se instalan con `pip` durante la construcción.
+- **`system`**: Una lista de paquetes del sistema (o una ruta a un archivo `bindep.txt`). Se instalan con el gestor de paquetes del sistema (`dnf`, `apt`, etc.) durante la construcción.
 
 La separación es importante. Las colecciones van en `galaxy`, sus dependencias de Python en `python`, y sus dependencias de bibliotecas del sistema en `system`. Esto refleja cómo instalarías dependencias manualmente, pero `ansible-builder` lo automatiza dentro de la construcción del contenedor.
 
@@ -146,7 +146,7 @@ version: 3
 
 images:
   base_image:
-    name: quay.io/ansible/creator-ee:latest
+    name: ghcr.io/ansible/community-ee-base:latest
 
 dependencies:
   galaxy: requirements.yml
@@ -173,12 +173,12 @@ options:
   package_manager_path: /usr/bin/dnf
 ```
 
-- **`additional_build_files`** -- Copia archivos adicionales en el contexto de construcción. Útil para archivos de configuración personalizados, scripts o tarballs de colecciones locales.
-- **`additional_build_steps`** -- Inyecta instrucciones personalizadas del Containerfile en puntos específicos de la construcción (`prepend_base`, `append_base`, `prepend_galaxy`, `append_galaxy`, `prepend_builder`, `append_builder`, `prepend_final`, `append_final`).
-- **`options`** -- Opciones de construcción como etiquetas de imagen y la ruta del gestor de paquetes.
+- **`additional_build_files`**: Copia archivos adicionales en el contexto de construcción. Útil para archivos de configuración personalizados, scripts o tarballs de colecciones locales.
+- **`additional_build_steps`**: Inyecta instrucciones personalizadas del Containerfile en puntos específicos de la construcción (`prepend_base`, `append_base`, `prepend_galaxy`, `append_galaxy`, `prepend_builder`, `append_builder`, `prepend_final`, `append_final`).
+- **`options`**: Opciones de construcción como etiquetas de imagen y la ruta del gestor de paquetes.
 
 !!! tip "Mantenlo simple"
-    Para la mayoría de los casos de uso, solo necesitas `images`, `dependencies` y quizás `options.tags`. Las secciones avanzadas existen para casos extremos -- no agregues complejidad hasta que la necesites.
+    Para la mayoría de los casos de uso, solo necesitas `images`, `dependencies` y quizás `options.tags`. Las secciones avanzadas existen para casos extremos, así que no agregues complejidad hasta que la necesites.
 
 ## Construyendo con ansible-builder
 
@@ -212,7 +212,7 @@ El Containerfile generado tiene cuatro etapas:
 | **Builder** | Instala paquetes Python, compila extensiones nativas |
 | **Final** | Ensambla la imagen final a partir de las etapas anteriores |
 
-Este enfoque multi-etapa mantiene la imagen final pequeña. Las herramientas de construcción y los artefactos de compilación se descartan -- solo las dependencias de runtime llegan a la imagen final.
+Este enfoque multi-etapa mantiene la imagen final pequeña. Las herramientas de construcción y los artefactos de compilación se descartan; solo las dependencias de runtime llegan a la imagen final.
 
 !!! note "Inspecciona antes de construir"
     Ejecutar `ansible-builder create` es una ejecución en seco. Genera el Containerfile sin construir nada. Úsalo para verificar que tu definición de EE es correcta antes de comprometerte con una construcción completa, que puede tomar varios minutos.
@@ -265,7 +265,7 @@ version: 3
 
 images:
   base_image:
-    name: quay.io/ansible/creator-ee:latest
+    name: ghcr.io/ansible/community-ee-base:latest
 
 dependencies:
   python_interpreter:
@@ -351,7 +351,7 @@ Los Execution Environments resuelven el problema de portabilidad. La firma de co
 2. Escribe esos checksums en un archivo de manifiesto
 3. Firma el manifiesto con una clave GPG
 
-Cualquier persona con la clave pública correspondiente puede verificar que el contenido no ha sido alterado -- ningún archivo modificado, ningún archivo añadido, ningún archivo eliminado.
+Cualquier persona con la clave pública correspondiente puede verificar que el contenido no ha sido alterado: ningún archivo modificado, ningún archivo añadido, ningún archivo eliminado.
 
 ### Configuración de Claves GPG
 
@@ -399,7 +399,7 @@ ssb   rsa3072 2026-05-21 [E]
 
 ### El Archivo MANIFEST.in
 
-Antes de firmar, necesitas un archivo `MANIFEST.in` que le indica a `ansible-sign` qué archivos incluir en el manifiesto de checksums. Este archivo usa la sintaxis de `distlib.manifest` de Python -- el mismo formato utilizado por las herramientas de empaquetado de Python.
+Antes de firmar, necesitas un archivo `MANIFEST.in` que le indica a `ansible-sign` qué archivos incluir en el manifiesto de checksums. Este archivo usa la sintaxis de `distlib.manifest` de Python, el mismo formato utilizado por las herramientas de empaquetado de Python.
 
 El ejemplo de firma en `ansible/execution-environments/signing-example/MANIFEST.in`:
 
@@ -502,11 +502,11 @@ Estacion del desarrollador     Repositorio Git         AAP Controller
                                                       └──────────────────┘
 ```
 
-1. **El desarrollador firma** -- Después de que la CoP revisa y aprueba los cambios, un firmante de confianza ejecuta `ansible-sign project gpg-sign .` en el directorio del proyecto.
-2. **Push a Git** -- El contenido firmado (incluyendo `.ansible-sign/`) se confirma y se sube al repositorio.
-3. **Project Sync de AAP** -- El Controller de Ansible Automation Platform descarga el repositorio.
-4. **AAP verifica** -- Controller está configurado con la clave pública GPG como credencial. Durante el Project Sync, ejecuta el equivalente de `ansible-sign project gpg-verify .` sobre el contenido descargado.
-5. **Ejecutar o rechazar** -- Si la verificación tiene éxito, el contenido es de confianza y puede ejecutarse. Si falla, la sincronización falla y ningún job template puede ejecutarse -- el contenido queda bloqueado.
+1. **El desarrollador firma**: Después de que la CoP revisa y aprueba los cambios, un firmante de confianza ejecuta `ansible-sign project gpg-sign .` en el directorio del proyecto.
+2. **Push a Git**: El contenido firmado (incluyendo `.ansible-sign/`) se confirma y se sube al repositorio.
+3. **Project Sync de AAP**: El Controller de Ansible Automation Platform descarga el repositorio.
+4. **AAP verifica**: Controller está configurado con la clave pública GPG como credencial. Durante el Project Sync, ejecuta el equivalente de `ansible-sign project gpg-verify .` sobre el contenido descargado.
+5. **Ejecutar o rechazar**: Si la verificación tiene éxito, el contenido es de confianza y puede ejecutarse. Si falla, la sincronización falla y ningún job template puede ejecutarse. El contenido queda bloqueado.
 
 Esto significa que incluso si un atacante compromete el repositorio Git y modifica un playbook, el contenido no se ejecutará. Los checksums no coincidirán, la firma GPG será inválida y AAP rechazará el contenido.
 
@@ -517,9 +517,9 @@ Esto significa que incluso si un atacante compromete el repositorio Git y modifi
 
 Una vez que la imagen del EE está construida y probada, el siguiente paso es publicarla en un registro de contenedores donde AAP Controller pueda descargarla. Los destinos típicos son:
 
-- **Private Automation Hub** -- El registro interno de la organización, parte de AAP. Es el destino recomendado para imágenes de EE en producción.
-- **Quay.io** -- El registro de contenedores público/privado de Red Hat.
-- **Cualquier registro compatible con OCI** -- Harbor, Docker Hub, GitLab Container Registry, etc.
+- **Private Automation Hub**: El registro interno de la organización, parte de AAP. Es el destino recomendado para imágenes de EE en producción.
+- **Quay.io**: El registro de contenedores público/privado de Red Hat.
+- **Cualquier registro compatible con OCI**: Harbor, Docker Hub, GitLab Container Registry, etc.
 
 ### Push a un Registro
 
@@ -647,7 +647,7 @@ Verifica la firma:
 ansible-sign project gpg-verify .
 ```
 
-Ahora modifica un archivo y verifica de nuevo -- la verificación debería fallar.
+Ahora modifica un archivo y verifica de nuevo. La verificación debería fallar.
 
 ??? example "Solución"
     ```bash
@@ -696,4 +696,4 @@ La CoP en Parasol Tech ahora tiene un pipeline completo: el código se prueba (M
 
 ## Próximos Pasos
 
-Siguiente: [Módulo 9 -- Escalando con AAP](9-scaling-with-aap.md)
+Siguiente: [Módulo 9: Escalando con AAP](9-scaling-with-aap.md)

@@ -12,7 +12,7 @@ By the end of this module you will be able to:
 
 ## The Story So Far
 
-The CoP at Parasol Tech has its first collection -- `parasoltech.infrastructure` with a `webserver` role that installs packages, deploys configuration from templates, and manages the service lifecycle. Teams are starting to adopt it.
+The CoP at Parasol Tech has its first collection, `parasoltech.infrastructure`, with a `webserver` role that installs packages, deploys configuration from templates, and manages the service lifecycle. Teams are starting to adopt it.
 
 Then something breaks. The monitoring team overrides `webserver_port` with a string instead of an integer, and the template renders garbage. Jordan catches it during a code review, but it was already deployed to staging.
 
@@ -22,34 +22,23 @@ The CoP holds an emergency meeting. The outcome: **no untested automation goes t
 
 ## The Ansible Test Pyramid
 
-Testing is not one thing -- it is a spectrum of checks at different levels of abstraction and cost. The Ansible test pyramid organizes these levels from cheapest and fastest at the bottom to most thorough and slowest at the top:
+Testing is not one thing. It is a spectrum of checks at different levels of abstraction and cost. The Ansible test pyramid organizes these levels from cheapest and fastest at the bottom to most thorough and slowest at the top:
 
-```text
-          /\
-         /  \
-        / In \         Integration tests (Molecule)
-       / tegr \        Apply role to real hosts, verify postconditions
-      / ation  \
-     /----------\
-    /   Unit     \     Unit tests (pytest-ansible)
-   /   Tests      \    Validate individual components in isolation
-  /----------------\
- /  Static Analysis  \ Linting (ansible-lint)
-/  (ansible-lint)     \Fast, cheap, catches style and syntax errors
-/______________________\
-```
+| Layer | Tool | Speed | Scope | What It Catches |
+|-------|------|-------|-------|-----------------|
+| **Integration** | Molecule | Slow | Full role against real hosts | Broken workflows, missing handlers, failed services |
+| **Unit** | pytest-ansible | Fast | Individual modules/plugins | Logic errors, bad return values, wrong types |
+| **Sanity** | ansible-test | Fast | Collection metadata | Missing docs, import errors, wrong FQCNs |
+| **Lint** | ansible-lint | Fastest | All content | Style violations, deprecated syntax, risky patterns |
+| | **tox-ansible** | | **Orchestrator** | **Runs ALL layers above in isolated environments** |
 
-| Level | Tool | What it catches | Speed |
-|-------|------|-----------------|-------|
-| **Lint** | `ansible-lint` | Syntax errors, deprecated modules, naming violations, missing FQCNs | Seconds |
-| **Unit** | `pytest-ansible` | Incorrect defaults, broken argument specs, module logic errors | Seconds |
-| **Integration** | Molecule | Role failures on real systems, missing templates, service misconfigurations | Minutes |
+Run from bottom to top: lint first (fast, cheap), integration last (slow, thorough).
 
 The principle is simple: catch as much as possible at the lower levels, because those tests are fast, cheap, and run on every save. Reserve integration tests for things that can only be validated by actually applying the role.
 
 ## Static Analysis with ansible-lint
 
-`ansible-lint` checks your Ansible content against a comprehensive set of rules -- everything from YAML formatting to deprecated module usage to naming conventions. It is the first line of defense and catches the most common mistakes before you even run a playbook.
+`ansible-lint` checks your Ansible content against a comprehensive set of rules, from YAML formatting to deprecated module usage to naming conventions. It is the first line of defense and catches the most common mistakes before you even run a playbook.
 
 ### Configuration
 
@@ -83,10 +72,10 @@ project_dir: .
 
 Key settings:
 
-- **`profile: production`** -- Uses the strictest built-in rule set. Other options are `min`, `basic`, `moderate`, `safety`, and `shared`, each adding more rules.
-- **`strict: true`** -- Warnings are treated as errors. If `ansible-lint` finds anything, the exit code is non-zero.
-- **`enable_list`** -- Explicitly enables rule categories for auto-fix support.
-- **`skip_list`** -- Suppresses specific rules that do not apply (in this case, the `galaxy[version-incorrect]` rule that flags versions not published to Galaxy).
+- **`profile: production`**: Uses the strictest built-in rule set. Other options are `min`, `basic`, `moderate`, `safety`, and `shared`, each adding more rules.
+- **`strict: true`**: Warnings are treated as errors. If `ansible-lint` finds anything, the exit code is non-zero.
+- **`enable_list`**: Explicitly enables rule categories for auto-fix support.
+- **`skip_list`**: Suppresses specific rules that do not apply (in this case, the `galaxy[version-incorrect]` rule that flags versions not published to Galaxy).
 
 ### Running ansible-lint
 
@@ -121,7 +110,7 @@ ansible-lint --fix
 - Converting `yes`/`no` to `true`/`false`
 - Fixing YAML formatting (trailing spaces, indentation)
 
-After auto-fix, review the changes with `git diff` before committing. Not every auto-fix is perfect -- always verify.
+After auto-fix, review the changes with `git diff` before committing. Not every auto-fix is perfect, so always verify.
 
 !!! tip "IDE integration"
     `ansible-lint` integrates with VS Code through the Ansible extension. Violations appear as squiggly underlines in the editor, and auto-fix is available through the quick-fix menu (Ctrl+.). This gives you instant feedback as you write.
@@ -145,7 +134,7 @@ Each category maps to rules you have already learned in this course. `ansible-li
 
 ## Integration Testing with Molecule
 
-While `ansible-lint` catches static problems, Molecule catches dynamic ones -- problems that only appear when you actually apply a role to a system. Does the template render correctly? Does the service start? Does the configuration file end up in the right place?
+While `ansible-lint` catches static problems, Molecule catches dynamic ones: problems that only appear when you actually apply a role to a system. Does the template render correctly? Does the service start? Does the configuration file end up in the right place?
 
 Molecule provides a framework for integration testing Ansible content. It creates test environments, applies your roles, runs verification assertions, and tears everything down.
 
@@ -215,11 +204,11 @@ scenario:
 
 Key sections:
 
-- **`driver: delegated`** -- Uses the delegated driver instead of containers. This means Molecule runs everything on localhost without needing Docker or Podman. It is simpler for learning and works in any environment.
-- **`platforms`** -- Defines the test hosts. With the delegated driver, `localhost` is the only platform.
-- **`provisioner`** -- Configures how Ansible runs. The inventory section sets connection variables for localhost.
-- **`verifier: ansible`** -- Uses Ansible playbooks for verification instead of a separate tool like Testinfra.
-- **`scenario.test_sequence`** -- The ordered list of stages that `molecule test` executes.
+- **`driver: delegated`**: Uses the delegated driver instead of containers. This means Molecule runs everything on localhost without needing Docker or Podman. It is simpler for learning and works in any environment.
+- **`platforms`**: Defines the test hosts. With the delegated driver, `localhost` is the only platform.
+- **`provisioner`**: Configures how Ansible runs. The inventory section sets connection variables for localhost.
+- **`verifier: ansible`**: Uses Ansible playbooks for verification instead of a separate tool like Testinfra.
+- **`scenario.test_sequence`**: The ordered list of stages that `molecule test` executes.
 
 #### converge.yml
 
@@ -248,11 +237,11 @@ Notice the test-specific overrides:
 - **`/tmp/molecule-webserver`** as the document root (writable without root)
 - **`webserver_service_enabled: false`** (no actual httpd service needed for verification)
 
-These overrides make the test portable -- it runs anywhere without elevated privileges or installed services.
+These overrides make the test portable. It runs anywhere without elevated privileges or installed services.
 
 ### Writing Assertions
 
-The `verify.yml` playbook contains assertion tasks that check postconditions -- things that should be true after the role has run:
+The `verify.yml` playbook contains assertion tasks that check postconditions (things that should be true after the role has run):
 
 ```yaml
 ---
@@ -311,8 +300,8 @@ The `verify.yml` playbook contains assertion tasks that check postconditions -- 
 
 The pattern for each assertion is:
 
-1. **Gather a fact** -- use `ansible.builtin.stat`, `ansible.builtin.slurp`, or another read-only module to capture state
-2. **Assert the condition** -- use `ansible.builtin.assert` with `that:`, `fail_msg:`, and `success_msg:`
+1. **Gather a fact**: use `ansible.builtin.stat`, `ansible.builtin.slurp`, or another read-only module to capture state
+2. **Assert the condition**: use `ansible.builtin.assert` with `that:`, `fail_msg:`, and `success_msg:`
 
 !!! warning "Use `ansible.builtin.slurp` instead of `command: cat`"
     `ansible.builtin.slurp` is idempotent and works correctly in check mode. `command: cat` reports `changed` by default and fails in check mode unless you add `changed_when: false` and `check_mode: false`. For reading file contents in tests, always prefer `slurp`.
@@ -329,8 +318,8 @@ When you run `molecule test -s integration_webserver`, Molecule executes ten sta
 | **4. Syntax** | Validate playbook syntax (like `ansible-playbook --syntax-check`) |
 | **5. Create** | Create the test environment (with delegated driver, this is a no-op) |
 | **6. Prepare** | Run a prepare playbook to set up prerequisites (if defined) |
-| **7. Converge** | Run the converge playbook -- this applies the role |
-| **8. Verify** | Run the verify playbook -- this checks assertions |
+| **7. Converge** | Run the converge playbook (applies the role) |
+| **8. Verify** | Run the verify playbook (checks assertions) |
 | **9. Cleanup** | Clean up test resources |
 | **10. Destroy** | Tear down the test environment |
 
@@ -358,7 +347,7 @@ molecule destroy -s integration_webserver
 
 ## Functional Testing with pytest-ansible
 
-Molecule tests the role as a whole -- it applies the role to a system and checks the results. But sometimes you need finer-grained tests that validate individual pieces in isolation. That is where `pytest-ansible` comes in.
+Molecule tests the role as a whole: it applies the role to a system and checks the results. But sometimes you need finer-grained tests that validate individual pieces in isolation. That is where `pytest-ansible` comes in.
 
 `pytest-ansible` is a pytest plugin that bridges Python's `pytest` framework and Ansible. It provides fixtures for running Ansible modules directly from Python test code, making it possible to write fast, isolated tests for modules, plugins, and role internals.
 
@@ -434,7 +423,7 @@ class TestWebserverDefaults:
         assert defaults["webserver_document_root"].startswith("/")
 ```
 
-These tests run in milliseconds. They validate conventions that are easy to violate accidentally -- a new variable without the role prefix, a default that should be an integer but is a string, a path that should be absolute but is relative.
+These tests run in milliseconds. They validate conventions that are easy to violate accidentally: a new variable without the role prefix, a default that should be an integer but is a string, a path that should be absolute but is relative.
 
 The full test file in the companion code also checks:
 
@@ -468,21 +457,21 @@ Useful pytest flags:
 
 | Flag | Purpose |
 |------|---------|
-| `-v` | Verbose -- show each test name and result |
-| `-s` | No capture -- show print statements and debug output |
+| `-v` | Verbose: show each test name and result |
+| `-s` | No capture: show print statements and debug output |
 | `-x` | Stop on first failure |
 | `--tb=short` | Short tracebacks for cleaner output |
 | `-k "pattern"` | Run only tests matching the pattern |
 
 ## Test Orchestration with tox-ansible
 
-You now have three testing tools: `ansible-lint` for static analysis, `pytest` for unit tests, and Molecule for integration tests. Running them separately works, but it is tedious -- especially when you need to test against multiple Python and Ansible versions.
+You now have three testing tools: `ansible-lint` for static analysis, `pytest` for unit tests, and Molecule for integration tests. Running them separately works, but it is tedious, especially when you need to test against multiple Python and Ansible versions.
 
 `tox-ansible` solves this. It is a tox plugin (included in `ansible-dev-tools`) that scans your collection structure and **automatically generates test environments** for linting, unit tests, sanity tests, and integration tests. No manual environment definitions needed.
 
 ### Configuration
 
-The configuration file is `tox-ansible.ini` (not `tox.ini` -- this keeps tox-ansible separate from any standard tox configuration):
+The configuration file is `tox-ansible.ini` (not `tox.ini`, which keeps tox-ansible separate from any standard tox configuration):
 
 ```ini
 [ansible]
@@ -505,7 +494,7 @@ skip =
     milestone
 ```
 
-That is the entire configuration. The `skip` list excludes Python versions and Ansible versions that are not available in your environment. Everything else is convention over configuration -- the plugin discovers what to test by scanning the collection structure.
+That is the entire configuration. The `skip` list excludes Python versions and Ansible versions that are not available in your environment. Everything else is convention over configuration: the plugin discovers what to test by scanning the collection structure.
 
 ### Auto-Discovery
 
@@ -528,9 +517,9 @@ unit-py3.12-2.19             -> Unit tests (pytest)
 
 Each environment name encodes three pieces of information:
 
-- **Test type** -- `sanity`, `unit`, `integration`, or `galaxy`
-- **Python version** -- `py3.12`, `py3.13`, etc.
-- **Ansible version** -- `2.19`, `2.20`, etc.
+- **Test type**: `sanity`, `unit`, `integration`, or `galaxy`
+- **Python version**: `py3.12`, `py3.13`, etc.
+- **Ansible version**: `2.19`, `2.20`, etc.
 
 The plugin finds these by looking for:
 
@@ -667,7 +656,7 @@ Run the unit tests through tox and compare the output to running `pytest` direct
 
 In this module you:
 
-- Learned the Ansible test pyramid -- lint, unit, and integration tests form layers of increasing thoroughness and cost
+- Learned the Ansible test pyramid: lint, unit, sanity, and integration tests form layers of increasing thoroughness and cost
 - Configured `ansible-lint` with a production profile, learned to read its output, and used auto-fix to resolve violations automatically
 - Created a Molecule scenario for the webserver role with a delegated driver, a converge playbook that applies the role, and a verify playbook with assertion-based checks
 - Understood the ten-stage Molecule lifecycle and when to use individual stages (`converge`, `verify`) versus the full lifecycle (`test`)
@@ -678,4 +667,4 @@ The CoP at Parasol Tech now has quality gates: `ansible-lint` catches style viol
 
 ## Next Steps
 
-Next: [Module 8 -- Packaging and Deployment](8-packaging-and-deployment.md)
+Next: [Module 8: Packaging and Deployment](8-packaging-and-deployment.md)

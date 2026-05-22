@@ -24,13 +24,13 @@ Ansible es un motor de automatización de código abierto que te permite describ
 
 Cuatro propiedades hacen que Ansible destaque:
 
-**Sin agentes** -- Ansible no requiere que se instale ningún software en las máquinas que administra. Se conecta por SSH estándar (o WinRM para Windows) y ejecuta tareas de forma remota. Sin demonios, sin agentes, sin infraestructura adicional.
+**Sin agentes**: Ansible no requiere que se instale ningún software en las máquinas que administra. Se conecta por SSH estándar (o WinRM para Windows) y ejecuta tareas de forma remota. Sin demonios, sin agentes, sin infraestructura adicional.
 
-**Declarativo** -- Describes el estado deseado ("este paquete debe estar instalado", "este servicio debe estar ejecutándose") en lugar de los pasos para llegar ahí. Los módulos de Ansible manejan los detalles de implementación.
+**Declarativo**: Describes el estado deseado ("este paquete debe estar instalado", "este servicio debe estar ejecutándose") en lugar de los pasos para llegar ahí. Los módulos de Ansible manejan los detalles de implementación.
 
-**Idempotente** -- Ejecutar la misma automatización dos veces produce el mismo resultado. Si un paquete ya está instalado, Ansible omite el paso. Si un archivo ya tiene el contenido correcto, Ansible lo deja como está. Esto significa que puedes re-ejecutar tu automatización de forma segura sin miedo a romper cosas.
+**Idempotente**: Ejecutar la misma automatización dos veces produce el mismo resultado. Si un paquete ya está instalado, Ansible omite el paso. Si un archivo ya tiene el contenido correcto, Ansible lo deja como está. Esto significa que puedes re-ejecutar tu automatización de forma segura sin miedo a romper cosas.
 
-**Simple** -- Ansible usa YAML como lenguaje de configuración. Si puedes leer un archivo YAML, puedes leer un playbook de Ansible. No hay un lenguaje de programación personalizado que aprender.
+**Simple**: Ansible usa YAML como lenguaje de configuración. Si puedes leer un archivo YAML, puedes leer un playbook de Ansible. No hay un lenguaje de programación personalizado que aprender.
 
 !!! info "Cómo se conecta Ansible"
     Para destinos Linux/Unix, Ansible usa SSH. Copia pequeños programas en Python (llamados módulos) al host remoto, los ejecuta, recopila los resultados y limpia. El host administrado solo necesita Python y SSH -- nada más.
@@ -41,7 +41,7 @@ El flujo de trabajo manual de Lionel tiene varios problemas que la automatizaci�
 
 | Enfoque Manual | Con Automatización |
 |----------------|-------------------|
-| Los pasos viven en la cabeza de Lionel o en una wiki desactualizada | El playbook *es* la documentación -- siempre actual |
+| Los pasos viven en la cabeza de Lionel o en una wiki desactualizada | El playbook *es* la documentación, siempre actual |
 | Cada servidor está configurado ligeramente diferente | Cada servidor recibe exactamente la misma configuración |
 | Toma 45 minutos por servidor | Toma segundos, se ejecuta en paralelo en docenas de servidores |
 | Los errores se descubren días después en producción | El modo check detecta problemas antes de que ocurran |
@@ -57,7 +57,7 @@ Esto es lo que incluye el paquete:
 
 | Herramienta | Propósito | Primer Uso |
 |-------------|-----------|------------|
-| `ansible-core` | El motor central -- `ansible-playbook`, `ansible-galaxy`, comandos ad-hoc | Este módulo |
+| `ansible-core` | El motor central: `ansible-playbook`, `ansible-galaxy`, comandos ad-hoc | Este módulo |
 | `ansible-navigator` | TUI para ejecutar e inspeccionar ejecuciones de playbooks | Módulo 2 |
 | `ansible-creator` | Scaffolding para roles, colecciones y proyectos de playbooks | Módulo 6 |
 | `ade` | Gestión de entornos de desarrollo (instalación, árboles de dependencias) | Módulo 6 |
@@ -73,7 +73,7 @@ Esto es lo que incluye el paquete:
 
 ## Configuración del Entorno
 
-Tienes dos opciones para tu entorno de laboratorio. Ambas te dan las mismas herramientas -- elige la que se adapte a tu flujo de trabajo.
+Tienes dos opciones para tu entorno de laboratorio. Ambas te dan las mismas herramientas; elige la que se adapte a tu flujo de trabajo.
 
 === "Devcontainer Local"
 
@@ -103,12 +103,12 @@ Tienes dos opciones para tu entorno de laboratorio. Ambas te dan las mismas herr
 
         Alternativamente, abre la paleta de comandos (++ctrl+shift+p++) y selecciona **Dev Containers: Reopen in Container**.
 
-    4. Espera a que el contenedor se construya. Esto toma unos minutos la primera vez -- descarga una imagen base UBI9 con Python 3.12 e instala todas las herramientas.
+    4. Espera a que el contenedor se construya. Esto toma unos minutos la primera vez mientras descarga la imagen de desarrollo de la comunidad.
 
     5. Una vez que el contenedor esté listo, tendrás una terminal dentro de VS Code con `adt` y todas las herramientas de Ansible disponibles.
 
     !!! note "Qué incluye el devcontainer"
-        El contenedor está construido sobre Red Hat UBI9 con Python 3.12 e incluye: `ansible-dev-tools` (el paquete completo de `adt`), `podman` (para construir Execution Environments más adelante), y MkDocs Material (para ver el sitio del curso localmente en el puerto 8000).
+        El devcontainer usa `ghcr.io/ansible/community-ansible-dev-tools:latest`, una imagen de contenedor mantenida por la comunidad con la suite completa de `adt` preinstalada. Incluye `ansible-dev-tools` (el paquete completo de `adt`) y `podman` (para construir Execution Environments más adelante). Internamente, `ansible-creator` es la herramienta que genera las configuraciones `.devcontainer/` para proyectos Ansible.
 
 === "Red Hat Devtools Sandbox"
 
@@ -129,7 +129,7 @@ Tienes dos opciones para tu entorno de laboratorio. Ambas te dan las mismas herr
         cd ansible-zero-to-hero
         ```
 
-    5. Todas las herramientas de `adt` están preinstaladas -- puedes empezar a trabajar de inmediato.
+    5. Todas las herramientas de `adt` están preinstaladas. Puedes empezar a trabajar de inmediato.
 
     !!! note "Sesiones del sandbox"
         Las sesiones del sandbox pueden tener límites de tiempo. Guarda tu trabajo haciendo commit y push a tu propio fork si necesitas continuar después.
@@ -145,17 +145,17 @@ adt --version
 Deberías ver una salida listando todas las herramientas y sus versiones:
 
 ```text
-ansible-builder                 24.12.1
-ansible-core                    2.18.2
-ansible-creator                 25.1.0
-ansible-dev-environment         25.1.0
-ansible-dev-tools               25.2.1
-ansible-lint                    25.2.1
-ansible-navigator               25.2.0
-ansible-sign                    0.1.1
-molecule                        25.2.1
-pytest-ansible                  25.2.0
-tox-ansible                     25.2.0
+ansible-builder                          3.1.1
+ansible-core                             2.20.5
+ansible-creator                          26.4.3
+ansible-dev-environment                  26.4.0
+ansible-dev-tools                        26.4.6
+ansible-lint                             26.4.0
+ansible-navigator                        26.4.0
+ansible-sign                             0.1.5
+molecule                                 26.4.0
+pytest-ansible                           26.4.0
+tox-ansible                              26.3.0
 ```
 
 !!! tip "Los números de versión pueden variar"
@@ -168,15 +168,15 @@ ansible --version
 ```
 
 ```text
-ansible [core 2.18.2]
+ansible [core 2.20.5]
   config file = None
-  configured module search path = ['/home/default/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
-  ansible python module location = /opt/app-root/lib64/python3.12/site-packages/ansible
-  ansible collection location = /home/default/.ansible/collections:/usr/share/ansible/collections
-  executable location = /opt/app-root/bin/ansible
-  python version = 3.12.8 (main, Jan 17 2025, 00:00:00) [GCC 11.5.0 20240719 (Red Hat 11.5.0-2)]
-  jinja version = 3.1.5
-  libyaml = True
+  configured module search path = ['/root/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /usr/local/lib/python3.13/site-packages/ansible
+  ansible collection location = /root/.ansible/collections:/usr/share/ansible/collections
+  executable location = /usr/local/bin/ansible
+  python version = 3.13.13 (main, Apr  8 2026, 00:00:00) [GCC 15.2.1 20260123 (Red Hat 15.2.1-7)] (/usr/bin/python3)
+  jinja version = 3.1.6
+  pyyaml version = 6.0.3 (with libyaml v0.2.5)
 ```
 
 ```bash
@@ -184,14 +184,14 @@ python3 --version
 ```
 
 ```text
-Python 3.12.8
+Python 3.13.13
 ```
 
 Si los tres comandos se ejecutan sin errores, tu entorno está listo.
 
 ## Tus Primeros Comandos Ad-Hoc
 
-Un **comando ad-hoc** es una línea única que ejecuta un solo módulo de Ansible contra uno o más hosts. Es la forma más rápida de hacer algo con Ansible -- no se necesita un playbook.
+Un **comando ad-hoc** es una línea única que ejecuta un solo módulo de Ansible contra uno o más hosts. Es la forma más rápida de hacer algo con Ansible (no se necesita un playbook).
 
 La sintaxis general es:
 
@@ -199,7 +199,7 @@ La sintaxis general es:
 ansible <patrón-de-hosts> -m <módulo> -a "<argumentos-del-módulo>"
 ```
 
-Probemos algunos comandos contra `localhost` -- la máquina en la que estás trabajando.
+Probemos algunos comandos contra `localhost`, la máquina en la que estás trabajando.
 
 ### Ping
 
@@ -218,12 +218,12 @@ localhost | SUCCESS => {
 
 Dos cosas a notar:
 
-- **`changed: false`** -- el módulo ping no modifica nada, así que reporta cero cambios. Esto es la idempotencia en acción.
-- **`ping: pong`** -- el módulo se ejecutó exitosamente y devolvió un resultado.
+- **`changed: false`**: el módulo ping no modifica nada, así que reporta cero cambios. Esto es la idempotencia en acción.
+- **`ping: pong`**: el módulo se ejecutó exitosamente y devolvió un resultado.
 
 ### Recopilar Facts
 
-El módulo `ansible.builtin.setup` recopila información detallada (llamada **facts**) sobre el sistema destino -- SO, red, memoria, CPU y mucho más:
+El módulo `ansible.builtin.setup` recopila información detallada (llamada **facts**) sobre el sistema destino: SO, red, memoria, CPU y mucho más:
 
 ```bash
 ansible localhost -m ansible.builtin.setup
@@ -234,13 +234,11 @@ La salida es extensa. Aquí hay un pequeño extracto:
 ```json
 localhost | SUCCESS => {
     "ansible_facts": {
-        "ansible_distribution": "RedHat",
-        "ansible_distribution_version": "9.5",
-        "ansible_hostname": "toolbox",
-        "ansible_kernel": "6.19.14-100.fc42.x86_64",
-        "ansible_memtotal_mb": 15736,
+        "ansible_distribution": "Fedora",
+        "ansible_distribution_version": "42",
+        "ansible_hostname": "ansible-dev-container",
         "ansible_os_family": "RedHat",
-        "ansible_python_version": "3.12.8",
+        "ansible_python_version": "3.13.13",
         ...
     }
 }
@@ -254,23 +252,23 @@ localhost | SUCCESS => {
 El módulo `ansible.builtin.command` ejecuta un comando en el destino:
 
 ```bash
-ansible localhost -m ansible.builtin.command -a "hostname"
+ansible localhost -m ansible.builtin.command -a "uname -n"
 ```
 
 ```text
 localhost | CHANGED => {
     "changed": true,
-    "cmd": ["hostname"],
+    "cmd": ["uname", "-n"],
     "rc": 0,
-    "stdout": "toolbox",
-    "stdout_lines": ["toolbox"]
+    "stdout": "ansible-dev-container",
+    "stdout_lines": ["ansible-dev-container"]
 }
 ```
 
-Observa que `changed` es `true` aquí. El módulo `command` siempre reporta changed porque no puede saber si el comando realmente modificó el sistema. En un playbook, agregarías una cláusula `changed_when:` para hacer esto preciso -- pero ese es un tema para módulos posteriores.
+Observa que `changed` es `true` aquí. El módulo `command` siempre reporta changed porque no puede saber si el comando realmente modificó el sistema. En un playbook, agregarías una cláusula `changed_when:` para hacer esto preciso, pero ese es un tema para módulos posteriores.
 
 !!! warning "command vs shell"
-    El módulo `ansible.builtin.command` no procesa el comando a través de un shell, por lo que pipes (`|`), redirecciones (`>`) y variables de entorno no funcionan. Si necesitas funcionalidades del shell, usa `ansible.builtin.shell` en su lugar -- pero prefiere `command` cuando puedas, porque es más seguro.
+    El módulo `ansible.builtin.command` no procesa el comando a través de un shell, por lo que pipes (`|`), redirecciones (`>`) y variables de entorno no funcionan. Si necesitas funcionalidades del shell, usa `ansible.builtin.shell` en su lugar, pero prefiere `command` cuando puedas porque es más seguro.
 
 ## Entendiendo los Módulos
 
@@ -313,7 +311,7 @@ Esto lista todos los módulos con "file" en su nombre o descripción. Para ver l
 ansible-doc ansible.builtin.copy
 ```
 
-Esto muestra los parámetros del módulo, ejemplos y valores de retorno -- todo sin salir de tu terminal.
+Esto muestra los parámetros del módulo, ejemplos y valores de retorno, todo sin salir de tu terminal.
 
 ## Resumen
 

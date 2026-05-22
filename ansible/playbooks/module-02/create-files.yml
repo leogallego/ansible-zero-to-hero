@@ -10,19 +10,19 @@
   tasks:
     - name: Create project directory
       ansible.builtin.file:
-        path: /tmp/ansible-demo
+        path: ~/ansible-demo
         state: directory
         mode: "0755"
 
     - name: Create logs subdirectory
       ansible.builtin.file:
-        path: /tmp/ansible-demo/logs
+        path: ~/ansible-demo/logs
         state: directory
         mode: "0755"
 
     - name: Create a welcome file
       ansible.builtin.copy:
-        dest: /tmp/ansible-demo/README.txt
+        dest: ~/ansible-demo/README.txt
         content: |
           Welcome to Ansible!
           This file was created by an Ansible playbook.
@@ -30,10 +30,10 @@
 
     - name: Create an application config file
       ansible.builtin.copy:
-        dest: /tmp/ansible-demo/app.conf
+        dest: ~/ansible-demo/app.conf
         content: |
           # Application configuration
           app_name=demo
           log_level=info
-          log_dir=/tmp/ansible-demo/logs
+          log_dir=~/ansible-demo/logs
         mode: "0644"

@@ -13,13 +13,13 @@ Al finalizar este módulo serás capaz de:
 
 Lionel y Jordan han parametrizado los playbooks de Parasol Tech con variables y facts. Cada entorno lee sus propios valores desde `group_vars/`, y los playbooks se adaptan dinámicamente usando condiciones `when`. Pero hay un nuevo problema.
 
-"Necesitamos desplegar archivos de configuración," dice Lionel. "Config de Nginx, banners MOTD, configuración de aplicaciones -- cada uno necesita valores diferentes por entorno. Podría usar `ansible.builtin.copy` con un archivo estático, pero entonces necesito un archivo separado para dev, staging y producción. Eso no escala."
+"Necesitamos desplegar archivos de configuración," dice Lionel. "Config de Nginx, banners MOTD, configuración de aplicaciones, y cada uno necesita valores diferentes por entorno. Podría usar `ansible.builtin.copy` con un archivo estático, pero entonces necesito un archivo separado para dev, staging y producción. Eso no escala."
 
 "Para eso exactamente son los templates," responde Jordan. "Escribes un template con placeholders, y Ansible completa los valores en el momento del despliegue. Y cuando la configuración cambia, los handlers reinician el servicio automáticamente."
 
 ## Fundamentos de Templates Jinja2
 
-Ansible usa el motor de templates **Jinja2**. Un template Jinja2 es un archivo de texto -- cualquier formato (YAML, INI, TOML, XML, texto plano) -- con delimitadores especiales que Ansible evalúa en tiempo de ejecución.
+Ansible usa el motor de templates **Jinja2**. Un template Jinja2 es un archivo de texto en cualquier formato (YAML, INI, TOML, XML, texto plano) con delimitadores especiales que Ansible evalúa en tiempo de ejecución.
 
 ### Los Tres Delimitadores
 
@@ -31,7 +31,7 @@ Ansible usa el motor de templates **Jinja2**. Un template Jinja2 es un archivo d
 
 ### Variables en Templates
 
-Cualquier variable disponible para el play -- variables de inventario, facts, variables registradas, valores de `set_fact` -- está disponible dentro de los templates:
+Cualquier variable disponible para el play (variables de inventario, facts, variables registradas, valores de `set_fact`) está disponible dentro de los templates:
 
 ```jinja
 # Sustitucion simple de variables
@@ -39,7 +39,7 @@ server_name {{ parasol_nginx_server_name }};
 listen {{ parasol_nginx_http_port | default(80) }};
 ```
 
-El `| default(80)` es un **filtro** -- proporciona un valor de respaldo si la variable no está definida. Los filtros son una de las características más útiles de Jinja2.
+El `| default(80)` es un **filtro**: proporciona un valor de respaldo si la variable no está definida. Los filtros son una de las características más útiles de Jinja2.
 
 ### Filtros
 
@@ -70,7 +70,7 @@ El template compañero `motd.j2` usa varios de estos:
 =============================================
 ```
 
-Observa cómo `upper` se encadena después de `default` -- los filtros pueden encadenarse con pipe. El filtro `| comment` en `ansible_managed` envuelve el string de gestión en la sintaxis de comentario apropiada para el formato del archivo.
+Observa cómo `upper` se encadena después de `default`. Los filtros pueden encadenarse con pipe. El filtro `| comment` en `ansible_managed` envuelve el string de gestión en la sintaxis de comentario apropiada para el formato del archivo.
 
 ### Condicionales en Templates
 
@@ -202,7 +202,7 @@ Cada template debe comenzar con el marcador `{{ ansible_managed | comment }}`. E
 # Ansible managed
 ```
 
-Esto es crítico en operaciones. Si alguien abre un archivo de configuración en un servidor y ve este marcador, sabe que no debe editarlo a mano -- la siguiente ejecución de Ansible sobrescribirá sus cambios.
+Esto es crítico en operaciones. Si alguien abre un archivo de configuración en un servidor y ve este marcador, sabe que no debe editarlo a mano, porque la siguiente ejecución de Ansible sobrescribirá sus cambios.
 
 ```jinja
 {{ ansible_managed | comment }}
@@ -240,7 +240,7 @@ Los templates deben producir la misma salida cuando se ejecutan con las mismas e
 El archivo renderizado será diferente en cada ejecución, incluso si nada más cambió. Esto significa que la tarea `template` siempre reportará `changed`, lo que dispara handlers innecesariamente y hace imposible saber si ocurrió un cambio real de configuración.
 
 !!! danger "Los timestamps rompen la idempotencia"
-    Nunca uses `ansible_facts['date_time']`, `now()`, ni ningún valor basado en tiempo en un template. El marcador `ansible_managed` ya les dice a los operadores que el archivo está gestionado por Ansible -- eso es suficiente.
+    Nunca uses `ansible_facts['date_time']`, `now()`, ni ningún valor basado en tiempo en un template. El marcador `ansible_managed` ya les dice a los operadores que el archivo está gestionado por Ansible, y eso es suficiente.
 
 ### Usar `mode` con Strings entre Comillas
 
@@ -277,9 +277,9 @@ handlers:
       state: reloaded
 ```
 
-El handler `Reload nginx` solo se ejecutará si la tarea de template reporta `changed` -- lo que significa que el archivo renderizado es diferente de lo que ya estaba en disco. Si el archivo no ha cambiado, el handler no es notificado y el servicio se deja como está.
+El handler `Reload nginx` solo se ejecutará si la tarea de template reporta `changed`, lo que significa que el archivo renderizado es diferente de lo que ya estaba en disco. Si el archivo no ha cambiado, el handler no es notificado y el servicio se deja como está.
 
-Este es el punto clave: **los handlers hacen que los reinicios de servicios sean idempotentes**. No reinicias nginx en cada ejecución -- solo cuando la configuración realmente cambió.
+Este es el punto clave: **los handlers hacen que los reinicios de servicios sean idempotentes**. No reinicias nginx en cada ejecución, solo cuando la configuración realmente cambió.
 
 ### Notificar Múltiples Handlers
 
@@ -322,7 +322,7 @@ tasks:
     notify: Reload nginx
 ```
 
-Incluso si ambos templates cambian, el handler `Reload nginx` se ejecuta solo una vez. Esto es exactamente lo que quieres -- no quieres recargar nginx dos veces en el mismo play.
+Incluso si ambos templates cambian, el handler `Reload nginx` se ejecuta solo una vez. Esto es exactamente lo que quieres. No quieres recargar nginx dos veces en el mismo play.
 
 ## Cuándo se Ejecutan los Handlers
 
@@ -402,14 +402,14 @@ handlers:
       verbosity: 0
 ```
 
-Los handlers se ejecutan en orden A, B, C -- siguiendo el orden de definición en `handlers:`, no el orden de notificación. Esto te permite controlar la secuencia de ejecución organizando los handlers en el orden correcto en la sección `handlers:`.
+Los handlers se ejecutan en orden A, B, C, siguiendo el orden de definición en `handlers:`, no el orden de notificación. Esto te permite controlar la secuencia de ejecución organizando los handlers en el orden correcto en la sección `handlers:`.
 
 !!! tip "Ordenar handlers intencionalmente"
     Si necesitas que `Validate config` se ejecute antes de `Reload service`, define `Validate config` primero en la sección `handlers:`. El orden de notificación en `notify:` no importa.
 
 ### Handlers y Fallos
 
-Si una tarea falla durante el play, los handlers pendientes **no se ejecutan** por defecto. Esta es una medida de seguridad -- si algo salió mal, probablemente no quieres recargar el servicio.
+Si una tarea falla durante el play, los handlers pendientes **no se ejecutan** por defecto. Esta es una medida de seguridad: si algo salió mal, probablemente no quieres recargar el servicio.
 
 Puedes cambiar este comportamiento a nivel de play:
 
@@ -473,8 +473,8 @@ ansible-navigator run playbooks/module-05/deploy-config.yml --mode stdout
 Examina los archivos generados:
 
 ```bash
-cat /tmp/ansible-demo/nginx.conf
-cat /tmp/ansible-demo/motd
+cat ~/ansible-demo/nginx.conf
+cat ~/ansible-demo/motd
 ```
 
 Mira la parte superior de cada archivo. ¿Ves el comentario `# Ansible managed`? Este es el marcador `{{ ansible_managed | comment }}` en acción.
@@ -563,7 +563,7 @@ En este módulo:
 - Exploraste el orden de ejecución de handlers (orden de definición, no de notificación), deduplicación y `meta: flush_handlers`
 - Usaste `force_handlers` para asegurar que handlers críticos se ejecuten incluso cuando tareas posteriores fallan
 
-Lionel y Jordan ahora despliegan archivos de configuración como templates. Un solo `nginx.conf.j2` funciona en dev, staging y producción -- cada entorno completa sus propios valores desde variables de inventario. Cuando la configuración cambia, los handlers recargan el servicio automáticamente. Cuando no cambia, no pasa nada. La automatización es idempotente y autodocumentada.
+Lionel y Jordan ahora despliegan archivos de configuración como templates. Un solo `nginx.conf.j2` funciona en dev, staging y producción, y cada entorno completa sus propios valores desde variables de inventario. Cuando la configuración cambia, los handlers recargan el servicio automáticamente. Cuando no cambia, no pasa nada. La automatización es idempotente y autodocumentada.
 
 ## Próximos Pasos
 

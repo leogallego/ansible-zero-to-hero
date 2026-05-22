@@ -24,13 +24,13 @@ Ansible is an open source automation engine that lets you describe the desired s
 
 Four properties make Ansible stand out:
 
-**Agentless** -- Ansible does not require any software to be installed on the machines it manages. It connects over standard SSH (or WinRM for Windows) and executes tasks remotely. No daemons, no agents, no extra infrastructure.
+**Agentless**: Ansible does not require any software to be installed on the machines it manages. It connects over standard SSH (or WinRM for Windows) and executes tasks remotely. No daemons, no agents, no extra infrastructure.
 
-**Declarative** -- You describe the desired state ("this package should be installed", "this service should be running") rather than the steps to get there. Ansible modules handle the implementation details.
+**Declarative**: You describe the desired state ("this package should be installed", "this service should be running") rather than the steps to get there. Ansible modules handle the implementation details.
 
-**Idempotent** -- Running the same automation twice produces the same result. If a package is already installed, Ansible skips the step. If a file already has the right content, Ansible leaves it alone. This means you can safely re-run your automation without fear of breaking things.
+**Idempotent**: Running the same automation twice produces the same result. If a package is already installed, Ansible skips the step. If a file already has the right content, Ansible leaves it alone. This means you can safely re-run your automation without fear of breaking things.
 
-**Simple** -- Ansible uses YAML for its configuration language. If you can read a YAML file, you can read an Ansible playbook. There is no custom programming language to learn.
+**Simple**: Ansible uses YAML for its configuration language. If you can read a YAML file, you can read an Ansible playbook. There is no custom programming language to learn.
 
 !!! info "How Ansible connects"
     For Linux/Unix targets, Ansible uses SSH. It copies small Python programs (called modules) to the remote host, executes them, collects the results, and cleans up. The managed host only needs Python and SSH -- nothing else.
@@ -41,7 +41,7 @@ Lionel's manual workflow has several problems that automation solves:
 
 | Manual Approach | With Automation |
 |----------------|-----------------|
-| Steps live in Lionel's head or a wiki that gets outdated | The playbook *is* the documentation -- always current |
+| Steps live in Lionel's head or a wiki that gets outdated | The playbook *is* the documentation, always current |
 | Each server is configured slightly differently | Every server gets the exact same configuration |
 | Takes 45 minutes per server | Takes seconds, runs in parallel across dozens of servers |
 | Mistakes are discovered days later in production | Check mode catches issues before they happen |
@@ -57,7 +57,7 @@ Here is what the bundle includes:
 
 | Tool | Purpose | First Used |
 |------|---------|------------|
-| `ansible-core` | The core engine -- `ansible-playbook`, `ansible-galaxy`, ad-hoc commands | This module |
+| `ansible-core` | The core engine: `ansible-playbook`, `ansible-galaxy`, ad-hoc commands | This module |
 | `ansible-navigator` | TUI for running and inspecting playbook runs | Module 2 |
 | `ansible-creator` | Scaffolding for roles, collections, and playbook projects | Module 6 |
 | `ade` | Development environment management (install, dependency trees) | Module 6 |
@@ -73,7 +73,7 @@ Here is what the bundle includes:
 
 ## Setting Up Your Environment
 
-You have two options for your lab environment. Both give you the same tools -- choose whichever fits your workflow.
+You have two options for your lab environment. Both give you the same tools; choose whichever fits your workflow.
 
 === "Local Devcontainer"
 
@@ -103,12 +103,12 @@ You have two options for your lab environment. Both give you the same tools -- c
 
         Alternatively, open the command palette (++ctrl+shift+p++) and select **Dev Containers: Reopen in Container**.
 
-    4. Wait for the container to build. This takes a few minutes the first time -- it pulls a UBI9 Python 3.12 base image and installs all the tools.
+    4. Wait for the container to build. This takes a few minutes the first time as it pulls the community development image.
 
     5. Once the container is ready, you will have a terminal inside VS Code with `adt` and all Ansible tools available.
 
     !!! note "What the devcontainer includes"
-        The container is built on Red Hat UBI9 with Python 3.12 and includes: `ansible-dev-tools` (the full `adt` bundle), `podman` (for building Execution Environments later), and MkDocs Material (for viewing the course site locally on port 8000).
+        The devcontainer uses `ghcr.io/ansible/community-ansible-dev-tools:latest`, a community-maintained container image with the full `adt` suite pre-installed. It includes `ansible-dev-tools` (the full `adt` bundle) and `podman` (for building Execution Environments later). Under the hood, `ansible-creator` is the tool that generates `.devcontainer/` configurations for Ansible projects.
 
 === "Red Hat Devtools Sandbox"
 
@@ -129,7 +129,7 @@ You have two options for your lab environment. Both give you the same tools -- c
         cd ansible-zero-to-hero
         ```
 
-    5. All `adt` tools are pre-installed -- you can start working immediately.
+    5. All `adt` tools are pre-installed. You can start working immediately.
 
     !!! note "Sandbox sessions"
         Sandbox sessions may have time limits. Save your work by committing and pushing to your own fork if you need to resume later.
@@ -145,17 +145,17 @@ adt --version
 You should see output listing all the tools and their versions:
 
 ```text
-ansible-builder                 24.12.1
-ansible-core                    2.18.2
-ansible-creator                 25.1.0
-ansible-dev-environment         25.1.0
-ansible-dev-tools               25.2.1
-ansible-lint                    25.2.1
-ansible-navigator               25.2.0
-ansible-sign                    0.1.1
-molecule                        25.2.1
-pytest-ansible                  25.2.0
-tox-ansible                     25.2.0
+ansible-builder                          3.1.1
+ansible-core                             2.20.5
+ansible-creator                          26.4.3
+ansible-dev-environment                  26.4.0
+ansible-dev-tools                        26.4.6
+ansible-lint                             26.4.0
+ansible-navigator                        26.4.0
+ansible-sign                             0.1.5
+molecule                                 26.4.0
+pytest-ansible                           26.4.0
+tox-ansible                              26.3.0
 ```
 
 !!! tip "Version numbers may differ"
@@ -168,15 +168,15 @@ ansible --version
 ```
 
 ```text
-ansible [core 2.18.2]
+ansible [core 2.20.5]
   config file = None
-  configured module search path = ['/home/default/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
-  ansible python module location = /opt/app-root/lib64/python3.12/site-packages/ansible
-  ansible collection location = /home/default/.ansible/collections:/usr/share/ansible/collections
-  executable location = /opt/app-root/bin/ansible
-  python version = 3.12.8 (main, Jan 17 2025, 00:00:00) [GCC 11.5.0 20240719 (Red Hat 11.5.0-2)]
-  jinja version = 3.1.5
-  libyaml = True
+  configured module search path = ['/root/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /usr/local/lib/python3.13/site-packages/ansible
+  ansible collection location = /root/.ansible/collections:/usr/share/ansible/collections
+  executable location = /usr/local/bin/ansible
+  python version = 3.13.13 (main, Apr  8 2026, 00:00:00) [GCC 15.2.1 20260123 (Red Hat 15.2.1-7)] (/usr/bin/python3)
+  jinja version = 3.1.6
+  pyyaml version = 6.0.3 (with libyaml v0.2.5)
 ```
 
 ```bash
@@ -184,14 +184,14 @@ python3 --version
 ```
 
 ```text
-Python 3.12.8
+Python 3.13.13
 ```
 
 If all three commands run without errors, your environment is ready.
 
 ## Your First Ad-Hoc Commands
 
-An **ad-hoc command** is a one-liner that runs a single Ansible module against one or more hosts. It is the quickest way to do something with Ansible -- no playbook needed.
+An **ad-hoc command** is a one-liner that runs a single Ansible module against one or more hosts. It is the quickest way to do something with Ansible (no playbook needed).
 
 The general syntax is:
 
@@ -199,7 +199,7 @@ The general syntax is:
 ansible <host-pattern> -m <module> -a "<module-arguments>"
 ```
 
-Let's try a few commands against `localhost` -- the machine you are working on.
+Let's try a few commands against `localhost`, the machine you are working on.
 
 ### Ping
 
@@ -218,12 +218,12 @@ localhost | SUCCESS => {
 
 Two things to notice:
 
-- **`changed: false`** -- the ping module does not modify anything, so it reports no changes. This is idempotency in action.
-- **`ping: pong`** -- the module ran successfully and returned a result.
+- **`changed: false`**: the ping module does not modify anything, so it reports no changes. This is idempotency in action.
+- **`ping: pong`**: the module ran successfully and returned a result.
 
 ### Gather Facts
 
-The `ansible.builtin.setup` module collects detailed information (called **facts**) about the target system -- OS, network, memory, CPU, and much more:
+The `ansible.builtin.setup` module collects detailed information (called **facts**) about the target system: OS, network, memory, CPU, and much more:
 
 ```bash
 ansible localhost -m ansible.builtin.setup
@@ -234,13 +234,11 @@ The output is long. Here is a small excerpt:
 ```json
 localhost | SUCCESS => {
     "ansible_facts": {
-        "ansible_distribution": "RedHat",
-        "ansible_distribution_version": "9.5",
-        "ansible_hostname": "toolbox",
-        "ansible_kernel": "6.19.14-100.fc42.x86_64",
-        "ansible_memtotal_mb": 15736,
+        "ansible_distribution": "Fedora",
+        "ansible_distribution_version": "42",
+        "ansible_hostname": "ansible-dev-container",
         "ansible_os_family": "RedHat",
-        "ansible_python_version": "3.12.8",
+        "ansible_python_version": "3.13.13",
         ...
     }
 }
@@ -254,23 +252,23 @@ localhost | SUCCESS => {
 The `ansible.builtin.command` module runs a shell command on the target:
 
 ```bash
-ansible localhost -m ansible.builtin.command -a "hostname"
+ansible localhost -m ansible.builtin.command -a "uname -n"
 ```
 
 ```text
 localhost | CHANGED => {
     "changed": true,
-    "cmd": ["hostname"],
+    "cmd": ["uname", "-n"],
     "rc": 0,
-    "stdout": "toolbox",
-    "stdout_lines": ["toolbox"]
+    "stdout": "ansible-dev-container",
+    "stdout_lines": ["ansible-dev-container"]
 }
 ```
 
-Notice that `changed` is `true` here. The `command` module always reports changed because it cannot know whether the command actually modified the system. In a playbook, you would add a `changed_when:` clause to make this accurate -- but that is a topic for later modules.
+Notice that `changed` is `true` here. The `command` module always reports changed because it cannot know whether the command actually modified the system. In a playbook, you would add a `changed_when:` clause to make this accurate, but that is a topic for later modules.
 
 !!! warning "command vs shell"
-    The `ansible.builtin.command` module does not process the command through a shell, so pipes (`|`), redirects (`>`), and environment variables do not work. If you need shell features, use `ansible.builtin.shell` instead -- but prefer `command` when you can, because it is safer.
+    The `ansible.builtin.command` module does not process the command through a shell, so pipes (`|`), redirects (`>`), and environment variables do not work. If you need shell features, use `ansible.builtin.shell` instead, but prefer `command` when you can because it is safer.
 
 ## Understanding Modules
 
@@ -313,7 +311,7 @@ This lists all modules with "file" in their name or description. To see detailed
 ansible-doc ansible.builtin.copy
 ```
 
-This shows the module's parameters, examples, and return values -- all without leaving your terminal.
+This shows the module's parameters, examples, and return values, all without leaving your terminal.
 
 ## Summary
 

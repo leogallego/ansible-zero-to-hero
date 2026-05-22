@@ -13,19 +13,19 @@ Al finalizar este módulo serás capaz de:
 
 ## La Historia Hasta Ahora
 
-Lionel y Jordan han estado escribiendo playbooks, gestionando inventario entre entornos, usando variables y facts, y desplegando archivos de configuración con templates y handlers. La automatización funciona bien -- pero vive en una pila creciente de playbooks dentro de un directorio, y otros equipos en Parasol Tech están empezando a pedir acceso.
+Lionel y Jordan han estado escribiendo playbooks, gestionando inventario entre entornos, usando variables y facts, y desplegando archivos de configuración con templates y handlers. La automatización funciona bien, pero vive en una pila creciente de playbooks dentro de un directorio, y otros equipos en Parasol Tech están empezando a pedir acceso.
 
 "El equipo de base de datos quiere nuestra configuración de nginx," dice Lionel. "Y el equipo de monitoreo sigue copiando nuestras tareas de template en sus propios playbooks. Cada copia se desvía un poco."
 
 Jordan asiente. "Necesitamos empaquetar esto. Una única fuente de verdad para la configuración del servidor web que cualquier equipo pueda consumir sin copiar archivos."
 
-Esta semana, la dirección de Parasol Tech patrocina una **Comunidad de Prácticas (CoP)** -- un grupo transversal dedicado a estándares de automatización. La primera decisión de la CoP: toda automatización reutilizable debe empaquetarse como **roles** dentro de **colecciones**. No más playbooks copiados y pegados.
+Esta semana, la dirección de Parasol Tech patrocina una **Comunidad de Prácticas (CoP)**, un grupo transversal dedicado a estándares de automatización. La primera decisión de la CoP: toda automatización reutilizable debe empaquetarse como **roles** dentro de **colecciones**. No más playbooks copiados y pegados.
 
 ## Qué Son los Roles?
 
-Un rol es una unidad de automatización autocontenida con una estructura de directorios estandarizada. En lugar de poner todo en un solo playbook, divides la automatización en directorios bien definidos -- tareas, variables, templates, handlers, metadatos -- cada uno en su propio archivo. Ansible sabe cómo ensamblar estas piezas automáticamente.
+Un rol es una unidad de automatización autocontenida con una estructura de directorios estandarizada. En lugar de poner todo en un solo playbook, divides la automatización en directorios bien definidos (tareas, variables, templates, handlers, metadatos), cada uno en su propio archivo. Ansible sabe cómo ensamblar estas piezas automáticamente.
 
-Piensa en un rol como una función en programación. Recibe entradas (variables), realiza trabajo (tareas), y puede ser llamado desde cualquier playbook. La estructura de directorios es el contrato de interfaz -- cualquiera que lea el rol sabe exactamente dónde encontrar cada pieza.
+Piensa en un rol como una función en programación. Recibe entradas (variables), realiza trabajo (tareas), y puede ser llamado desde cualquier playbook. La estructura de directorios es el contrato de interfaz: cualquiera que lea el rol sabe exactamente dónde encontrar cada pieza.
 
 ## Estructura de Directorios de un Rol
 
@@ -51,14 +51,14 @@ roles/webserver/
   README.md           # Documentacion
 ```
 
-No todos los directorios son obligatorios. Ansible solo usa los directorios que existen. Pero los nombres son estrictos -- `tasks/main.yml`, no `tasks/install.yml` -- porque Ansible busca `main.yml` por convención.
+No todos los directorios son obligatorios. Ansible solo usa los directorios que existen. Pero los nombres son estrictos: `tasks/main.yml`, no `tasks/install.yml`, porque Ansible busca `main.yml` por convención.
 
 Cada directorio tiene un propósito específico:
 
 | Directorio | Propósito |
 |------------|-----------|
 | `defaults/` | Variables orientadas al usuario con valores por defecto. Precedencia más baja. |
-| `vars/` | Variables internas y constantes. Precedencia alta -- difíciles de sobrescribir. |
+| `vars/` | Variables internas y constantes. Precedencia alta, difíciles de sobrescribir. |
 | `tasks/` | La lista de tareas que ejecuta el rol. |
 | `handlers/` | Handlers que las tareas pueden notificar. |
 | `templates/` | Templates Jinja2 desplegados por `ansible.builtin.template`. |
@@ -84,7 +84,7 @@ Cuando un rol crece, divides `tasks/main.yml` en archivos de componentes y los i
     file: "{{ role_path }}/tasks/service.yml"
 ```
 
-Observa el prefijo `{{ role_path }}`. Esto es crítico -- asegura que la ruta se resuelva al rol correcto, incluso cuando un rol incluye a otro. Nunca uses rutas relativas como `tasks/install.yml` sin él.
+Observa el prefijo `{{ role_path }}`. Esto es crítico porque asegura que la ruta se resuelva al rol correcto, incluso cuando un rol incluye a otro. Nunca uses rutas relativas como `tasks/install.yml` sin él.
 
 !!! warning "Siempre usa `{{ role_path }}` para referencias a archivos"
     Las rutas relativas en `include_tasks`, `include_vars` y `template` se resuelven contra el rol *que incluye*, no necesariamente contra tu rol. Usa `{{ role_path }}/tasks/`, `{{ role_path }}/vars/` y `{{ role_path }}/templates/` para ser explícito.
@@ -119,7 +119,7 @@ Esto aplica a:
 
 ### Prefijo de Variables Internas
 
-Las variables internas del rol -- no pensadas para que los usuarios las sobrescriban -- llevan un prefijo de doble guión bajo:
+Las variables internas del rol, no pensadas para que los usuarios las sobrescriban, llevan un prefijo de doble guión bajo:
 
 ```yaml
 # vars/main.yml — constantes internas
@@ -168,7 +168,7 @@ Esta es una de las distinciones más importantes en el diseño de roles, y equiv
 
 ### `defaults/main.yml` -- La Interfaz de Usuario
 
-Las variables en `defaults/main.yml` tienen la **precedencia más baja** en la jerarquía de variables de Ansible. Esto significa que pueden ser sobrescritas por casi cualquier cosa -- variables de inventario, group vars, host vars, play vars, extra vars. Eso es exactamente lo que quieres para la configuración orientada al usuario.
+Las variables en `defaults/main.yml` tienen la **precedencia más baja** en la jerarquía de variables de Ansible. Esto significa que pueden ser sobrescritas por casi cualquier cosa: variables de inventario, group vars, host vars, play vars, extra vars. Eso es exactamente lo que quieres para la configuración orientada al usuario.
 
 Piensa en `defaults/main.yml` como la "API" de tu rol. Documenta cada parámetro que el usuario puede ajustar:
 
@@ -187,7 +187,7 @@ Observa las variables comentadas al final. Son entradas que no tienen un valor p
 
 ### `vars/main.yml` -- Constantes Internas
 
-Las variables en `vars/main.yml` tienen **precedencia alta** -- sobrescriben variables de inventario, group vars y la mayoría de otras fuentes. Solo las extra vars (`-e`) pueden sobrescribirlas.
+Las variables en `vars/main.yml` tienen **precedencia alta**: sobrescriben variables de inventario, group vars y la mayoría de otras fuentes. Solo las extra vars (`-e`) pueden sobrescribirlas.
 
 Esto hace que `vars/main.yml` sea el lugar equivocado para valores por defecto orientados al usuario. Si pones `webserver_port: 80` en `vars/main.yml`, los usuarios no pueden sobrescribirlo desde su inventario. Necesitarían `-e webserver_port=8080` en cada ejecución, lo que derrota el propósito.
 
@@ -202,7 +202,7 @@ __webserver_config_dir: /etc/httpd/conf
 __webserver_config_file: httpd.conf
 ```
 
-Estos son detalles de implementación -- el nombre del servicio, la ruta del directorio de configuración, la lista de paquetes por defecto. Los usuarios no deberían necesitar definirlos, y si los sobrescriben por accidente, suceden cosas malas.
+Estos son detalles de implementación: el nombre del servicio, la ruta del directorio de configuración, la lista de paquetes por defecto. Los usuarios no deberían necesitar definirlos, y si los sobrescriben por accidente, suceden cosas malas.
 
 !!! danger "Nunca pongas defaults orientados al usuario en `vars/main.yml`"
     La alta precedencia de `vars/` hace que las variables sean casi imposibles de sobrescribir desde el inventario. Siempre usa `defaults/main.yml` para cualquier cosa que los usuarios deban poder personalizar.
@@ -223,7 +223,7 @@ Una colección es un paquete de distribución para contenido Ansible. Agrupa rol
 
 Antes de las colecciones, compartir contenido Ansible significaba distribuir roles independientes a través de Ansible Galaxy. Esto funcionaba, pero tenía problemas: sin namespacing (dos personas podían crear un rol llamado `nginx`), sin gestión de dependencias entre roles, y sin forma de agrupar roles con módulos o plugins personalizados.
 
-Las colecciones resuelven todo esto. Una colección tiene un **namespace** y un **nombre** -- como `parasoltech.infrastructure` -- que garantiza unicidad. Incluye un manifiesto `galaxy.yml` que declara dependencias y versionado. Y puede contener cualquier combinación de roles, módulos, plugins y documentación.
+Las colecciones resuelven todo esto. Una colección tiene un **namespace** y un **nombre** (como `parasoltech.infrastructure`) que garantiza unicidad. Incluye un manifiesto `galaxy.yml` que declara dependencias y versionado. Y puede contener cualquier combinación de roles, módulos, plugins y documentación.
 
 ### Estructura de una Colección
 
@@ -244,7 +244,7 @@ parasoltech/infrastructure/
   docs/                 # Documentacion adicional
 ```
 
-El archivo clave es `galaxy.yml` -- es la tarjeta de identidad de la colección.
+El archivo clave es `galaxy.yml`: es la tarjeta de identidad de la colección.
 
 ## Scaffolding con ansible-creator
 
@@ -267,6 +267,9 @@ ansible-creator init collection <namespace>.<nombre> <ruta-destino>
 
 !!! tip "Integración con VS Code"
     Si usas la extensión de Ansible para VS Code, también puedes crear el scaffolding de colecciones a través de un asistente gráfico. Haz clic en el icono de Ansible en la barra lateral, luego selecciona **Collection project**. El asistente llama a `ansible-creator` detrás de escena y produce el mismo resultado.
+
+!!! note "Y `ansible-galaxy init`?"
+    También puedes encontrar `ansible-galaxy collection init` y `ansible-galaxy role init` para crear el scaffolding de colecciones y roles. Estos comandos funcionan, pero `ansible-creator` es la herramienta más nueva y recomendada porque genera un scaffolding de proyecto más completo. Además de la estructura básica de directorios, `ansible-creator` incluye configuraciones de devcontainer, workflows de CI, infraestructura de testing y boilerplate adicional que `ansible-galaxy init` no proporciona. Para proyectos nuevos, prefiere `ansible-creator`.
 
 ### Crear un Rol Dentro de una Colección
 
@@ -398,7 +401,7 @@ cd ~/ansible/collections/parasoltech/infrastructure
 ade install -e .
 ```
 
-El flag `-e .` significa **instalación editable** -- `ade` crea un symlink desde el entorno virtual hacia tu directorio de trabajo. Cuando editas archivos en la colección, los cambios son inmediatamente visibles para Ansible sin reinstalar.
+El flag `-e .` significa **instalación editable**: `ade` crea un symlink desde el entorno virtual hacia tu directorio de trabajo. Cuando editas archivos en la colección, los cambios son inmediatamente visibles para Ansible sin reinstalar.
 
 La salida típica se ve así:
 
@@ -421,7 +424,7 @@ Para ver qué ha instalado `ade` y el grafo completo de dependencias:
 ade tree -v
 ```
 
-Esto muestra tu colección, sus dependencias y las dependencias de estas -- útil para entender qué se incluye y para solucionar conflictos de versiones.
+Esto muestra tu colección, sus dependencias y las dependencias de estas. Es útil para entender qué se incluye y para solucionar conflictos de versiones.
 
 ### Manejar Dependencias de Sistema
 
@@ -437,9 +440,18 @@ $ ade install -e .
 
 Instala los paquetes listados con tu gestor de paquetes del sistema (`dnf install`, `apt install`, etc.), luego vuelve a ejecutar `ade install -e .`.
 
+!!! warning "Entornos inmutables"
+    En entornos basados en contenedores como devcontainers o Red Hat Dev Spaces, no puedes instalar paquetes del sistema en tiempo de ejecución con `dnf install`. Si `ade` reporta paquetes de sistema faltantes, el enfoque recomendado es agregarlos a la imagen del contenedor:
+
+    - **Devcontainer**: Agrega un `postCreateCommand` o un `Dockerfile` personalizado en `.devcontainer/` para instalar los paquetes durante la construcción del contenedor.
+    - **Dev Spaces**: Agrega los paquetes a la imagen del componente de contenedor en `devfile.yaml`.
+    - **EE personalizado**: Inclúyelos en las dependencias de sistema de tu `execution-environment.yml`.
+
+    La imagen base `community-ansible-dev-tools` ya incluye las dependencias de sistema más comunes.
+
 ## Validación de Argumentos
 
-Cada rol debería validar sus entradas. Si un usuario pasa `webserver_port: "ochenta"` en lugar de un entero, el rol debería fallar inmediatamente con un mensaje claro -- no a mitad de camino, cuando un template renderiza `Listen ochenta` y el servidor web se niega a arrancar.
+Cada rol debería validar sus entradas. Si un usuario pasa `webserver_port: "ochenta"` en lugar de un entero, el rol debería fallar inmediatamente con un mensaje claro, no a mitad de camino cuando un template renderiza `Listen ochenta` y el servidor web se niega a arrancar.
 
 Ansible proporciona validación de argumentos a través de `meta/argument_specs.yml`. Este archivo declara el tipo, valor por defecto y restricciones para cada entrada del rol.
 
@@ -496,7 +508,7 @@ argument_specs:
           uses platform-specific defaults.
 ```
 
-La clave `main` corresponde al punto de entrada -- `tasks/main.yml`. Si tu rol tiene múltiples puntos de entrada (por ejemplo, `tasks/install.yml` y `tasks/configure.yml` llamados por separado), cada uno tiene su propia entrada bajo `argument_specs`.
+La clave `main` corresponde al punto de entrada, `tasks/main.yml`. Si tu rol tiene múltiples puntos de entrada (por ejemplo, `tasks/install.yml` y `tasks/configure.yml` llamados por separado), cada uno tiene su propia entrada bajo `argument_specs`.
 
 ### Qué Detecta la Validación
 
@@ -507,7 +519,7 @@ Cuando Ansible carga un rol con argument specs, verifica:
 - **Opciones**: Es el valor uno de un conjunto permitido? (Usa `choices: [a, b, c]`)
 - **Elementos**: Para tipos lista, qué tipo debería ser cada elemento?
 
-Si la validación falla, Ansible se detiene antes de ejecutar cualquier tarea y reporta el error. Este es un comportamiento de fallo rápido -- capturando errores al inicio en lugar de a mitad del rol.
+Si la validación falla, Ansible se detiene antes de ejecutar cualquier tarea y reporta el error. Este es un comportamiento de fallo rápido: capturando errores al inicio en lugar de a mitad del rol.
 
 ### La Conexión con defaults/main.yml
 
@@ -557,7 +569,7 @@ Los nombres cortos como `copy`, `template` o `package` funcionan porque Ansible 
 
 Los FQCNs eliminan esta ambigüedad. `ansible.builtin.copy` siempre significa el módulo copy de `ansible.builtin`. `community.general.filesystem` siempre significa el módulo filesystem de `community.general`. Nunca hay duda.
 
-A lo largo de este curso hemos usado FQCNs desde el principio -- `ansible.builtin.template`, `ansible.builtin.service`, `ansible.builtin.debug`. Esto es intencional. Es un hábito que vale la pena construir temprano, incluso cuando los nombres cortos funcionarían.
+A lo largo de este curso hemos usado FQCNs desde el principio: `ansible.builtin.template`, `ansible.builtin.service`, `ansible.builtin.debug`. Esto es intencional. Es un hábito que vale la pena construir temprano, incluso cuando los nombres cortos funcionarían.
 
 ## Versionado Semántico
 
@@ -586,7 +598,15 @@ El versionado semántico permite que los consumidores especifiquen restricciones
 
 **Ansible Galaxy** ([galaxy.ansible.com](https://galaxy.ansible.com)) es el registro público comunitario para colecciones Ansible. Cualquiera puede explorar, descargar y publicar colecciones.
 
-**Automation Hub** es el equivalente empresarial -- un registro curado y soportado incluido con Ansible Automation Platform. Las organizaciones usan instancias privadas de Automation Hub para distribuir colecciones internas (como `parasoltech.infrastructure`).
+**Automation Hub** es el equivalente empresarial: un registro curado y soportado incluido con Ansible Automation Platform. Las organizaciones usan instancias privadas de Automation Hub para distribuir colecciones internas (como `parasoltech.infrastructure`).
+
+!!! info "Automation Hub: dos versiones"
+    Red Hat ofrece dos versiones de Automation Hub:
+
+    - **Ansible Automation Hub** (console.redhat.com): Un servicio alojado en la nube híbrida que proporciona colecciones certificadas y validadas por Red Hat. Disponible para todos los suscriptores de AAP.
+    - **Private Automation Hub**: Una instancia auto-alojada que ejecutas dentro de tu organización para distribuir colecciones internas, curar contenido aprobado y alojar imágenes de contenedor para Execution Environments.
+
+    La mayoría de las organizaciones usan ambas: el hub alojado para contenido certificado upstream y una instancia privada para automatización interna.
 
 ### Instalar Colecciones desde Galaxy
 
@@ -630,7 +650,7 @@ Esto produce un archivo como `parasoltech-infrastructure-1.0.0.tar.gz` que puede
 ansible-galaxy collection publish parasoltech-infrastructure-1.0.0.tar.gz
 ```
 
-Para distribución interna en Parasol Tech, la CoP publica en un Automation Hub privado en su lugar. El flujo de trabajo es similar -- construir el tarball, luego enviarlo al Hub.
+Para distribución interna en Parasol Tech, la CoP publica en un Automation Hub privado en su lugar. El flujo de trabajo es similar: construir el tarball, luego enviarlo al Hub.
 
 ## Construyendo el Rol webserver
 
@@ -683,7 +703,7 @@ El prefijo de doble guión bajo marca estas como internas. El nombre del servici
 
 ### tasks/main.yml
 
-La lista de tareas une todo. Observa cómo usa patrones de cada módulo anterior -- gestión de paquetes (Módulo 2), templates con backup (Módulo 5), handlers (Módulo 5) y lógica basada en variables (Módulo 4):
+La lista de tareas une todo. Observa cómo usa patrones de cada módulo anterior: gestión de paquetes (Módulo 2), templates con backup (Módulo 5), handlers (Módulo 5) y lógica basada en variables (Módulo 4):
 
 ```yaml
 ---
@@ -759,7 +779,7 @@ Patrones clave a observar:
   listen: "webserver_restart"
 ```
 
-Observa `changed_when: false` en el comando de validación -- es una verificación de solo lectura, así que nunca debería reportar un cambio.
+Observa `changed_when: false` en el comando de validación. Es una verificación de solo lectura, así que nunca debería reportar un cambio.
 
 ### Templates
 
@@ -812,7 +832,7 @@ Observa cómo `{{ ansible_managed | comment('<!--', '-->') }}` usa delimitadores
 
 ### Usar el Rol en un Playbook
 
-Un playbook que usa este rol es corto -- la complejidad está dentro del rol:
+Un playbook que usa este rol es corto porque la complejidad está dentro del rol:
 
 ```yaml
 ---
@@ -857,7 +877,7 @@ ansible-creator init collection parasoltech.monitoring \
   ~/ansible/collections/parasoltech/monitoring
 ```
 
-Explora los archivos generados. Compara la estructura con la colección `parasoltech.infrastructure`. Observa cómo `ansible-creator` genera el mismo esquema cada vez -- scaffolding consistente significa colecciones consistentes.
+Explora los archivos generados. Compara la estructura con la colección `parasoltech.infrastructure`. Observa cómo `ansible-creator` genera el mismo esquema cada vez. Scaffolding consistente significa colecciones consistentes.
 
 ### Ejercicio 3: Usar ade para Gestión de Dependencias
 

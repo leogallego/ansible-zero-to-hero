@@ -15,7 +15,7 @@
   gather_facts: true
 
   vars:
-    parasol_demo_dir: "/tmp/ansible-demo"
+    parasol_demo_dir: "~/ansible-demo"
     parasol_nginx_server_name: "web01.parasol.example"
     parasol_nginx_http_port: 8080
     parasol_nginx_worker_connections: 512

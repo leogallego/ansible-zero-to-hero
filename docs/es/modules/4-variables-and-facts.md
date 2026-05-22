@@ -17,7 +17,7 @@ Jordan, el compañero de equipo de Lionel, se une al equipo de plataforma de Par
 
 ## Tipos de Variables y Dónde Definirlas
 
-Las variables en Ansible son pares clave-valor que te permiten parametrizar tu automatización. En lugar de escribir directamente un nombre de paquete o una ruta de archivo, referencias una variable -- y el valor proviene del contexto en el que se ejecuta el playbook.
+Las variables en Ansible son pares clave-valor que te permiten parametrizar tu automatización. En lugar de escribir directamente un nombre de paquete o una ruta de archivo, referencias una variable, y el valor proviene del contexto en el que se ejecuta el playbook.
 
 ### De Dónde Vienen las Variables
 
@@ -25,7 +25,7 @@ Hay varios lugares donde puedes definir variables, cada uno con un alcance y pro
 
 | Ubicación | Alcance | Cuándo usarla |
 |-----------|---------|---------------|
-| `defaults/main.yml` (en un rol) | Valores por defecto del rol | Precedencia más baja -- valores seguros que los usuarios pueden sobreescribir |
+| `defaults/main.yml` (en un rol) | Valores por defecto del rol | Precedencia más baja; valores seguros que los usuarios pueden sobreescribir |
 | `group_vars/*.yml` | Todos los hosts de un grupo | Valores específicos de entorno o función |
 | `host_vars/*.yml` | Un solo host | Sobreescrituras por host (DB primaria vs. réplica, etc.) |
 | `vars/main.yml` (en un rol) | Internos del rol | Constantes y valores internos que los usuarios no deben cambiar |
@@ -33,7 +33,7 @@ Hay varios lugares donde puedes definir variables, cada uno con un alcance y pro
 | `vars:` en una tarea | Alcance de la tarea | Valores específicos de esa tarea |
 | `set_fact` | Alcance del host (en ejecución) | Valores calculados o dinámicos |
 | `register` | Alcance del host (en ejecución) | Salida capturada de una tarea |
-| Extra vars (`-e`) | Global | Sobreescrituras desde la línea de comandos -- precedencia más alta |
+| Extra vars (`-e`) | Global | Sobreescrituras desde la línea de comandos; precedencia más alta |
 
 Ya usaste varias de estas en el Módulo 3 sin pensarlo. El archivo `group_vars/all.yml` define `parasol_organization`, `parasol_ntp_server` y `parasol_dns_servers` para todos los hosts. El archivo `group_vars/dev.yml` establece `parasol_environment: "dev"` y `parasol_log_level: "debug"` para todos los hosts de desarrollo.
 
@@ -43,7 +43,7 @@ Buenos nombres de variables previenen colisiones y hacen evidente su origen:
 
 - **Prefija con contexto**: `parasol_ntp_server`, no solo `ntp_server`. Si luego agregas un rol llamado `ntp`, un `ntp_server` sin prefijo colisionaría con las variables propias del rol.
 - **Usa snake_case**: `parasol_backup_schedule`, no `parasolBackupSchedule` ni `parasol-backup-schedule`.
-- **Sin caracteres especiales** más allá de guiones bajos -- los guiones y puntos rompen la resolución de variables.
+- **Sin caracteres especiales** más allá de guiones bajos; los guiones y puntos rompen la resolución de variables.
 
 Cuando trabajes dentro de un rol (Módulo 6), prefijarás cada variable con el nombre del rol. Por ahora, Parasol Tech prefija todo con `parasol_` como espacio de nombres organizacional.
 
@@ -100,7 +100,7 @@ ansible-navigator run playbooks/module-04/variable-precedence.yml \
   --mode stdout -e "demo_message='Extra vars win!'"
 ```
 
-La salida cambia porque las extra vars están en la cima de la cadena de precedencia. Por esto las extra vars se reservan para sobreescrituras y depuración -- evitan toda otra definición.
+La salida cambia porque las extra vars están en la cima de la cadena de precedencia. Por esto las extra vars se reservan para sobreescrituras y depuración: evitan toda otra definición.
 
 ### Reglas de Precedencia para Recordar
 
@@ -115,11 +115,11 @@ La salida cambia porque las extra vars están en la cima de la cadena de precede
     Si te encuentras usando más de cuatro niveles para la misma variable, tu diseño necesita simplificación.
 
 !!! danger "Nunca pongas valores por defecto en `vars/main.yml`"
-    Las variables en `vars/main.yml` (role vars) tienen mayor precedencia que las variables de inventario. Si pones un valor por defecto ahí, los usuarios no podrán sobreescribirlo desde `group_vars/` o `host_vars/` -- el role var siempre gana. Los valores por defecto para usuarios van en `defaults/main.yml`.
+    Las variables en `vars/main.yml` (role vars) tienen mayor precedencia que las variables de inventario. Si pones un valor por defecto ahí, los usuarios no podrán sobreescribirlo desde `group_vars/` o `host_vars/` porque el role var siempre gana. Los valores por defecto para usuarios van en `defaults/main.yml`.
 
 ## Facts de Ansible
 
-Los **facts** son variables que Ansible descubre automáticamente sobre el sistema de destino. Describen lo que el sistema *es* -- su sistema operativo, direcciones IP, cantidad de CPUs, memoria, disposición de discos y más. Los facts representan **información as-is** (lo que es verdad ahora), a diferencia de las variables, que representan **información to-be** (lo que quieres que el sistema llegue a ser).
+Los **facts** son variables que Ansible descubre automáticamente sobre el sistema de destino. Describen lo que el sistema *es*: su sistema operativo, direcciones IP, cantidad de CPUs, memoria, disposición de discos y más. Los facts representan **información as-is** (lo que es verdad ahora), a diferencia de las variables, que representan **información to-be** (lo que quieres que el sistema llegue a ser).
 
 ### Accediendo a los Facts
 
@@ -135,7 +135,7 @@ ansible_facts['default_ipv4']        # Info de direccion IPv4 por defecto (dict)
 ```
 
 !!! warning "Siempre usa notación de corchetes"
-    Verás código antiguo y tutoriales usando `ansible_distribution` o `ansible_facts.distribution` (notación de punto). **Siempre usa `ansible_facts['distribution']`** -- la notación de corchetes es explícita, inequívoca y la práctica recomendada.
+    Verás código antiguo y tutoriales usando `ansible_distribution` o `ansible_facts.distribution` (notación de punto). **Siempre usa `ansible_facts['distribution']`**. La notación de corchetes es explícita, inequívoca y la práctica recomendada.
 
 ### Categorías Comunes de Facts
 
@@ -208,7 +208,7 @@ Si tu play no necesita facts, puedes desactivar la recopilación para acelerar l
         verbosity: 0
 ```
 
-Esto es especialmente útil cuando apuntas a muchos hosts -- la recopilación de facts se ejecuta en cada host y puede agregar tiempo significativo a la ejecución del playbook.
+Esto es especialmente útil cuando apuntas a muchos hosts, ya que la recopilación de facts se ejecuta en cada host y puede agregar tiempo significativo a la ejecución del playbook.
 
 ### Subconjuntos Mínimos de Facts
 
@@ -236,7 +236,7 @@ El playbook complementario `facts-demo.yml` incluye un segundo play que demuestr
 
 ## Variables Registradas y set_fact
 
-A veces necesitas datos que no están disponibles hasta el momento de la ejecución -- la salida de un comando, la existencia de un archivo o un valor calculado a partir de otras variables. Ansible proporciona dos mecanismos para esto: `register` y `set_fact`.
+A veces necesitas datos que no están disponibles hasta el momento de la ejecución: la salida de un comando, la existencia de un archivo o un valor calculado a partir de otras variables. Ansible proporciona dos mecanismos para esto: `register` y `set_fact`.
 
 ### Registrando la Salida de Tareas
 
@@ -254,7 +254,7 @@ La palabra clave `register` captura el resultado completo de una tarea en una va
     verbosity: 0
 ```
 
-La variable registrada (`__myapp_config`) es un diccionario que contiene los valores de retorno del módulo. Diferentes módulos retornan diferentes estructuras -- consulta la documentación del módulo para ver qué claves están disponibles.
+La variable registrada (`__myapp_config`) es un diccionario que contiene los valores de retorno del módulo. Diferentes módulos retornan diferentes estructuras; consulta la documentación del módulo para ver qué claves están disponibles.
 
 !!! tip "Nombres de variables registradas"
     Prefija las variables registradas internas (no visibles para el usuario) con doble guion bajo: `__myapp_config`, no `myapp_config`. Esto indica que la variable es un detalle de implementación, no algo que un usuario deba establecer o sobreescribir.
@@ -363,8 +363,8 @@ ansible-navigator run playbooks/module-04/facts-demo.yml
 
 En modo interactivo:
 
-1. La pantalla principal muestra la lista de plays -- presiona un número para seleccionar un play
-2. Cada play muestra sus tareas -- presiona un número para seleccionar una tarea
+1. La pantalla principal muestra la lista de plays; presiona un número para seleccionar un play
+2. Cada play muestra sus tareas; presiona un número para seleccionar una tarea
 3. La pantalla de detalle de la tarea muestra el resultado completo, incluyendo todas las variables registradas y facts
 4. Presiona `0` para ver el detalle del host con todos los valores de variables
 
@@ -503,7 +503,7 @@ Ejecuta el playbook de condicionales:
 ansible-navigator run playbooks/module-04/conditionals.yml --mode stdout
 ```
 
-Observa cuáles tareas se ejecutan y cuáles se omiten. La salida depende de tu sistema -- en un sistema Fedora, las tareas de la familia Red Hat se ejecutarán y las tareas de Debian se omitirán (y viceversa en Ubuntu).
+Observa cuáles tareas se ejecutan y cuáles se omiten. La salida depende de tu sistema. En un sistema Fedora, las tareas de la familia Red Hat se ejecutarán y las tareas de Debian se omitirán (y viceversa en Ubuntu).
 
 ### Ejercicio 4: Agrega Tus Propias Variables
 
