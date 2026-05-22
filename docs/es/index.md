@@ -4,7 +4,7 @@ Bienvenido al curso Ansible de Cero a Héroe. Este curso progresivo enseña Ansi
 
 ## La Historia
 
-Seguirás a **Alex**, un ingeniero de plataformas en **Parasol Tech**, mientras descubre Ansible para automatizar tareas repetitivas de infraestructura y luego escala gradualmente la práctica en toda la división.
+Seguirás a **Lionel**, un ingeniero de plataformas en **Parasol Tech**, mientras descubre Ansible para automatizar tareas repetitivas de infraestructura y luego escala gradualmente la práctica en toda la división.
 
 ## Módulos
 

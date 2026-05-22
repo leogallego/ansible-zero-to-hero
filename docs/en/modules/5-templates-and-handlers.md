@@ -11,9 +11,9 @@ By the end of this module you will be able to:
 
 ## The Story So Far
 
-Alex and Jordan have parameterized the Parasol Tech playbooks with variables and facts. Every environment reads its own values from `group_vars/`, and playbooks adapt dynamically using `when` conditions. But there is a new problem.
+Lionel and Jordan have parameterized the Parasol Tech playbooks with variables and facts. Every environment reads its own values from `group_vars/`, and playbooks adapt dynamically using `when` conditions. But there is a new problem.
 
-"We need to deploy configuration files," Alex says. "Nginx config, MOTD banners, application settings -- each one needs different values per environment. I could use `ansible.builtin.copy` with a static file, but then I need a separate file for dev, staging, and production. That does not scale."
+"We need to deploy configuration files," Lionel says. "Nginx config, MOTD banners, application settings -- each one needs different values per environment. I could use `ansible.builtin.copy` with a static file, but then I need a separate file for dev, staging, and production. That does not scale."
 
 "That is exactly what templates are for," Jordan replies. "You write one template with placeholders, and Ansible fills in the values at deploy time. And when the config changes, handlers restart the service automatically."
 
@@ -563,7 +563,7 @@ In this module you:
 - Explored handler execution order (definition order, not notification order), deduplication, and `meta: flush_handlers`
 - Used `force_handlers` to ensure critical handlers run even when later tasks fail
 
-Alex and Jordan now deploy configuration files as templates. One `nginx.conf.j2` works across dev, staging, and production -- each environment fills in its own values from inventory variables. When the config changes, handlers reload the service automatically. When it does not change, nothing happens. The automation is idempotent and self-documenting.
+Lionel and Jordan now deploy configuration files as templates. One `nginx.conf.j2` works across dev, staging, and production -- each environment fills in its own values from inventory variables. When the config changes, handlers reload the service automatically. When it does not change, nothing happens. The automation is idempotent and self-documenting.
 
 ## Next Steps
 

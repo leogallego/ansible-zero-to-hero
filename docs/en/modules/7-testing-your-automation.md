@@ -16,7 +16,7 @@ The CoP at Parasol Tech has its first collection -- `parasoltech.infrastructure`
 
 Then something breaks. The monitoring team overrides `webserver_port` with a string instead of an integer, and the template renders garbage. Jordan catches it during a code review, but it was already deployed to staging.
 
-"We got lucky," Alex says. "Next time it might be production."
+"We got lucky," Lionel says. "Next time it might be production."
 
 The CoP holds an emergency meeting. The outcome: **no untested automation goes to production.** Every role needs automated tests. Every pull request must pass linting, unit tests, and integration tests before it can be merged. The team agrees on a testing strategy using four tools from the `ansible-dev-tools` suite: `ansible-lint`, Molecule, `pytest-ansible`, and `tox-ansible`.
 

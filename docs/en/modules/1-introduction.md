@@ -12,9 +12,9 @@ By the end of this module you will be able to:
 
 ## The Story So Far
 
-Alex is a platform engineer at **Parasol Tech**, the infrastructure division of Parasol Insurance Corp. Every week, Alex spends hours repeating the same tasks: provisioning servers, installing packages, configuring services, and verifying that everything is consistent across environments. The work is tedious, error-prone, and impossible to scale.
+Lionel is a platform engineer at **Parasol Tech**, the infrastructure division of Parasol Insurance Corp. Every week, Lionel spends hours repeating the same tasks: provisioning servers, installing packages, configuring services, and verifying that everything is consistent across environments. The work is tedious, error-prone, and impossible to scale.
 
-One afternoon, a colleague drops by Alex's desk. "You're still doing all of that by hand? You should look into Ansible." That evening, Alex opens a terminal and starts exploring.
+One afternoon, a colleague drops by Lionel's desk. "You're still doing all of that by hand? You should look into Ansible." That evening, Lionel opens a terminal and starts exploring.
 
 This is where your journey begins too.
 
@@ -37,17 +37,17 @@ Four properties make Ansible stand out:
 
 ## Why Automation?
 
-Alex's manual workflow has several problems that automation solves:
+Lionel's manual workflow has several problems that automation solves:
 
 | Manual Approach | With Automation |
 |----------------|-----------------|
-| Steps live in Alex's head or a wiki that gets outdated | The playbook *is* the documentation -- always current |
+| Steps live in Lionel's head or a wiki that gets outdated | The playbook *is* the documentation -- always current |
 | Each server is configured slightly differently | Every server gets the exact same configuration |
 | Takes 45 minutes per server | Takes seconds, runs in parallel across dozens of servers |
 | Mistakes are discovered days later in production | Check mode catches issues before they happen |
-| Only Alex knows how to do it | Anyone on the team can read and run the playbook |
+| Only Lionel knows how to do it | Anyone on the team can read and run the playbook |
 
-Automation turns tribal knowledge into code that can be versioned, reviewed, tested, and shared. When Alex writes a playbook, it becomes a living document that describes exactly how Parasol Tech's infrastructure is configured.
+Automation turns tribal knowledge into code that can be versioned, reviewed, tested, and shared. When Lionel writes a playbook, it becomes a living document that describes exactly how Parasol Tech's infrastructure is configured.
 
 ## Ansible Development Tools (adt)
 
@@ -325,7 +325,7 @@ In this module you:
 - Ran ad-hoc commands to ping, gather facts, and execute commands on localhost
 - Explored modules and Fully Qualified Collection Names (FQCNs)
 
-Alex is hooked. Running ad-hoc commands is useful, but doing things one command at a time is not much better than doing them manually. What Alex needs is a way to define a sequence of tasks and run them repeatedly. That is exactly what playbooks are for.
+Lionel is hooked. Running ad-hoc commands is useful, but doing things one command at a time is not much better than doing them manually. What Lionel needs is a way to define a sequence of tasks and run them repeatedly. That is exactly what playbooks are for.
 
 ## Next Steps
 

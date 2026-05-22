@@ -11,7 +11,7 @@ By the end of this module you will be able to:
 
 ## The Story So Far
 
-Alex has run a few ad-hoc commands and sees the potential. But one-off commands aren't repeatable -- if Alex needs to install the same three packages on a new server next month, the exact commands will have to be recalled from memory or a wiki page. What's needed is a way to define a set of tasks once and run them reliably, every time.
+Lionel has run a few ad-hoc commands and sees the potential. But one-off commands aren't repeatable -- if Lionel needs to install the same three packages on a new server next month, the exact commands will have to be recalled from memory or a wiki page. What's needed is a way to define a set of tasks once and run them reliably, every time.
 
 It's time to write a playbook.
 
@@ -501,7 +501,7 @@ In this module you:
 - Used check mode (`--check`) and diff mode (`--diff`) to preview changes safely
 - Observed idempotency in action -- running a playbook twice produces zero changes the second time
 
-Alex now has three playbooks that can be run repeatedly to achieve a consistent system state. But all of them target `localhost` -- what happens when Alex needs to manage multiple servers across different environments?
+Lionel now has three playbooks that can be run repeatedly to achieve a consistent system state. But all of them target `localhost` -- what happens when Lionel needs to manage multiple servers across different environments?
 
 ## Next Steps
 

@@ -11,7 +11,7 @@ By the end of this module you will be able to:
 
 ## The Story So Far
 
-Alex's teammate Jordan joins the Parasol Tech platform team. Together they look at the playbooks from Module 2 and the inventory from Module 3. Everything works, but there is a problem: configuration values are hardcoded. The same playbook needs to install different packages in dev and production, use different log levels, and toggle monitoring on or off depending on the environment.
+Lionel's teammate Jordan joins the Parasol Tech platform team. Together they look at the playbooks from Module 2 and the inventory from Module 3. Everything works, but there is a problem: configuration values are hardcoded. The same playbook needs to install different packages in dev and production, use different log levels, and toggle monitoring on or off depending on the environment.
 
 "We need to parameterize everything," Jordan says. "One playbook, multiple environments. The variable system is how Ansible does this."
 
@@ -541,7 +541,7 @@ In this module you:
 - Debugged variables using `ansible.builtin.debug` with `verbosity` and `ansible-navigator` interactive mode
 - Used `when` to conditionally execute tasks based on facts, variables, and registered results
 
-Alex and Jordan now have the tools to write playbooks that adapt to any environment. The same playbook reads different values from `group_vars/dev.yml` and `group_vars/production.yml`, makes decisions based on system facts, and computes values at runtime. No more hardcoded configuration.
+Lionel and Jordan now have the tools to write playbooks that adapt to any environment. The same playbook reads different values from `group_vars/dev.yml` and `group_vars/production.yml`, makes decisions based on system facts, and computes values at runtime. No more hardcoded configuration.
 
 ## Next Steps
 

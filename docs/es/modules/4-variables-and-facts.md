@@ -11,7 +11,7 @@ Al finalizar este módulo serás capaz de:
 
 ## La Historia Hasta Ahora
 
-Jordan, el compañero de equipo de Alex, se une al equipo de plataforma de Parasol Tech. Juntos revisan los playbooks del Módulo 2 y el inventario del Módulo 3. Todo funciona, pero hay un problema: los valores de configuración están escritos directamente en el código. El mismo playbook necesita instalar paquetes diferentes en desarrollo y producción, usar diferentes niveles de log y activar o desactivar el monitoreo según el entorno.
+Jordan, el compañero de equipo de Lionel, se une al equipo de plataforma de Parasol Tech. Juntos revisan los playbooks del Módulo 2 y el inventario del Módulo 3. Todo funciona, pero hay un problema: los valores de configuración están escritos directamente en el código. El mismo playbook necesita instalar paquetes diferentes en desarrollo y producción, usar diferentes niveles de log y activar o desactivar el monitoreo según el entorno.
 
 "Necesitamos parametrizar todo," dice Jordan. "Un playbook, múltiples entornos. El sistema de variables es como Ansible hace esto."
 
@@ -541,7 +541,7 @@ En este módulo:
 - Depuraste variables usando `ansible.builtin.debug` con `verbosity` y el modo interactivo de `ansible-navigator`
 - Usaste `when` para ejecutar tareas condicionalmente basándote en facts, variables y resultados registrados
 
-Alex y Jordan ahora tienen las herramientas para escribir playbooks que se adaptan a cualquier entorno. El mismo playbook lee diferentes valores de `group_vars/dev.yml` y `group_vars/production.yml`, toma decisiones basadas en facts del sistema y calcula valores en tiempo de ejecución. No más configuración escrita directamente en el código.
+Lionel y Jordan ahora tienen las herramientas para escribir playbooks que se adaptan a cualquier entorno. El mismo playbook lee diferentes valores de `group_vars/dev.yml` y `group_vars/production.yml`, toma decisiones basadas en facts del sistema y calcula valores en tiempo de ejecución. No más configuración escrita directamente en el código.
 
 ## Próximos Pasos
 

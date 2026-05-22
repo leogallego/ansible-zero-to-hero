@@ -12,9 +12,9 @@ Al finalizar este módulo serás capaz de:
 
 ## La Historia Hasta Ahora
 
-Alex es ingeniero de plataformas en **Parasol Tech**, la división de infraestructura de Parasol Insurance Corp. Cada semana, Alex pasa horas repitiendo las mismas tareas: aprovisionar servidores, instalar paquetes, configurar servicios y verificar que todo sea consistente entre entornos. El trabajo es tedioso, propenso a errores e imposible de escalar.
+Lionel es ingeniero de plataformas en **Parasol Tech**, la división de infraestructura de Parasol Insurance Corp. Cada semana, Lionel pasa horas repitiendo las mismas tareas: aprovisionar servidores, instalar paquetes, configurar servicios y verificar que todo sea consistente entre entornos. El trabajo es tedioso, propenso a errores e imposible de escalar.
 
-Una tarde, un colega pasa por el escritorio de Alex. "¿Todavía haces todo eso a mano? Deberías probar Ansible." Esa noche, Alex abre una terminal y empieza a explorar.
+Una tarde, un colega pasa por el escritorio de Lionel. "¿Todavía haces todo eso a mano? Deberías probar Ansible." Esa noche, Lionel abre una terminal y empieza a explorar.
 
 Aquí es donde tu viaje también comienza.
 
@@ -37,17 +37,17 @@ Cuatro propiedades hacen que Ansible destaque:
 
 ## ¿Por qué Automatizar?
 
-El flujo de trabajo manual de Alex tiene varios problemas que la automatización resuelve:
+El flujo de trabajo manual de Lionel tiene varios problemas que la automatización resuelve:
 
 | Enfoque Manual | Con Automatización |
 |----------------|-------------------|
-| Los pasos viven en la cabeza de Alex o en una wiki desactualizada | El playbook *es* la documentación -- siempre actual |
+| Los pasos viven en la cabeza de Lionel o en una wiki desactualizada | El playbook *es* la documentación -- siempre actual |
 | Cada servidor está configurado ligeramente diferente | Cada servidor recibe exactamente la misma configuración |
 | Toma 45 minutos por servidor | Toma segundos, se ejecuta en paralelo en docenas de servidores |
 | Los errores se descubren días después en producción | El modo check detecta problemas antes de que ocurran |
-| Solo Alex sabe cómo hacerlo | Cualquier persona del equipo puede leer y ejecutar el playbook |
+| Solo Lionel sabe cómo hacerlo | Cualquier persona del equipo puede leer y ejecutar el playbook |
 
-La automatización convierte el conocimiento tribal en código que puede ser versionado, revisado, probado y compartido. Cuando Alex escribe un playbook, se convierte en un documento vivo que describe exactamente cómo está configurada la infraestructura de Parasol Tech.
+La automatización convierte el conocimiento tribal en código que puede ser versionado, revisado, probado y compartido. Cuando Lionel escribe un playbook, se convierte en un documento vivo que describe exactamente cómo está configurada la infraestructura de Parasol Tech.
 
 ## Ansible Development Tools (adt)
 
@@ -325,7 +325,7 @@ En este módulo:
 - Ejecutaste comandos ad-hoc para hacer ping, recopilar facts y ejecutar comandos en localhost
 - Exploraste los módulos y los Fully Qualified Collection Names (FQCNs)
 
-Alex está enganchado. Ejecutar comandos ad-hoc es útil, pero hacer las cosas un comando a la vez no es mucho mejor que hacerlas manualmente. Lo que Alex necesita es una forma de definir una secuencia de tareas y ejecutarlas repetidamente. Eso es exactamente para lo que sirven los playbooks.
+Lionel está enganchado. Ejecutar comandos ad-hoc es útil, pero hacer las cosas un comando a la vez no es mucho mejor que hacerlas manualmente. Lo que Lionel necesita es una forma de definir una secuencia de tareas y ejecutarlas repetidamente. Eso es exactamente para lo que sirven los playbooks.
 
 ## Próximos Pasos
 

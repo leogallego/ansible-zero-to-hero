@@ -16,7 +16,7 @@ La CoP en Parasol Tech tiene su primera colección -- `parasoltech.infrastructur
 
 Entonces algo se rompe. El equipo de monitoreo sobreescribe `webserver_port` con una cadena de texto en lugar de un entero, y la plantilla genera basura. Jordan lo detecta durante una revisión de código, pero ya se había desplegado a staging.
 
-"Tuvimos suerte," dice Alex. "La próxima vez podría ser producción."
+"Tuvimos suerte," dice Lionel. "La próxima vez podría ser producción."
 
 La CoP convoca una reunión de emergencia. El resultado: **ninguna automatización sin testear va a producción.** Cada rol necesita tests automatizados. Cada pull request debe pasar linting, tests unitarios y tests de integración antes de poder fusionarse. El equipo acuerda una estrategia de testing usando cuatro herramientas de la suite `ansible-dev-tools`: `ansible-lint`, Molecule, `pytest-ansible` y `tox-ansible`.
 

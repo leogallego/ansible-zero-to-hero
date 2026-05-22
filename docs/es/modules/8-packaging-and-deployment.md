@@ -16,7 +16,7 @@ La CoP en Parasol Tech ha construido una colección probada y verificada -- `par
 
 Pero entonces empiezan los problemas. Un nuevo miembro del equipo ejecuta el playbook del webserver en su portátil y obtiene un resultado diferente. Su entorno local de Python carece de una dependencia. Otro miembro del equipo trabaja en un sistema operativo distinto y tiene un conflicto de versiones en `ansible.posix`. El servidor de staging tiene una versión de `ansible-core` más antigua que la que el equipo usó para las pruebas.
 
-"Lo probamos," dice Alex. "Pasó todas las pruebas."
+"Lo probamos," dice Lionel. "Pasó todas las pruebas."
 
 Jordan suspira. "Pasó en *nuestras* máquinas. El servidor de staging tiene un entorno de Python completamente diferente."
 

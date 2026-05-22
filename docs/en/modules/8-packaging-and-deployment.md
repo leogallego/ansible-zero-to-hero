@@ -16,7 +16,7 @@ The CoP at Parasol Tech has built a tested, linted collection -- `parasoltech.in
 
 But then the trouble starts. A new team member runs the webserver playbook on their laptop and gets a different result. Their local Python environment is missing a dependency. Another team member works on a different OS and gets a version conflict in `ansible.posix`. The staging server has an older version of `ansible-core` than what the team tested with.
 
-"We tested this," Alex says. "It passed everything."
+"We tested this," Lionel says. "It passed everything."
 
 Jordan sighs. "It passed on *our* machines. The staging server has a completely different Python environment."
 

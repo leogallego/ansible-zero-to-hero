@@ -4,7 +4,7 @@ Welcome to the Ansible Zero to Hero course! This progressive course teaches Ansi
 
 ## The Story
 
-You'll follow **Alex**, a platform engineer at **Parasol Tech**, as they discover Ansible to automate repetitive infrastructure tasks, then gradually scale the practice across the division.
+You'll follow **Lionel**, a platform engineer at **Parasol Tech**, as they discover Ansible to automate repetitive infrastructure tasks, then gradually scale the practice across the division.
 
 ## Modules
 

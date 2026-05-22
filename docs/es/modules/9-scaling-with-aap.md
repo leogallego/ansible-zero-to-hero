@@ -15,11 +15,11 @@ Al finalizar este módulo serás capaz de:
 
 La CoP en Parasol Tech ha recorrido un largo camino. El equipo tiene una colección probada, verificada y firmada -- `parasoltech.infrastructure`. Se distribuye dentro de un Execution Environment personalizado construido con `ansible-builder`. Cada cambio pasa por `ansible-lint`, Molecule, pytest y tox-ansible antes de fusionarse. El contenido está firmado con `ansible-sign` para que nadie pueda manipular los playbooks entre la revisión y la ejecución.
 
-Pero un nuevo problema está surgiendo. Alex ejecuta el despliegue del servidor web desde un portátil. Jordan ejecuta el playbook de parcheado desde otro portátil. Un tercer miembro del equipo ejecuta comandos ad-hoc desde un jump host. Nadie tiene visibilidad sobre qué se ejecutó, cuándo, quién lo ejecutó, ni si tuvo éxito. No hay registro de auditoría, no hay control de acceso, y no hay forma de programar trabajos recurrentes.
+Pero un nuevo problema está surgiendo. Lionel ejecuta el despliegue del servidor web desde un portátil. Jordan ejecuta el playbook de parcheado desde otro portátil. Un tercer miembro del equipo ejecuta comandos ad-hoc desde un jump host. Nadie tiene visibilidad sobre qué se ejecutó, cuándo, quién lo ejecutó, ni si tuvo éxito. No hay registro de auditoría, no hay control de acceso, y no hay forma de programar trabajos recurrentes.
 
 "Ejecuté el playbook de respaldo de la base de datos ayer," dice Jordan. "Pero usé `--limit staging` en lugar de `--limit production`. Nadie lo notó hasta esta mañana."
 
-Alex frunce el ceño. "Y no tengo forma de saber quién ejecutó qué en los servidores de producción la semana pasada. Necesitamos un plano de control."
+Lionel frunce el ceño. "Y no tengo forma de saber quién ejecutó qué en los servidores de producción la semana pasada. Necesitamos un plano de control."
 
 La CoP coincide: la ejecución por CLI no escala. Necesitan orquestación centralizada con gobernanza, registro de auditoría, control de acceso basado en roles, y la capacidad de encadenar automatización en flujos de trabajo de múltiples pasos. Necesitan **Ansible Automation Platform**.
 
@@ -559,17 +559,17 @@ En este módulo:
 - Integraste el Execution Environment del Módulo 8 con Controller, asegurando que cada trabajo use el mismo runtime versionado y probado
 - Completaste el flujo de seguridad de la cadena de suministro: los desarrolladores firman contenido con `ansible-sign`, hacen push a Git, y Controller verifica la firma GPG en cada sincronización de Proyecto antes de permitir la ejecución
 
-La CoP en Parasol Tech ahora tiene una práctica de automatización completa. El contenido se desarrolla colaborativamente (Módulo 6), se prueba rigurosamente (Módulo 7), se empaqueta reproduciblemente (Módulo 8) y se gestiona a través de una plataforma gobernada con RBAC, registro de auditoría y orquestación de workflows (Módulo 9). El viaje desde Alex ejecutando comandos ad-hoc en un portátil hasta una práctica empresarial de automatización completamente gobernada está completo.
+La CoP en Parasol Tech ahora tiene una práctica de automatización completa. El contenido se desarrolla colaborativamente (Módulo 6), se prueba rigurosamente (Módulo 7), se empaqueta reproduciblemente (Módulo 8) y se gestiona a través de una plataforma gobernada con RBAC, registro de auditoría y orquestación de workflows (Módulo 9). El viaje desde Lionel ejecutando comandos ad-hoc en un portátil hasta una práctica empresarial de automatización completamente gobernada está completo.
 
 ## Conclusión del Curso
 
-Alex se reclina y mira el dashboard. El workflow de despliegue se ejecutó durante la noche -- Proyecto sincronizado, firmas GPG verificadas, servidores web desplegados en tres entornos, verificaciones de salud pasadas, notificaciones enviadas al canal del equipo. Nadie tuvo que conectarse por SSH a nada. Nadie escribió `ansible-playbook` a las 2 AM.
+Lionel se reclina y mira el dashboard. El workflow de despliegue se ejecutó durante la noche -- Proyecto sincronizado, firmas GPG verificadas, servidores web desplegados en tres entornos, verificaciones de salud pasadas, notificaciones enviadas al canal del equipo. Nadie tuvo que conectarse por SSH a nada. Nadie escribió `ansible-playbook` a las 2 AM.
 
 Es difícil creer que esto comenzó con un solo comando ad-hoc en un portátil.
 
 **El viaje:**
 
-- **Módulo 1** -- Alex descubrió Ansible y ejecutó el primer comando ad-hoc. Un ingeniero, una máquina, un problema.
+- **Módulo 1** -- Lionel descubrió Ansible y ejecutó el primer comando ad-hoc. Un ingeniero, una máquina, un problema.
 - **Módulo 2** -- Los comandos ad-hoc se convirtieron en playbooks. La automatización se volvió repetible.
 - **Módulo 3** -- Los playbooks crecieron más allá de localhost. Los inventarios estructurados organizaron hosts a través de los entornos.
 - **Módulo 4** -- Las variables y los facts hicieron los playbooks flexibles. La misma automatización se adaptó a diferentes entornos.

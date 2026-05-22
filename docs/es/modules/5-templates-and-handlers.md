@@ -11,9 +11,9 @@ Al finalizar este módulo serás capaz de:
 
 ## La Historia Hasta Ahora
 
-Alex y Jordan han parametrizado los playbooks de Parasol Tech con variables y facts. Cada entorno lee sus propios valores desde `group_vars/`, y los playbooks se adaptan dinámicamente usando condiciones `when`. Pero hay un nuevo problema.
+Lionel y Jordan han parametrizado los playbooks de Parasol Tech con variables y facts. Cada entorno lee sus propios valores desde `group_vars/`, y los playbooks se adaptan dinámicamente usando condiciones `when`. Pero hay un nuevo problema.
 
-"Necesitamos desplegar archivos de configuración," dice Alex. "Config de Nginx, banners MOTD, configuración de aplicaciones -- cada uno necesita valores diferentes por entorno. Podría usar `ansible.builtin.copy` con un archivo estático, pero entonces necesito un archivo separado para dev, staging y producción. Eso no escala."
+"Necesitamos desplegar archivos de configuración," dice Lionel. "Config de Nginx, banners MOTD, configuración de aplicaciones -- cada uno necesita valores diferentes por entorno. Podría usar `ansible.builtin.copy` con un archivo estático, pero entonces necesito un archivo separado para dev, staging y producción. Eso no escala."
 
 "Para eso exactamente son los templates," responde Jordan. "Escribes un template con placeholders, y Ansible completa los valores en el momento del despliegue. Y cuando la configuración cambia, los handlers reinician el servicio automáticamente."
 
@@ -563,7 +563,7 @@ En este módulo:
 - Exploraste el orden de ejecución de handlers (orden de definición, no de notificación), deduplicación y `meta: flush_handlers`
 - Usaste `force_handlers` para asegurar que handlers críticos se ejecuten incluso cuando tareas posteriores fallan
 
-Alex y Jordan ahora despliegan archivos de configuración como templates. Un solo `nginx.conf.j2` funciona en dev, staging y producción -- cada entorno completa sus propios valores desde variables de inventario. Cuando la configuración cambia, los handlers recargan el servicio automáticamente. Cuando no cambia, no pasa nada. La automatización es idempotente y autodocumentada.
+Lionel y Jordan ahora despliegan archivos de configuración como templates. Un solo `nginx.conf.j2` funciona en dev, staging y producción -- cada entorno completa sus propios valores desde variables de inventario. Cuando la configuración cambia, los handlers recargan el servicio automáticamente. Cuando no cambia, no pasa nada. La automatización es idempotente y autodocumentada.
 
 ## Próximos Pasos
 

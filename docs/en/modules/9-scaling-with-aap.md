@@ -15,11 +15,11 @@ By the end of this module you will be able to:
 
 The CoP at Parasol Tech has come a long way. The team has a tested, linted, and signed collection -- `parasoltech.infrastructure`. It ships inside a custom Execution Environment built with `ansible-builder`. Every change passes through `ansible-lint`, Molecule, pytest, and tox-ansible before merging. Content is signed with `ansible-sign` so that nobody can tamper with playbooks between review and execution.
 
-But a new problem is emerging. Alex runs the webserver deployment from a laptop. Jordan runs the patching playbook from a different laptop. A third team member runs ad-hoc commands from a jump host. Nobody has visibility into what ran, when, who ran it, or whether it succeeded. There is no audit trail, no access control, and no way to schedule recurring jobs.
+But a new problem is emerging. Lionel runs the webserver deployment from a laptop. Jordan runs the patching playbook from a different laptop. A third team member runs ad-hoc commands from a jump host. Nobody has visibility into what ran, when, who ran it, or whether it succeeded. There is no audit trail, no access control, and no way to schedule recurring jobs.
 
 "I ran the database backup playbook yesterday," Jordan says. "But I used `--limit staging` instead of `--limit production`. Nobody noticed until this morning."
 
-Alex frowns. "And I have no way to know who ran what on the prod servers last week. We need a control plane."
+Lionel frowns. "And I have no way to know who ran what on the prod servers last week. We need a control plane."
 
 The CoP agrees: CLI execution does not scale. They need centralized orchestration with governance, audit logging, role-based access control, and the ability to chain automation into multi-step workflows. They need **Ansible Automation Platform**.
 
@@ -556,17 +556,17 @@ In this module you:
 - Integrated the Execution Environment from Module 8 with Controller, ensuring every job uses the same versioned, tested runtime
 - Completed the supply chain security workflow: developers sign content with `ansible-sign`, push to Git, and Controller verifies the GPG signature on every Project Sync before allowing execution
 
-The CoP at Parasol Tech now has a complete automation practice. Content is developed collaboratively (Module 6), tested rigorously (Module 7), packaged reproducibly (Module 8), and managed through a governed platform with RBAC, audit logging, and workflow orchestration (Module 9). The journey from Alex running ad-hoc commands on a laptop to a fully governed enterprise automation practice is complete.
+The CoP at Parasol Tech now has a complete automation practice. Content is developed collaboratively (Module 6), tested rigorously (Module 7), packaged reproducibly (Module 8), and managed through a governed platform with RBAC, audit logging, and workflow orchestration (Module 9). The journey from Lionel running ad-hoc commands on a laptop to a fully governed enterprise automation practice is complete.
 
 ## Course Conclusion
 
-Alex leans back and looks at the dashboard. The deployment workflow ran overnight -- Project synced, GPG signatures verified, web servers deployed across three environments, health checks passed, notifications sent to the team channel. No one had to SSH into anything. No one typed `ansible-playbook` at 2 AM.
+Lionel leans back and looks at the dashboard. The deployment workflow ran overnight -- Project synced, GPG signatures verified, web servers deployed across three environments, health checks passed, notifications sent to the team channel. No one had to SSH into anything. No one typed `ansible-playbook` at 2 AM.
 
 It is hard to believe this started with a single ad-hoc command on a laptop.
 
 **The journey:**
 
-- **Module 1** -- Alex discovered Ansible and ran the first ad-hoc command. One engineer, one machine, one problem.
+- **Module 1** -- Lionel discovered Ansible and ran the first ad-hoc command. One engineer, one machine, one problem.
 - **Module 2** -- Ad-hoc commands became playbooks. Automation became repeatable.
 - **Module 3** -- Playbooks grew beyond localhost. Structured inventories organized hosts across environments.
 - **Module 4** -- Variables and facts made playbooks flexible. The same automation adapted to different environments.

@@ -13,9 +13,9 @@ Al finalizar este módulo serás capaz de:
 
 ## La Historia Hasta Ahora
 
-Alex y Jordan han estado escribiendo playbooks, gestionando inventario entre entornos, usando variables y facts, y desplegando archivos de configuración con templates y handlers. La automatización funciona bien -- pero vive en una pila creciente de playbooks dentro de un directorio, y otros equipos en Parasol Tech están empezando a pedir acceso.
+Lionel y Jordan han estado escribiendo playbooks, gestionando inventario entre entornos, usando variables y facts, y desplegando archivos de configuración con templates y handlers. La automatización funciona bien -- pero vive en una pila creciente de playbooks dentro de un directorio, y otros equipos en Parasol Tech están empezando a pedir acceso.
 
-"El equipo de base de datos quiere nuestra configuración de nginx," dice Alex. "Y el equipo de monitoreo sigue copiando nuestras tareas de template en sus propios playbooks. Cada copia se desvía un poco."
+"El equipo de base de datos quiere nuestra configuración de nginx," dice Lionel. "Y el equipo de monitoreo sigue copiando nuestras tareas de template en sus propios playbooks. Cada copia se desvía un poco."
 
 Jordan asiente. "Necesitamos empaquetar esto. Una única fuente de verdad para la configuración del servidor web que cualquier equipo pueda consumir sin copiar archivos."
 

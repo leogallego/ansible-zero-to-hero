@@ -2,7 +2,7 @@
 
 A progressive, bilingual course teaching Ansible from first principles to production-grade automation.
 
-Follow **Alex**, a platform engineer at **Parasol Tech**, as they discover Ansible, build a Community of Practice, and scale automation across the organization.
+Follow **Lionel**, a platform engineer at **Parasol Tech**, as they discover Ansible, build a Community of Practice, and scale automation across the organization.
 
 ## Modules
 

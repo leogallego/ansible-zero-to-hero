@@ -13,9 +13,9 @@ By the end of this module you will be able to:
 
 ## The Story So Far
 
-Alex and Jordan have been writing playbooks, managing inventory across environments, using variables and facts, and deploying configuration files with templates and handlers. The automation works well -- but it lives in a growing pile of playbooks inside one directory, and other teams at Parasol Tech are starting to ask for access.
+Lionel and Jordan have been writing playbooks, managing inventory across environments, using variables and facts, and deploying configuration files with templates and handlers. The automation works well -- but it lives in a growing pile of playbooks inside one directory, and other teams at Parasol Tech are starting to ask for access.
 
-"The database team wants our nginx setup," Alex says. "And the monitoring team keeps copying our template tasks into their own playbooks. Every copy drifts a little."
+"The database team wants our nginx setup," Lionel says. "And the monitoring team keeps copying our template tasks into their own playbooks. Every copy drifts a little."
 
 Jordan nods. "We need to package this. One source of truth for the web server configuration that any team can consume without copying files around."
 

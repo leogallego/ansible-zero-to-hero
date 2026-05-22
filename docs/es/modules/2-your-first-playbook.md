@@ -11,7 +11,7 @@ Al finalizar este módulo serás capaz de:
 
 ## La Historia Hasta Ahora
 
-Alex ha ejecutado algunos comandos ad-hoc y ve el potencial. Pero los comandos individuales no son repetibles -- si Alex necesita instalar los mismos tres paquetes en un nuevo servidor el mes que viene, tendrá que recordar los comandos exactos de memoria o buscarlos en una wiki. Lo que se necesita es una forma de definir un conjunto de tareas una vez y ejecutarlas de manera confiable, siempre.
+Lionel ha ejecutado algunos comandos ad-hoc y ve el potencial. Pero los comandos individuales no son repetibles -- si Lionel necesita instalar los mismos tres paquetes en un nuevo servidor el mes que viene, tendrá que recordar los comandos exactos de memoria o buscarlos en una wiki. Lo que se necesita es una forma de definir un conjunto de tareas una vez y ejecutarlas de manera confiable, siempre.
 
 Es hora de escribir un playbook.
 
@@ -501,7 +501,7 @@ En este módulo:
 - Usaste el modo check (`--check`) y el modo diff (`--diff`) para previsualizar cambios de forma segura
 - Observaste la idempotencia en acción -- ejecutar un playbook dos veces produce cero cambios la segunda vez
 
-Alex ahora tiene tres playbooks que pueden ejecutarse repetidamente para lograr un estado del sistema consistente. Pero todos apuntan a `localhost` -- ¿qué pasa cuando Alex necesita gestionar múltiples servidores en diferentes entornos?
+Lionel ahora tiene tres playbooks que pueden ejecutarse repetidamente para lograr un estado del sistema consistente. Pero todos apuntan a `localhost` -- ¿qué pasa cuando Lionel necesita gestionar múltiples servidores en diferentes entornos?
 
 ## Próximos Pasos
 

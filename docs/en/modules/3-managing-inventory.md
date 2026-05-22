@@ -11,9 +11,9 @@ By the end of this module you will be able to:
 
 ## The Story So Far
 
-Alex has three working playbooks, but they all target `localhost`. In the real world, Parasol Tech has dozens of servers spread across three environments -- development, staging, and production -- running different services. Web servers, database servers, application servers -- each environment has its own set.
+Lionel has three working playbooks, but they all target `localhost`. In the real world, Parasol Tech has dozens of servers spread across three environments -- development, staging, and production -- running different services. Web servers, database servers, application servers -- each environment has its own set.
 
-Alex needs a way to tell Ansible about all of these hosts, organize them logically, and assign different configuration values depending on the environment and the server's role. This is what the **inventory** does.
+Lionel needs a way to tell Ansible about all of these hosts, organize them logically, and assign different configuration values depending on the environment and the server's role. This is what the **inventory** does.
 
 ## What is an Inventory?
 
@@ -184,7 +184,7 @@ all:
         prod_dbservers:
 ```
 
-This structure gives Alex maximum flexibility:
+This structure gives Lionel maximum flexibility:
 
 | Target | Hosts reached |
 |--------|--------------|
@@ -526,7 +526,7 @@ In this module you:
 - Saw how `ansible-navigator inventory` commands help verify and explore the inventory structure
 - Understood the concept of dynamic inventory and when to use it
 
-Alex now has an inventory that represents Parasol Tech's entire infrastructure. Each environment has its own configuration values, and specific hosts can have unique settings. The next challenge: how to use those variables to make playbooks adapt to different hosts and environments.
+Lionel now has an inventory that represents Parasol Tech's entire infrastructure. Each environment has its own configuration values, and specific hosts can have unique settings. The next challenge: how to use those variables to make playbooks adapt to different hosts and environments.
 
 ## Next Steps
 

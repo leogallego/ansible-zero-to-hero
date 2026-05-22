@@ -11,9 +11,9 @@ Al finalizar este módulo serás capaz de:
 
 ## La Historia Hasta Ahora
 
-Alex tiene tres playbooks funcionando, pero todos apuntan a `localhost`. En el mundo real, Parasol Tech tiene docenas de servidores distribuidos en tres entornos -- desarrollo, staging y producción -- ejecutando diferentes servicios. Servidores web, servidores de base de datos, servidores de aplicaciones -- cada entorno tiene su propio conjunto.
+Lionel tiene tres playbooks funcionando, pero todos apuntan a `localhost`. En el mundo real, Parasol Tech tiene docenas de servidores distribuidos en tres entornos -- desarrollo, staging y producción -- ejecutando diferentes servicios. Servidores web, servidores de base de datos, servidores de aplicaciones -- cada entorno tiene su propio conjunto.
 
-Alex necesita una forma de decirle a Ansible sobre todos estos hosts, organizarlos lógicamente y asignar diferentes valores de configuración según el entorno y el rol del servidor. Esto es lo que hace el **inventario**.
+Lionel necesita una forma de decirle a Ansible sobre todos estos hosts, organizarlos lógicamente y asignar diferentes valores de configuración según el entorno y el rol del servidor. Esto es lo que hace el **inventario**.
 
 ## Qué es un Inventario?
 
@@ -184,7 +184,7 @@ all:
         prod_dbservers:
 ```
 
-Esta estructura le da a Alex la máxima flexibilidad:
+Esta estructura le da a Lionel la máxima flexibilidad:
 
 | Objetivo | Hosts alcanzados |
 |----------|-----------------|
@@ -526,7 +526,7 @@ En este módulo:
 - Viste cómo los comandos `ansible-navigator inventory` ayudan a verificar y explorar la estructura del inventario
 - Entendiste el concepto de inventario dinámico y cuándo usarlo
 
-Alex ahora tiene un inventario que representa toda la infraestructura de Parasol Tech. Cada entorno tiene sus propios valores de configuración, y hosts específicos pueden tener configuraciones únicas. El siguiente desafío: cómo usar esas variables para hacer que los playbooks se adapten a diferentes hosts y entornos.
+Lionel ahora tiene un inventario que representa toda la infraestructura de Parasol Tech. Cada entorno tiene sus propios valores de configuración, y hosts específicos pueden tener configuraciones únicas. El siguiente desafío: cómo usar esas variables para hacer que los playbooks se adapten a diferentes hosts y entornos.
 
 ## Próximos Pasos
 
