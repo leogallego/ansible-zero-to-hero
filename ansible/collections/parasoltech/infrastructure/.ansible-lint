@@ -1,0 +1,43 @@
+---
+# .ansible-lint — Configuration for ansible-lint
+#
+# Run: ansible-lint
+# Auto-fix: ansible-lint --fix
+
+# Profile sets the rule severity baseline.
+# Options: min, basic, moderate, safety, shared, production
+profile: production
+
+# Enforce these rules strictly — any violation is an error.
+strict: true
+
+# Paths to lint (relative to this file)
+exclude_paths:
+  - .tox
+  - .venv
+  - collections
+  - .ade
+
+# Enable auto-fix for supported rules
+# Run with: ansible-lint --fix
+enable_list:
+  - fqcn
+  - args
+  - name
+
+# Warn about these rules instead of failing
+warn_list:
+  - experimental
+
+# Skip rules that do not apply to a course collection
+skip_list:
+  - galaxy[version-incorrect]
+
+# Offline mode — do not download schemas or collections
+offline: false
+
+# Show rule IDs in output for quick reference
+sarif_file: null
+
+# Use the collection's galaxy.yml for project detection
+project_dir: .

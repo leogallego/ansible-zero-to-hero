@@ -1,0 +1,53 @@
+---
+# molecule.yml — Molecule scenario for the webserver role
+#
+# This scenario uses the delegated driver so no containers or VMs
+# are required. Tests execute on localhost, which is ideal for
+# validating role logic in CI/CD pipelines and course exercises.
+#
+# Run: molecule test -s integration_webserver
+# Iterate: molecule converge -s integration_webserver
+
+dependency:
+  name: galaxy
+  options:
+    requirements-file: ${MOLECULE_SCENARIO_DIRECTORY}/../../../requirements.yml
+    force: false
+
+driver:
+  name: delegated
+  options:
+    managed: false
+    ansible_connection_options:
+      ansible_connection: local
+
+platforms:
+  - name: localhost
+    managed: false
+    groups:
+      - webservers
+
+provisioner:
+  name: ansible
+  inventory:
+    host_vars:
+      localhost:
+        ansible_connection: local
+        ansible_python_interpreter: "{{ ansible_playbook_python }}"
+
+verifier:
+  name: ansible
+
+scenario:
+  name: integration_webserver
+  test_sequence:
+    - dependency
+    - cleanup
+    - destroy
+    - syntax
+    - create
+    - prepare
+    - converge
+    - verify
+    - cleanup
+    - destroy

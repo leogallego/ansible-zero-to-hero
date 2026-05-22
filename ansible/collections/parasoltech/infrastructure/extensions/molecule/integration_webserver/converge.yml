@@ -1,0 +1,20 @@
+---
+# converge.yml — Apply the webserver role to the test host
+#
+# This playbook runs during the "converge" stage of Molecule.
+# It applies the role under test with explicit variable overrides
+# that make sense for a test environment.
+
+- name: Converge — apply the webserver role
+  hosts: all
+  gather_facts: true
+
+  tasks:
+    - name: Include the webserver role
+      ansible.builtin.include_role:
+        name: parasoltech.infrastructure.webserver
+      vars:
+        webserver_port: 8080
+        webserver_server_name: test.parasol.example
+        webserver_document_root: /tmp/molecule-webserver
+        webserver_service_enabled: false

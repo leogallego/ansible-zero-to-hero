@@ -1,0 +1,74 @@
+---
+# verify.yml — Assertion-based verification for the webserver role
+#
+# This playbook runs during the "verify" stage of Molecule.
+# Each task checks a specific postcondition that the role
+# should have established during converge.
+
+- name: Verify — assert webserver role postconditions
+  hosts: all
+  gather_facts: false
+
+  vars:
+    __verify_document_root: /tmp/molecule-webserver
+    __verify_server_name: test.parasol.example
+
+  tasks:
+    - name: Check that the document root directory exists
+      ansible.builtin.stat:
+        path: "{{ __verify_document_root }}"
+      register: __verify_docroot_stat
+
+    - name: Assert document root was created
+      ansible.builtin.assert:
+        that:
+          - __verify_docroot_stat.stat.exists
+          - __verify_docroot_stat.stat.isdir
+        fail_msg: >-
+          The document root {{ __verify_document_root }} does not
+          exist or is not a directory.
+        success_msg: >-
+          Document root {{ __verify_document_root }} exists.
+
+    - name: Check that the index page was deployed
+      ansible.builtin.stat:
+        path: "{{ __verify_document_root }}/index.html"
+      register: __verify_index_stat
+
+    - name: Assert index page exists
+      ansible.builtin.assert:
+        that:
+          - __verify_index_stat.stat.exists
+        fail_msg: >-
+          The index.html file was not deployed to
+          {{ __verify_document_root }}.
+        success_msg: >-
+          index.html deployed successfully.
+
+    - name: Read the index page content
+      ansible.builtin.slurp:
+        src: "{{ __verify_document_root }}/index.html"
+      register: __verify_index_content
+
+    - name: Assert index page contains the server name
+      ansible.builtin.assert:
+        that:
+          - >-
+            __verify_server_name in
+            (__verify_index_content.content | b64decode)
+        fail_msg: >-
+          The index.html does not contain the expected server name
+          '{{ __verify_server_name }}'.
+        success_msg: >-
+          index.html contains the correct server name.
+
+    - name: Assert index page contains the ansible_managed header
+      ansible.builtin.assert:
+        that:
+          - >-
+            'Ansible managed' in
+            (__verify_index_content.content | b64decode)
+        fail_msg: >-
+          The index.html is missing the ansible_managed header.
+        success_msg: >-
+          index.html contains the ansible_managed header.

@@ -1,0 +1,44 @@
+---
+# tests/integration/targets/webserver/tasks/main.yml
+#
+# Integration test assertions for the webserver role.
+# These tasks are executed by Molecule during the converge stage
+# via the shared converge playbook pattern.
+
+- name: Verify role defaults are defined
+  ansible.builtin.assert:
+    that:
+      - webserver_port is defined
+      - webserver_document_root is defined
+      - webserver_server_name is defined
+      - webserver_service_enabled is defined
+      - webserver_max_connections is defined
+    fail_msg: >-
+      One or more expected role defaults are not defined.
+    success_msg: >-
+      All expected role defaults are defined.
+
+- name: Verify default values have expected types
+  ansible.builtin.assert:
+    that:
+      - webserver_port | int == webserver_port
+      - webserver_service_enabled | bool == webserver_service_enabled
+      - webserver_max_connections | int == webserver_max_connections
+      - webserver_document_root is string
+      - webserver_server_name is string
+    fail_msg: >-
+      One or more role defaults have unexpected types.
+    success_msg: >-
+      All role defaults have the expected types.
+
+- name: Verify internal variables are defined
+  ansible.builtin.assert:
+    that:
+      - __webserver_packages_default is defined
+      - __webserver_service_name is defined
+      - __webserver_config_dir is defined
+      - __webserver_config_file is defined
+    fail_msg: >-
+      One or more internal variables are not defined.
+    success_msg: >-
+      All internal variables are defined.
