@@ -1,0 +1,2978 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A progressive course teaching Ansible from first principles to production-grade automation">
+      
+      
+      
+        <link rel="canonical" href="https://leogallego.github.io/ansible-zero-to-hero/es/modules/6-roles-and-collections/">
+      
+      
+        <link rel="prev" href="../5-templates-and-handlers/">
+      
+      
+        <link rel="next" href="../7-testing-your-automation/">
+      
+      
+        
+          <link rel="alternate" href="../../../modules/6-roles-and-collections/" hreflang="en">
+        
+          <link rel="alternate" href="./" hreflang="es">
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>6. Roles and Collections - Ansible Zero to Hero</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#modulo-6-roles-y-colecciones" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../../" title="Ansible Zero to Hero" class="md-header__button md-logo" aria-label="Ansible Zero to Hero" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Ansible Zero to Hero
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              6. Roles and Collections
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Seleccionar idioma">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="../../../modules/6-roles-and-collections/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="es" class="md-select__link">
+              Español
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/leogallego/ansible-zero-to-hero" title="Ir al repositorio" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    leogallego/ansible-zero-to-hero
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Pestañas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../1-introduction/" class="md-tabs__link">
+          
+  
+  
+  Modules
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../" title="Ansible Zero to Hero" class="md-nav__button md-logo" aria-label="Ansible Zero to Hero" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Ansible Zero to Hero
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/leogallego/ansible-zero-to-hero" title="Ir al repositorio" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    leogallego/ansible-zero-to-hero
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Modules
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../2-your-first-playbook/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Your First Playbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../3-managing-inventory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Managing Inventory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../4-variables-and-facts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Variables and Facts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../5-templates-and-handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Templates and Handlers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Roles and Collections
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Roles and Collections
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objetivos-de-aprendizaje" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos de Aprendizaje
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#la-historia-hasta-ahora" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Historia Hasta Ahora
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#que-son-los-roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qué Son los Roles?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#estructura-de-directorios-de-un-rol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Estructura de Directorios de un Rol
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Estructura de Directorios de un Rol">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dividir-tareas-en-componentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dividir Tareas en Componentes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#convenciones-de-nomenclatura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Convenciones de Nomenclatura
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Convenciones de Nomenclatura">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prefijo-de-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prefijo de Variables
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prefijo-de-variables-internas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prefijo de Variables Internas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nomenclatura-de-handlers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nomenclatura de Handlers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nombres-de-roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nombres de Roles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#defaults-vs-vars" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        defaults vs vars
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="defaults vs vars">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#defaultsmainyml-la-interfaz-de-usuario" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        defaults/main.yml -- La Interfaz de Usuario
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#varsmainyml-constantes-internas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        vars/main.yml -- Constantes Internas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#referencia-rapida" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Referencia Rápida
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#que-son-las-colecciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qué Son las Colecciones?
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Qué Son las Colecciones?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#estructura-de-una-coleccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Estructura de una Colección
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scaffolding-con-ansible-creator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scaffolding con ansible-creator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Scaffolding con ansible-creator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#crear-una-coleccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Crear una Colección
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crear-un-rol-dentro-de-una-coleccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Crear un Rol Dentro de una Colección
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#que-produce-ansible-creator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qué Produce ansible-creator
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configurar-galaxyyml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configurar galaxy.yml
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configurar galaxy.yml">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dependencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependencias
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build-ignore" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Build Ignore
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gestion-de-dependencias-con-ade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gestión de Dependencias con ade
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Gestión de Dependencias con ade">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#instalar-tu-coleccion-para-desarrollo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Instalar Tu Colección para Desarrollo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ver-el-arbol-de-dependencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ver el Árbol de Dependencias
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manejar-dependencias-de-sistema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Manejar Dependencias de Sistema
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validacion-de-argumentos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Validación de Argumentos
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Validación de Argumentos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#escribir-argument_specsyml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Escribir argument_specs.yml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#que-detecta-la-validacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qué Detecta la Validación
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#la-conexion-con-defaultsmainyml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Conexión con defaults/main.yml
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fully-qualified-collection-names-fqcns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fully Qualified Collection Names (FQCNs)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fully Qualified Collection Names (FQCNs)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#por-que-importan-los-fqcns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Por Qué Importan los FQCNs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#versionado-semantico" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Versionado Semántico
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ansible-galaxy-y-automation-hub" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ansible Galaxy y Automation Hub
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ansible Galaxy y Automation Hub">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#instalar-colecciones-desde-galaxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Instalar Colecciones desde Galaxy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#construir-una-coleccion-para-distribucion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Construir una Colección para Distribución
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#publicar-en-galaxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Publicar en Galaxy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#construyendo-el-rol-webserver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Construyendo el Rol webserver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Construyendo el Rol webserver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#defaultsmainyml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        defaults/main.yml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#varsmainyml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        vars/main.yml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tasksmainyml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tasks/main.yml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#handlersmainyml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        handlers/main.yml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Templates
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usar-el-rol-en-un-playbook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usar el Rol en un Playbook
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ejercicios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicios
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ejercicios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-1-explorar-la-estructura-de-la-coleccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 1: Explorar la Estructura de la Colección
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-2-crear-una-nueva-coleccion-con-ansible-creator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 2: Crear una Nueva Colección con ansible-creator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-3-usar-ade-para-gestion-de-dependencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 3: Usar ade para Gestión de Dependencias
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-4-agregar-validacion-de-argumentos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 4: Agregar Validación de Argumentos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-5-construir-la-coleccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 5: Construir la Colección
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resumen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proximos-pasos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Próximos Pasos
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../7-testing-your-automation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Testing Your Automation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../8-packaging-and-deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Packaging and Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../9-scaling-with-aap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Scaling with AAP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objetivos-de-aprendizaje" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos de Aprendizaje
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#la-historia-hasta-ahora" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Historia Hasta Ahora
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#que-son-los-roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qué Son los Roles?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#estructura-de-directorios-de-un-rol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Estructura de Directorios de un Rol
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Estructura de Directorios de un Rol">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dividir-tareas-en-componentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dividir Tareas en Componentes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#convenciones-de-nomenclatura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Convenciones de Nomenclatura
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Convenciones de Nomenclatura">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prefijo-de-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prefijo de Variables
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prefijo-de-variables-internas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prefijo de Variables Internas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nomenclatura-de-handlers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nomenclatura de Handlers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nombres-de-roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nombres de Roles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#defaults-vs-vars" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        defaults vs vars
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="defaults vs vars">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#defaultsmainyml-la-interfaz-de-usuario" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        defaults/main.yml -- La Interfaz de Usuario
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#varsmainyml-constantes-internas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        vars/main.yml -- Constantes Internas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#referencia-rapida" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Referencia Rápida
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#que-son-las-colecciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qué Son las Colecciones?
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Qué Son las Colecciones?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#estructura-de-una-coleccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Estructura de una Colección
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scaffolding-con-ansible-creator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scaffolding con ansible-creator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Scaffolding con ansible-creator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#crear-una-coleccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Crear una Colección
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crear-un-rol-dentro-de-una-coleccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Crear un Rol Dentro de una Colección
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#que-produce-ansible-creator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qué Produce ansible-creator
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configurar-galaxyyml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configurar galaxy.yml
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configurar galaxy.yml">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dependencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependencias
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build-ignore" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Build Ignore
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gestion-de-dependencias-con-ade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gestión de Dependencias con ade
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Gestión de Dependencias con ade">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#instalar-tu-coleccion-para-desarrollo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Instalar Tu Colección para Desarrollo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ver-el-arbol-de-dependencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ver el Árbol de Dependencias
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manejar-dependencias-de-sistema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Manejar Dependencias de Sistema
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validacion-de-argumentos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Validación de Argumentos
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Validación de Argumentos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#escribir-argument_specsyml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Escribir argument_specs.yml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#que-detecta-la-validacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qué Detecta la Validación
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#la-conexion-con-defaultsmainyml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Conexión con defaults/main.yml
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fully-qualified-collection-names-fqcns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fully Qualified Collection Names (FQCNs)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fully Qualified Collection Names (FQCNs)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#por-que-importan-los-fqcns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Por Qué Importan los FQCNs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#versionado-semantico" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Versionado Semántico
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ansible-galaxy-y-automation-hub" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ansible Galaxy y Automation Hub
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ansible Galaxy y Automation Hub">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#instalar-colecciones-desde-galaxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Instalar Colecciones desde Galaxy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#construir-una-coleccion-para-distribucion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Construir una Colección para Distribución
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#publicar-en-galaxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Publicar en Galaxy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#construyendo-el-rol-webserver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Construyendo el Rol webserver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Construyendo el Rol webserver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#defaultsmainyml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        defaults/main.yml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#varsmainyml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        vars/main.yml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tasksmainyml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tasks/main.yml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#handlersmainyml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        handlers/main.yml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Templates
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usar-el-rol-en-un-playbook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usar el Rol en un Playbook
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ejercicios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicios
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ejercicios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-1-explorar-la-estructura-de-la-coleccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 1: Explorar la Estructura de la Colección
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-2-crear-una-nueva-coleccion-con-ansible-creator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 2: Crear una Nueva Colección con ansible-creator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-3-usar-ade-para-gestion-de-dependencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 3: Usar ade para Gestión de Dependencias
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-4-agregar-validacion-de-argumentos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 4: Agregar Validación de Argumentos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-5-construir-la-coleccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 5: Construir la Colección
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resumen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proximos-pasos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Próximos Pasos
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="modulo-6-roles-y-colecciones">Módulo 6: Roles y Colecciones</h1>
+<h2 id="objetivos-de-aprendizaje">Objetivos de Aprendizaje</h2>
+<p>Al finalizar este módulo serás capaz de:</p>
+<ul>
+<li>Describir la estructura de directorios de un rol y las convenciones de nomenclatura</li>
+<li>Explicar cuándo usar <code>defaults/main.yml</code> vs <code>vars/main.yml</code></li>
+<li>Crear scaffolding de roles y colecciones usando <code>ansible-creator</code></li>
+<li>Gestionar entornos de desarrollo con <code>ade</code></li>
+<li>Crear validación de argumentos con <code>meta/argument_specs.yml</code></li>
+<li>Usar Fully Qualified Collection Names (FQCNs)</li>
+</ul>
+<h2 id="la-historia-hasta-ahora">La Historia Hasta Ahora</h2>
+<p>Lionel y Jordan han estado escribiendo playbooks, gestionando inventario entre entornos, usando variables y facts, y desplegando archivos de configuración con templates y handlers. La automatización funciona bien, pero vive en una pila creciente de playbooks dentro de un directorio, y otros equipos en Parasol Tech están empezando a pedir acceso.</p>
+<p>"El equipo de base de datos quiere nuestra configuración de nginx," dice Lionel. "Y el equipo de monitoreo sigue copiando nuestras tareas de template en sus propios playbooks. Cada copia se desvía un poco."</p>
+<p>Jordan asiente. "Necesitamos empaquetar esto. Una única fuente de verdad para la configuración del servidor web que cualquier equipo pueda consumir sin copiar archivos."</p>
+<p>Esta semana, la dirección de Parasol Tech patrocina una <strong>Comunidad de Prácticas (CoP)</strong>, un grupo transversal dedicado a estándares de automatización. La primera decisión de la CoP: toda automatización reutilizable debe empaquetarse como <strong>roles</strong> dentro de <strong>colecciones</strong>. No más playbooks copiados y pegados.</p>
+<h2 id="que-son-los-roles">Qué Son los Roles?</h2>
+<p>Un rol es una unidad de automatización autocontenida con una estructura de directorios estandarizada. En lugar de poner todo en un solo playbook, divides la automatización en directorios bien definidos (tareas, variables, templates, handlers, metadatos), cada uno en su propio archivo. Ansible sabe cómo ensamblar estas piezas automáticamente.</p>
+<p>Piensa en un rol como una función en programación. Recibe entradas (variables), realiza trabajo (tareas), y puede ser llamado desde cualquier playbook. La estructura de directorios es el contrato de interfaz: cualquiera que lea el rol sabe exactamente dónde encontrar cada pieza.</p>
+<h2 id="estructura-de-directorios-de-un-rol">Estructura de Directorios de un Rol</h2>
+<p>Cada rol sigue un esquema estandarizado. Esta es la estructura del rol <code>webserver</code> que construiremos en este módulo:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>roles/webserver/
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  defaults/
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    main.yml          # Variables orientadas al usuario con valores por defecto
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  vars/
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    main.yml          # Constantes internas (no para usuarios)
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>  tasks/
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    main.yml          # La lista principal de tareas
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>  handlers/
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    main.yml          # Definiciones de handlers
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>  templates/
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    webserver.conf.j2 # Templates Jinja2
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    index.html.j2
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>  files/              # Archivos estaticos (ninguno en este rol)
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>  meta/
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    main.yml          # Metadatos del rol y dependencias
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    argument_specs.yml # Validacion de entradas
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>  README.md           # Documentacion
+</code></pre></div>
+<p>No todos los directorios son obligatorios. Ansible solo usa los directorios que existen. Pero los nombres son estrictos: <code>tasks/main.yml</code>, no <code>tasks/install.yml</code>, porque Ansible busca <code>main.yml</code> por convención.</p>
+<p>Cada directorio tiene un propósito específico:</p>
+<table>
+<thead>
+<tr>
+<th>Directorio</th>
+<th>Propósito</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>defaults/</code></td>
+<td>Variables orientadas al usuario con valores por defecto. Precedencia más baja.</td>
+</tr>
+<tr>
+<td><code>vars/</code></td>
+<td>Variables internas y constantes. Precedencia alta, difíciles de sobrescribir.</td>
+</tr>
+<tr>
+<td><code>tasks/</code></td>
+<td>La lista de tareas que ejecuta el rol.</td>
+</tr>
+<tr>
+<td><code>handlers/</code></td>
+<td>Handlers que las tareas pueden notificar.</td>
+</tr>
+<tr>
+<td><code>templates/</code></td>
+<td>Templates Jinja2 desplegados por <code>ansible.builtin.template</code>.</td>
+</tr>
+<tr>
+<td><code>files/</code></td>
+<td>Archivos estáticos desplegados por <code>ansible.builtin.copy</code>.</td>
+</tr>
+<tr>
+<td><code>meta/</code></td>
+<td>Metadatos del rol, dependencias y validación de argumentos.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="dividir-tareas-en-componentes">Dividir Tareas en Componentes</h3>
+<p>Cuando un rol crece, divides <code>tasks/main.yml</code> en archivos de componentes y los incluyes:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># tasks/main.yml</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install packages</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">ansible.builtin.include_tasks</span><span class="p">:</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">role_path</span><span class="nv"> </span><span class="s">}}/tasks/install.yml&quot;</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Configure the service</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">  </span><span class="nt">ansible.builtin.include_tasks</span><span class="p">:</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="nt">file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">role_path</span><span class="nv"> </span><span class="s">}}/tasks/configure.yml&quot;</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Manage the service lifecycle</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">  </span><span class="nt">ansible.builtin.include_tasks</span><span class="p">:</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="nt">file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">role_path</span><span class="nv"> </span><span class="s">}}/tasks/service.yml&quot;</span>
+</code></pre></div>
+<p>Observa el prefijo <code>{{ role_path }}</code>. Esto es crítico porque asegura que la ruta se resuelva al rol correcto, incluso cuando un rol incluye a otro. Nunca uses rutas relativas como <code>tasks/install.yml</code> sin él.</p>
+<div class="admonition warning">
+<p class="admonition-title">Siempre usa <code>{{ role_path }}</code> para referencias a archivos</p>
+<p>Las rutas relativas en <code>include_tasks</code>, <code>include_vars</code> y <code>template</code> se resuelven contra el rol <em>que incluye</em>, no necesariamente contra tu rol. Usa <code>{{ role_path }}/tasks/</code>, <code>{{ role_path }}/vars/</code> y <code>{{ role_path }}/templates/</code> para ser explícito.</p>
+</div>
+<h2 id="convenciones-de-nomenclatura">Convenciones de Nomenclatura</h2>
+<p>La nomenclatura es donde empiezan la mayoría de los problemas con roles. Cuando múltiples roles se ejecutan en el mismo play, sus variables comparten un único espacio de nombres. Si dos roles definen una variable llamada <code>packages</code>, una sobrescribirá a la otra.</p>
+<p>La regla es simple: <strong>prefija todo con el nombre del rol</strong>.</p>
+<h3 id="prefijo-de-variables">Prefijo de Variables</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># defaults/main.yml — CORRECTO</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nt">webserver_port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nt">webserver_document_root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/var/www/html</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="nt">webserver_server_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localhost</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="c1"># defaults/main.yml — MAL (colisionara con otros roles)</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="nt">document_root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/var/www/html</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="nt">server_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localhost</span>
+</code></pre></div>
+<p>Esto aplica a:</p>
+<ul>
+<li>Todas las variables en <code>defaults/main.yml</code></li>
+<li>Todas las variables en <code>vars/main.yml</code></li>
+<li>Todas las variables registradas (<code>register: webserver_config_result</code>)</li>
+<li>Todos los facts personalizados (<code>ansible.builtin.set_fact: webserver_detected_version: ...</code>)</li>
+<li>Todos los tags (<code>tags: webserver_install</code>)</li>
+</ul>
+<h3 id="prefijo-de-variables-internas">Prefijo de Variables Internas</h3>
+<p>Las variables internas del rol, no pensadas para que los usuarios las sobrescriban, llevan un prefijo de doble guión bajo:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># vars/main.yml — constantes internas</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nt">__webserver_packages_default</span><span class="p">:</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpd</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="nt">__webserver_service_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpd</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="nt">__webserver_config_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc/httpd/conf</span>
+</code></pre></div>
+<p>El doble guión bajo indica "esto es un detalle de implementación, no lo definas en tu inventario." Los usuarios configuran el rol a través de <code>defaults/main.yml</code>, no a través de estas variables internas.</p>
+<h3 id="nomenclatura-de-handlers">Nomenclatura de Handlers</h3>
+<p>Los handlers también necesitan el prefijo del rol para evitar colisiones. Usa una convención de nomenclatura que incluya el nombre del rol:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># handlers/main.yml</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Validate webserver configuration</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span><span class="nt">ansible.builtin.command</span><span class="p">:</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="nt">cmd</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;httpd</span><span class="nv"> </span><span class="s">-t&quot;</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span><span class="nt">changed_when</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">  </span><span class="nt">listen</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;webserver_validate_config&quot;</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Reload webserver</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">  </span><span class="nt">ansible.builtin.service</span><span class="p">:</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">__webserver_service_name</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">    </span><span class="nt">state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">reloaded</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">  </span><span class="nt">listen</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;webserver_reload&quot;</span>
+</code></pre></div>
+<p>La directiva <code>listen</code> permite que las tareas notifiquen a los handlers por tema en lugar de por nombre exacto. Esto es especialmente útil en roles porque el nombre del handler puede ser descriptivo mientras que el valor de <code>listen</code> sigue un patrón estricto <code>nombrerol_acción</code>.</p>
+<h3 id="nombres-de-roles">Nombres de Roles</h3>
+<p>Los nombres de roles deben usar guiones bajos, nunca guiones:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>webserver     # CORRECTO
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>web_server    # CORRECTO
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>web-server    # MAL — los guiones rompen el empaquetado de colecciones
+</code></pre></div>
+<h2 id="defaults-vs-vars">defaults vs vars</h2>
+<p>Esta es una de las distinciones más importantes en el diseño de roles, y equivocarse causa problemas reales.</p>
+<h3 id="defaultsmainyml-la-interfaz-de-usuario"><code>defaults/main.yml</code> -- La Interfaz de Usuario</h3>
+<p>Las variables en <code>defaults/main.yml</code> tienen la <strong>precedencia más baja</strong> en la jerarquía de variables de Ansible. Esto significa que pueden ser sobrescritas por casi cualquier cosa: variables de inventario, group vars, host vars, play vars, extra vars. Eso es exactamente lo que quieres para la configuración orientada al usuario.</p>
+<p>Piensa en <code>defaults/main.yml</code> como la "API" de tu rol. Documenta cada parámetro que el usuario puede ajustar:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># defaults/main.yml</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nt">webserver_port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="nt">webserver_document_root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/var/www/html</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="nt">webserver_server_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localhost</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="nt">webserver_service_enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="nt">webserver_max_connections</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">256</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1"># webserver_admin_email:</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="c1"># webserver_packages:</span>
+</code></pre></div>
+<p>Observa las variables comentadas al final. Son entradas que no tienen un valor por defecto seguro (como un email de administrador), así que el rol no define ninguno. Pero al listarlas aquí, los usuarios saben que estas opciones existen. Los comentarios sirven como documentación.</p>
+<h3 id="varsmainyml-constantes-internas"><code>vars/main.yml</code> -- Constantes Internas</h3>
+<p>Las variables en <code>vars/main.yml</code> tienen <strong>precedencia alta</strong>: sobrescriben variables de inventario, group vars y la mayoría de otras fuentes. Solo las extra vars (<code>-e</code>) pueden sobrescribirlas.</p>
+<p>Esto hace que <code>vars/main.yml</code> sea el lugar equivocado para valores por defecto orientados al usuario. Si pones <code>webserver_port: 80</code> en <code>vars/main.yml</code>, los usuarios no pueden sobrescribirlo desde su inventario. Necesitarían <code>-e webserver_port=8080</code> en cada ejecución, lo que derrota el propósito.</p>
+<p>Usa <code>vars/main.yml</code> para valores que no deberían cambiar:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># vars/main.yml — constantes internas</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nt">__webserver_packages_default</span><span class="p">:</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpd</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="nt">__webserver_service_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpd</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="nt">__webserver_config_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc/httpd/conf</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="nt">__webserver_config_file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpd.conf</span>
+</code></pre></div>
+<p>Estos son detalles de implementación: el nombre del servicio, la ruta del directorio de configuración, la lista de paquetes por defecto. Los usuarios no deberían necesitar definirlos, y si los sobrescriben por accidente, suceden cosas malas.</p>
+<div class="admonition danger">
+<p class="admonition-title">Nunca pongas defaults orientados al usuario en <code>vars/main.yml</code></p>
+<p>La alta precedencia de <code>vars/</code> hace que las variables sean casi imposibles de sobrescribir desde el inventario. Siempre usa <code>defaults/main.yml</code> para cualquier cosa que los usuarios deban poder personalizar.</p>
+</div>
+<h3 id="referencia-rapida">Referencia Rápida</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><code>defaults/main.yml</code></th>
+<th><code>vars/main.yml</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Precedencia</strong></td>
+<td>La más baja (fácilmente sobrescrita)</td>
+<td>Alta (difícil de sobrescribir)</td>
+</tr>
+<tr>
+<td><strong>Propósito</strong></td>
+<td>Configuración orientada al usuario</td>
+<td>Constantes internas</td>
+</tr>
+<tr>
+<td><strong>Nomenclatura</strong></td>
+<td><code>nombrerol_variable</code></td>
+<td><code>__nombrerol_variable</code></td>
+</tr>
+<tr>
+<td><strong>Pueden sobrescribir los usuarios?</strong></td>
+<td>Sí, desde inventario/group_vars</td>
+<td>Solo con <code>-e</code> extra vars</td>
+</tr>
+<tr>
+<td><strong>Contiene</strong></td>
+<td>Valores por defecto sensatos, opciones documentadas</td>
+<td>Nombres de servicios, rutas, valores internos</td>
+</tr>
+</tbody>
+</table>
+<h2 id="que-son-las-colecciones">Qué Son las Colecciones?</h2>
+<p>Una colección es un paquete de distribución para contenido Ansible. Agrupa roles, plugins, módulos y documentación en un único artefacto con un namespace, una versión y dependencias declaradas.</p>
+<p>Antes de las colecciones, compartir contenido Ansible significaba distribuir roles independientes a través de Ansible Galaxy. Esto funcionaba, pero tenía problemas: sin namespacing (dos personas podían crear un rol llamado <code>nginx</code>), sin gestión de dependencias entre roles, y sin forma de agrupar roles con módulos o plugins personalizados.</p>
+<p>Las colecciones resuelven todo esto. Una colección tiene un <strong>namespace</strong> y un <strong>nombre</strong> (como <code>parasoltech.infrastructure</code>) que garantiza unicidad. Incluye un manifiesto <code>galaxy.yml</code> que declara dependencias y versionado. Y puede contener cualquier combinación de roles, módulos, plugins y documentación.</p>
+<h3 id="estructura-de-una-coleccion">Estructura de una Colección</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>parasoltech/infrastructure/
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>  galaxy.yml            # Manifiesto de la coleccion (nombre, version, deps)
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>  README.md             # Documentacion de la coleccion
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>  LICENSE               # Archivo de licencia
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>  meta/
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>    runtime.yml         # Requisito minimo de version de Ansible
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>  plugins/              # Modulos personalizados, filtros, etc.
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>  roles/
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>    webserver/          # Los roles van aqui
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>      defaults/main.yml
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>      tasks/main.yml
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>      ...
+<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>  tests/                # Tests a nivel de coleccion
+<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>  docs/                 # Documentacion adicional
+</code></pre></div>
+<p>El archivo clave es <code>galaxy.yml</code>: es la tarjeta de identidad de la colección.</p>
+<h2 id="scaffolding-con-ansible-creator">Scaffolding con ansible-creator</h2>
+<p>No necesitas crear todos estos directorios y archivos a mano. La herramienta CLI <code>ansible-creator</code> genera todo el scaffolding por ti.</p>
+<h3 id="crear-una-coleccion">Crear una Colección</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>ansible-creator<span class="w"> </span>init<span class="w"> </span>collection<span class="w"> </span>parasoltech.infrastructure<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span>~/ansible/collections/parasoltech/infrastructure
+</code></pre></div>
+<p>Esto crea la estructura completa de directorios con archivos plantilla para <code>galaxy.yml</code>, <code>README.md</code>, <code>LICENSE</code>, <code>meta/runtime.yml</code>, y directorios placeholder para plugins, roles y tests.</p>
+<p>La sintaxis general es:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>ansible-creator init collection &lt;namespace&gt;.&lt;nombre&gt; &lt;ruta-destino&gt;
+</code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Integración con VS Code</p>
+<p>Si usas la extensión de Ansible para VS Code, también puedes crear el scaffolding de colecciones a través de un asistente gráfico. Haz clic en el icono de Ansible en la barra lateral, luego selecciona <strong>Collection project</strong>. El asistente llama a <code>ansible-creator</code> detrás de escena y produce el mismo resultado.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Y <code>ansible-galaxy init</code>?</p>
+<p>También puedes encontrar <code>ansible-galaxy collection init</code> y <code>ansible-galaxy role init</code> para crear el scaffolding de colecciones y roles. Estos comandos funcionan, pero <code>ansible-creator</code> es la herramienta más nueva y recomendada porque genera un scaffolding de proyecto más completo. Además de la estructura básica de directorios, <code>ansible-creator</code> incluye configuraciones de devcontainer, workflows de CI, infraestructura de testing y boilerplate adicional que <code>ansible-galaxy init</code> no proporciona. Para proyectos nuevos, prefiere <code>ansible-creator</code>.</p>
+</div>
+<h3 id="crear-un-rol-dentro-de-una-coleccion">Crear un Rol Dentro de una Colección</h3>
+<p>Para agregar un rol a una colección existente:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nb">cd</span><span class="w"> </span>~/ansible/collections/parasoltech/infrastructure
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>ansible-creator<span class="w"> </span>init<span class="w"> </span>role<span class="w"> </span>webserver<span class="w"> </span>--path<span class="w"> </span>roles/webserver
+</code></pre></div>
+<p>Esto crea la estructura de directorios del rol dentro del directorio <code>roles/</code> de la colección, incluyendo <code>defaults/main.yml</code>, <code>tasks/main.yml</code>, <code>handlers/main.yml</code>, <code>meta/main.yml</code> y placeholders para templates.</p>
+<h3 id="que-produce-ansible-creator">Qué Produce ansible-creator</h3>
+<p>Después del scaffolding, la colección se ve así:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>parasoltech/infrastructure/
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>  galaxy.yml
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>  README.md
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>  LICENSE
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>  meta/
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>    runtime.yml
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>  plugins/
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>  roles/
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>    webserver/
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>      defaults/
+<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>        main.yml
+<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>      handlers/
+<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a>        main.yml
+<a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a>      meta/
+<a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a>        main.yml
+<a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a>      tasks/
+<a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a>        main.yml
+<a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a>      templates/
+<a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a>      vars/
+<a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a>        main.yml
+<a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a>      README.md
+<a id="__codelineno-12-22" name="__codelineno-12-22" href="#__codelineno-12-22"></a>  tests/
+<a id="__codelineno-12-23" name="__codelineno-12-23" href="#__codelineno-12-23"></a>  docs/
+</code></pre></div>
+<p>Todos los archivos vienen con valores por defecto sensatos que personalizas para tu caso de uso. El <code>galaxy.yml</code> necesita tu namespace y descripción; el <code>defaults/main.yml</code> del rol necesita tus variables; el <code>tasks/main.yml</code> necesita tu lógica de automatización.</p>
+<h2 id="configurar-galaxyyml">Configurar galaxy.yml</h2>
+<p>El archivo <code>galaxy.yml</code> es el manifiesto de tu colección. Este es el de <code>parasoltech.infrastructure</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nn">---</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">parasoltech</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">infrastructure</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0.0</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="nt">readme</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">README.md</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="nt">authors</span><span class="p">:</span>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Parasol Tech Platform Team &lt;platform@parasol.example&gt;</span>
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Infrastructure automation collection for Parasol Tech</span>
+<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="nt">license_file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">LICENSE</span>
+<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="nt">tags</span><span class="p">:</span>
+<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">infrastructure</span>
+<a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">linux</span>
+<a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="nt">dependencies</span><span class="p">:</span>
+<a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a><span class="w">  </span><span class="s">&quot;ansible.posix&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;&gt;=1.0.0&quot;</span>
+<a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a><span class="nt">build_ignore</span><span class="p">:</span>
+<a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.gitignore</span>
+<a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.venv</span>
+<a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">collections</span>
+<a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.tox</span>
+<a id="__codelineno-13-20" name="__codelineno-13-20" href="#__codelineno-13-20"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.ade</span>
+</code></pre></div>
+<p>Cada campo tiene un propósito específico:</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Propósito</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>namespace</code></td>
+<td>El nombre de la organización o equipo. Inmutable después de publicar.</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>El nombre de la colección. Junto con namespace, forma el FQCN.</td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td>Versión semántica (ver <a href="#versionado-semantico">Versionado Semántico</a> más abajo).</td>
+</tr>
+<tr>
+<td><code>readme</code></td>
+<td>Ruta al archivo README.</td>
+</tr>
+<tr>
+<td><code>authors</code></td>
+<td>Lista de autores con email opcional.</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>Descripción corta para resultados de búsqueda en Galaxy/Hub.</td>
+</tr>
+<tr>
+<td><code>license_file</code></td>
+<td>Ruta al archivo de licencia.</td>
+</tr>
+<tr>
+<td><code>tags</code></td>
+<td>Tags de descubrimiento para Galaxy/Hub. Las categorías disponibles incluyen <code>application</code>, <code>cloud</code>, <code>database</code>, <code>infrastructure</code>, <code>linux</code>, <code>monitoring</code>, <code>networking</code>, <code>security</code>, <code>tools</code>, <code>windows</code>, entre otras.</td>
+</tr>
+<tr>
+<td><code>dependencies</code></td>
+<td>Otras colecciones que esta necesita, con restricciones de versión.</td>
+</tr>
+<tr>
+<td><code>build_ignore</code></td>
+<td>Archivos y directorios a excluir al construir el artefacto de la colección.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="dependencias">Dependencias</h3>
+<p>El campo <code>dependencies</code> declara qué otras colecciones necesita la tuya. Las restricciones de versión usan sintaxis estilo pip:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nt">dependencies</span><span class="p">:</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">  </span><span class="s">&quot;ansible.posix&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;&gt;=1.0.0&quot;</span><span class="w">       </span><span class="c1"># 1.0.0 o superior</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">  </span><span class="s">&quot;ansible.utils&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;*&quot;</span><span class="w">             </span><span class="c1"># cualquier version</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">  </span><span class="s">&quot;community.general&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;&gt;=5.0,&lt;7&quot;</span><span class="w">  </span><span class="c1"># 5.x o 6.x, no 7.x</span>
+</code></pre></div>
+<p>Cuando alguien instala tu colección, <code>ansible-galaxy</code> instala automáticamente estas dependencias también.</p>
+<h3 id="build-ignore">Build Ignore</h3>
+<p>El campo <code>build_ignore</code> mantiene los artefactos de desarrollo fuera del paquete publicado. Cuando <code>ade</code> gestiona tu colección, crea directorios <code>.venv</code>, <code>collections</code> y <code>.ade</code> dentro de la raíz de la colección. Son útiles durante el desarrollo pero nunca deben incluirse en el tarball distribuido:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nt">build_ignore</span><span class="p">:</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.gitignore</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.venv</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">collections</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.tox</span>
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.ade</span>
+</code></pre></div>
+<h2 id="gestion-de-dependencias-con-ade">Gestión de Dependencias con ade</h2>
+<p>La herramienta <strong>Ansible Development Environment</strong> (<code>ade</code>) gestiona el espacio de trabajo de desarrollo de tu colección. Maneja:</p>
+<ul>
+<li>Crear entornos virtuales Python aislados</li>
+<li>Instalar tu colección en <strong>modo editable</strong> (los cambios surten efecto inmediatamente)</li>
+<li>Resolver e instalar dependencias de colecciones declaradas en <code>galaxy.yml</code></li>
+<li>Instalar dependencias Python desde <code>requirements.txt</code> y <code>test-requirements.txt</code></li>
+<li>Rastrear requisitos de paquetes a nivel de sistema</li>
+</ul>
+<h3 id="instalar-tu-coleccion-para-desarrollo">Instalar Tu Colección para Desarrollo</h3>
+<p>Navega a la raíz de tu colección y ejecuta:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nb">cd</span><span class="w"> </span>~/ansible/collections/parasoltech/infrastructure
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>ade<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</code></pre></div>
+<p>El flag <code>-e .</code> significa <strong>instalación editable</strong>: <code>ade</code> crea un symlink desde el entorno virtual hacia tu directorio de trabajo. Cuando editas archivos en la colección, los cambios son inmediatamente visibles para Ansible sin reinstalar.</p>
+<p>La salida típica se ve así:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>$ ade install -e .
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>    Note: Created virtual environment: .venv
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>    Note: Installed collections include: ansible.posix and parasoltech.infrastructure
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>    Note: All python requirements are installed.
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>    Note: All required system packages are installed.
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Instalación editable vs regular</p>
+<p>Sin <code>-e</code>, <code>ade install .</code> copia la colección al entorno virtual. Los cambios en tus archivos fuente no se reflejan hasta que reinstales. Siempre usa <code>-e</code> durante el desarrollo.</p>
+</div>
+<h3 id="ver-el-arbol-de-dependencias">Ver el Árbol de Dependencias</h3>
+<p>Para ver qué ha instalado <code>ade</code> y el grafo completo de dependencias:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>ade<span class="w"> </span>tree<span class="w"> </span>-v
+</code></pre></div>
+<p>Esto muestra tu colección, sus dependencias y las dependencias de estas. Es útil para entender qué se incluye y para solucionar conflictos de versiones.</p>
+<h3 id="manejar-dependencias-de-sistema">Manejar Dependencias de Sistema</h3>
+<p>Algunas colecciones requieren paquetes a nivel de sistema (bibliotecas C, bindings de Python compilados desde C, etc.). Cuando <code>ade</code> detecta paquetes de sistema faltantes, te dice qué instalar:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>$ ade install -e .
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a> Warning: Required system packages are missing. Please use the system
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>          package manager to install them.
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>          - python3-cffi
+<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>          - python3-cryptography
+</code></pre></div>
+<p>Instala los paquetes listados con tu gestor de paquetes del sistema (<code>dnf install</code>, <code>apt install</code>, etc.), luego vuelve a ejecutar <code>ade install -e .</code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Entornos inmutables</p>
+<p>En entornos basados en contenedores como devcontainers o Red Hat Dev Spaces, no puedes instalar paquetes del sistema en tiempo de ejecución con <code>dnf install</code>. Si <code>ade</code> reporta paquetes de sistema faltantes, el enfoque recomendado es agregarlos a la imagen del contenedor:</p>
+<ul>
+<li><strong>Devcontainer</strong>: Agrega un <code>postCreateCommand</code> o un <code>Dockerfile</code> personalizado en <code>.devcontainer/</code> para instalar los paquetes durante la construcción del contenedor.</li>
+<li><strong>Dev Spaces</strong>: Agrega los paquetes a la imagen del componente de contenedor en <code>devfile.yaml</code>.</li>
+<li><strong>EE personalizado</strong>: Inclúyelos en las dependencias de sistema de tu <code>execution-environment.yml</code>.</li>
+</ul>
+<p>La imagen base <code>community-ansible-dev-tools</code> ya incluye las dependencias de sistema más comunes.</p>
+</div>
+<h2 id="validacion-de-argumentos">Validación de Argumentos</h2>
+<p>Cada rol debería validar sus entradas. Si un usuario pasa <code>webserver_port: "ochenta"</code> en lugar de un entero, el rol debería fallar inmediatamente con un mensaje claro, no a mitad de camino cuando un template renderiza <code>Listen ochenta</code> y el servidor web se niega a arrancar.</p>
+<p>Ansible proporciona validación de argumentos a través de <code>meta/argument_specs.yml</code>. Este archivo declara el tipo, valor por defecto y restricciones para cada entrada del rol.</p>
+<h3 id="escribir-argument_specsyml">Escribir argument_specs.yml</h3>
+<p>Esta es la especificación de argumentos para el rol <code>webserver</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="nn">---</span>
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="nt">argument_specs</span><span class="p">:</span>
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">  </span><span class="nt">main</span><span class="p">:</span>
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">    </span><span class="nt">short_description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install and configure a web server</span>
+<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span>
+<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install web server packages, deploy configuration from</span>
+<a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">a template, deploy a default index page, and manage the</span>
+<a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">service lifecycle.</span>
+<a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a><span class="w">    </span><span class="nt">options</span><span class="p">:</span>
+<a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a><span class="w">      </span><span class="nt">webserver_port</span><span class="p">:</span>
+<a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a><span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">int</span>
+<a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a><span class="w">        </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
+<a id="__codelineno-20-13" name="__codelineno-20-13" href="#__codelineno-20-13"></a><span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">The HTTP port the web server listens on.</span>
+<a id="__codelineno-20-14" name="__codelineno-20-14" href="#__codelineno-20-14"></a><span class="w">      </span><span class="nt">webserver_document_root</span><span class="p">:</span>
+<a id="__codelineno-20-15" name="__codelineno-20-15" href="#__codelineno-20-15"></a><span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">str</span>
+<a id="__codelineno-20-16" name="__codelineno-20-16" href="#__codelineno-20-16"></a><span class="w">        </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/var/www/html</span>
+<a id="__codelineno-20-17" name="__codelineno-20-17" href="#__codelineno-20-17"></a><span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
+<a id="__codelineno-20-18" name="__codelineno-20-18" href="#__codelineno-20-18"></a><span class="w">          </span><span class="no">The document root directory where web content is served from.</span>
+<a id="__codelineno-20-19" name="__codelineno-20-19" href="#__codelineno-20-19"></a><span class="w">      </span><span class="nt">webserver_server_name</span><span class="p">:</span>
+<a id="__codelineno-20-20" name="__codelineno-20-20" href="#__codelineno-20-20"></a><span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">str</span>
+<a id="__codelineno-20-21" name="__codelineno-20-21" href="#__codelineno-20-21"></a><span class="w">        </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localhost</span>
+<a id="__codelineno-20-22" name="__codelineno-20-22" href="#__codelineno-20-22"></a><span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
+<a id="__codelineno-20-23" name="__codelineno-20-23" href="#__codelineno-20-23"></a><span class="w">          </span><span class="no">The server name used in the virtual host configuration.</span>
+<a id="__codelineno-20-24" name="__codelineno-20-24" href="#__codelineno-20-24"></a><span class="w">      </span><span class="nt">webserver_service_enabled</span><span class="p">:</span>
+<a id="__codelineno-20-25" name="__codelineno-20-25" href="#__codelineno-20-25"></a><span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bool</span>
+<a id="__codelineno-20-26" name="__codelineno-20-26" href="#__codelineno-20-26"></a><span class="w">        </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-20-27" name="__codelineno-20-27" href="#__codelineno-20-27"></a><span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
+<a id="__codelineno-20-28" name="__codelineno-20-28" href="#__codelineno-20-28"></a><span class="w">          </span><span class="no">Whether to start and enable the web server service.</span>
+<a id="__codelineno-20-29" name="__codelineno-20-29" href="#__codelineno-20-29"></a><span class="w">      </span><span class="nt">webserver_max_connections</span><span class="p">:</span>
+<a id="__codelineno-20-30" name="__codelineno-20-30" href="#__codelineno-20-30"></a><span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">int</span>
+<a id="__codelineno-20-31" name="__codelineno-20-31" href="#__codelineno-20-31"></a><span class="w">        </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">256</span>
+<a id="__codelineno-20-32" name="__codelineno-20-32" href="#__codelineno-20-32"></a><span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
+<a id="__codelineno-20-33" name="__codelineno-20-33" href="#__codelineno-20-33"></a><span class="w">          </span><span class="no">The maximum number of simultaneous client connections.</span>
+<a id="__codelineno-20-34" name="__codelineno-20-34" href="#__codelineno-20-34"></a><span class="w">      </span><span class="nt">webserver_admin_email</span><span class="p">:</span>
+<a id="__codelineno-20-35" name="__codelineno-20-35" href="#__codelineno-20-35"></a><span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">str</span>
+<a id="__codelineno-20-36" name="__codelineno-20-36" href="#__codelineno-20-36"></a><span class="w">        </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a id="__codelineno-20-37" name="__codelineno-20-37" href="#__codelineno-20-37"></a><span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
+<a id="__codelineno-20-38" name="__codelineno-20-38" href="#__codelineno-20-38"></a><span class="w">          </span><span class="no">The admin email shown in server error pages.</span>
+<a id="__codelineno-20-39" name="__codelineno-20-39" href="#__codelineno-20-39"></a><span class="w">          </span><span class="no">If not set, the server default is used.</span>
+<a id="__codelineno-20-40" name="__codelineno-20-40" href="#__codelineno-20-40"></a><span class="w">      </span><span class="nt">webserver_packages</span><span class="p">:</span>
+<a id="__codelineno-20-41" name="__codelineno-20-41" href="#__codelineno-20-41"></a><span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">list</span>
+<a id="__codelineno-20-42" name="__codelineno-20-42" href="#__codelineno-20-42"></a><span class="w">        </span><span class="nt">elements</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">str</span>
+<a id="__codelineno-20-43" name="__codelineno-20-43" href="#__codelineno-20-43"></a><span class="w">        </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a id="__codelineno-20-44" name="__codelineno-20-44" href="#__codelineno-20-44"></a><span class="w">        </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
+<a id="__codelineno-20-45" name="__codelineno-20-45" href="#__codelineno-20-45"></a><span class="w">          </span><span class="no">List of packages to install. If not provided, the role</span>
+<a id="__codelineno-20-46" name="__codelineno-20-46" href="#__codelineno-20-46"></a><span class="w">          </span><span class="no">uses platform-specific defaults.</span>
+</code></pre></div>
+<p>La clave <code>main</code> corresponde al punto de entrada, <code>tasks/main.yml</code>. Si tu rol tiene múltiples puntos de entrada (por ejemplo, <code>tasks/install.yml</code> y <code>tasks/configure.yml</code> llamados por separado), cada uno tiene su propia entrada bajo <code>argument_specs</code>.</p>
+<h3 id="que-detecta-la-validacion">Qué Detecta la Validación</h3>
+<p>Cuando Ansible carga un rol con argument specs, verifica:</p>
+<ul>
+<li><strong>Tipo</strong>: Es <code>webserver_port</code> realmente un entero? Es <code>webserver_service_enabled</code> un booleano?</li>
+<li><strong>Requerido</strong>: Se proporcionó <code>webserver_port</code>? (Si no existe un valor por defecto y <code>required: true</code>)</li>
+<li><strong>Opciones</strong>: Es el valor uno de un conjunto permitido? (Usa <code>choices: [a, b, c]</code>)</li>
+<li><strong>Elementos</strong>: Para tipos lista, qué tipo debería ser cada elemento?</li>
+</ul>
+<p>Si la validación falla, Ansible se detiene antes de ejecutar cualquier tarea y reporta el error. Este es un comportamiento de fallo rápido: capturando errores al inicio en lugar de a mitad del rol.</p>
+<h3 id="la-conexion-con-defaultsmainyml">La Conexión con defaults/main.yml</h3>
+<p>Observa que los valores por defecto en <code>argument_specs.yml</code> coinciden con <code>defaults/main.yml</code>. Siempre deben estar de acuerdo. El <code>argument_specs.yml</code> es el contrato formal; <code>defaults/main.yml</code> es donde los valores se definen realmente. Si divergen, el comportamiento se vuelve confuso.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mantén defaults y argument specs sincronizados</p>
+<p>Cuando agregues una nueva variable a <code>defaults/main.yml</code>, agrega la entrada correspondiente en <code>meta/argument_specs.yml</code>. Cuando cambies un valor por defecto, actualiza ambos archivos.</p>
+</div>
+<h2 id="fully-qualified-collection-names-fqcns">Fully Qualified Collection Names (FQCNs)</h2>
+<p>Un Fully Qualified Collection Name identifica cualquier pieza de contenido dentro de una colección. El formato es:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>&lt;namespace&gt;.&lt;coleccion&gt;.&lt;nombre_contenido&gt;
+</code></pre></div>
+<p>Para módulos:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="c1"># FQCN — siempre correcto, nunca ambiguo</span>
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install packages</span>
+<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="w">  </span><span class="nt">ansible.builtin.package</span><span class="p">:</span>
+<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpd</span>
+<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="w">    </span><span class="nt">state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">present</span>
+<a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a>
+<a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a><span class="c1"># Nombre corto — funciona solo si ansible.builtin esta en la ruta de busqueda</span>
+<a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install packages</span>
+<a id="__codelineno-22-9" name="__codelineno-22-9" href="#__codelineno-22-9"></a><span class="w">  </span><span class="nt">package</span><span class="p">:</span>
+<a id="__codelineno-22-10" name="__codelineno-22-10" href="#__codelineno-22-10"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpd</span>
+<a id="__codelineno-22-11" name="__codelineno-22-11" href="#__codelineno-22-11"></a><span class="w">    </span><span class="nt">state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">present</span>
+</code></pre></div>
+<p>Para roles:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="c1"># Usar un rol de coleccion con FQCN</span>
+<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deploy web servers</span>
+<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">webservers</span>
+<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>
+<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="w">  </span><span class="nt">roles</span><span class="p">:</span>
+<a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">role</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">parasoltech.infrastructure.webserver</span>
+</code></pre></div>
+<h3 id="por-que-importan-los-fqcns">Por Qué Importan los FQCNs</h3>
+<p>Los nombres cortos como <code>copy</code>, <code>template</code> o <code>package</code> funcionan porque Ansible busca en un conjunto predeterminado de colecciones (empezando por <code>ansible.builtin</code>). Pero cuando agregas colecciones comunitarias o personalizadas, los nombres cortos se vuelven ambiguos. Si tanto <code>ansible.builtin</code> como <code>community.general</code> proporcionan un módulo con el mismo nombre, cuál se ejecuta?</p>
+<p>Los FQCNs eliminan esta ambigüedad. <code>ansible.builtin.copy</code> siempre significa el módulo copy de <code>ansible.builtin</code>. <code>community.general.filesystem</code> siempre significa el módulo filesystem de <code>community.general</code>. Nunca hay duda.</p>
+<p>A lo largo de este curso hemos usado FQCNs desde el principio: <code>ansible.builtin.template</code>, <code>ansible.builtin.service</code>, <code>ansible.builtin.debug</code>. Esto es intencional. Es un hábito que vale la pena construir temprano, incluso cuando los nombres cortos funcionarían.</p>
+<h2 id="versionado-semantico">Versionado Semántico</h2>
+<p>Las colecciones usan <strong>versionado semántico</strong> (SemVer) para comunicar el impacto de los cambios. El número de versión tiene tres partes:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>MAJOR.MINOR.PATCH
+<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>  1  .  0  .  0
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Parte</th>
+<th>Cuándo incrementar</th>
+<th>Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>MAJOR</strong></td>
+<td>Cambios incompatibles (variables eliminadas, comportamiento cambiado)</td>
+<td>1.0.0 -&gt; 2.0.0</td>
+</tr>
+<tr>
+<td><strong>MINOR</strong></td>
+<td>Nuevas características (nuevos roles, nuevas variables, nuevos módulos)</td>
+<td>1.0.0 -&gt; 1.1.0</td>
+</tr>
+<tr>
+<td><strong>PATCH</strong></td>
+<td>Corrección de errores (sin nuevas características, sin cambios incompatibles)</td>
+<td>1.0.0 -&gt; 1.0.1</td>
+</tr>
+</tbody>
+</table>
+<p>Para la colección <code>parasoltech.infrastructure</code>:</p>
+<ul>
+<li>Agregar un nuevo rol <code>database</code>? Incrementa MINOR: <code>1.0.0</code> -&gt; <code>1.1.0</code></li>
+<li>Corregir un error en un template del rol <code>webserver</code>? Incrementa PATCH: <code>1.0.0</code> -&gt; <code>1.0.1</code></li>
+<li>Renombrar <code>webserver_port</code> a <code>webserver_listen_port</code>? Eso es un cambio incompatible. Incrementa MAJOR: <code>1.0.0</code> -&gt; <code>2.0.0</code></li>
+</ul>
+<p>El versionado semántico permite que los consumidores especifiquen restricciones de dependencia con confianza. Si tu colección está en <code>1.3.2</code>, un consumidor que declare <code>"parasoltech.infrastructure": "&gt;=1.0.0,&lt;2.0.0"</code> sabe que obtendrá correcciones de errores y nuevas características pero nunca cambios incompatibles.</p>
+<h2 id="ansible-galaxy-y-automation-hub">Ansible Galaxy y Automation Hub</h2>
+<p><strong>Ansible Galaxy</strong> (<a href="https://galaxy.ansible.com">galaxy.ansible.com</a>) es el registro público comunitario para colecciones Ansible. Cualquiera puede explorar, descargar y publicar colecciones.</p>
+<p><strong>Automation Hub</strong> es el equivalente empresarial: un registro curado y soportado incluido con Ansible Automation Platform. Las organizaciones usan instancias privadas de Automation Hub para distribuir colecciones internas (como <code>parasoltech.infrastructure</code>).</p>
+<div class="admonition info">
+<p class="admonition-title">Automation Hub: dos versiones</p>
+<p>Red Hat ofrece dos versiones de Automation Hub:</p>
+<ul>
+<li><strong>Ansible Automation Hub</strong> (console.redhat.com): Un servicio alojado en la nube híbrida que proporciona colecciones certificadas y validadas por Red Hat. Disponible para todos los suscriptores de AAP.</li>
+<li><strong>Private Automation Hub</strong>: Una instancia auto-alojada que ejecutas dentro de tu organización para distribuir colecciones internas, curar contenido aprobado y alojar imágenes de contenedor para Execution Environments.</li>
+</ul>
+<p>La mayoría de las organizaciones usan ambas: el hub alojado para contenido certificado upstream y una instancia privada para automatización interna.</p>
+</div>
+<h3 id="instalar-colecciones-desde-galaxy">Instalar Colecciones desde Galaxy</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="c1"># Instalar una coleccion especifica</span>
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>ansible-galaxy<span class="w"> </span>collection<span class="w"> </span>install<span class="w"> </span>community.general
+<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>
+<a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="c1"># Instalar una version especifica</span>
+<a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a>ansible-galaxy<span class="w"> </span>collection<span class="w"> </span>install<span class="w"> </span>community.general:9.0.0
+<a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a>
+<a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a><span class="c1"># Instalar desde un archivo de requisitos</span>
+<a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a>ansible-galaxy<span class="w"> </span>collection<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.yml
+</code></pre></div>
+<p>Un archivo <code>requirements.yml</code> lista múltiples colecciones con restricciones de versión:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="nn">---</span>
+<a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="nt">collections</span><span class="p">:</span>
+<a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ansible.posix</span>
+<a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="w">    </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&gt;=1.0.0&quot;</span>
+<a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">community.general</span>
+<a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a><span class="w">    </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&gt;=9.0.0&quot;</span>
+</code></pre></div>
+<h3 id="construir-una-coleccion-para-distribucion">Construir una Colección para Distribución</h3>
+<p>Para construir tu colección en un tarball instalable:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="nb">cd</span><span class="w"> </span>~/ansible/collections/parasoltech/infrastructure
+<a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>ansible-galaxy<span class="w"> </span>collection<span class="w"> </span>build
+</code></pre></div>
+<p>Esto produce un archivo como <code>parasoltech-infrastructure-1.0.0.tar.gz</code> que puede instalarse con <code>ansible-galaxy collection install</code> o subirse a Galaxy o Automation Hub.</p>
+<h3 id="publicar-en-galaxy">Publicar en Galaxy</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="c1"># Publicar en Galaxy (requiere una API key de galaxy.ansible.com)</span>
+<a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>ansible-galaxy<span class="w"> </span>collection<span class="w"> </span>publish<span class="w"> </span>parasoltech-infrastructure-1.0.0.tar.gz
+</code></pre></div>
+<p>Para distribución interna en Parasol Tech, la CoP publica en un Automation Hub privado en su lugar. El flujo de trabajo es similar: construir el tarball, luego enviarlo al Hub.</p>
+<h2 id="construyendo-el-rol-webserver">Construyendo el Rol webserver</h2>
+<p>Ahora construyamos el rol <code>parasoltech.infrastructure.webserver</code> paso a paso. Este rol instala un servidor web, despliega un archivo de configuración desde un template, crea una página index por defecto y gestiona el ciclo de vida del servicio.</p>
+<h3 id="defaultsmainyml">defaults/main.yml</h3>
+<p>Las variables orientadas al usuario definen lo que los consumidores del rol pueden personalizar:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="nn">---</span>
+<a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a><span class="c1"># El puerto HTTP en el que escucha el servidor web</span>
+<a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a><span class="nt">webserver_port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
+<a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a>
+<a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a><span class="c1"># La raiz de documentos donde se sirve el contenido web</span>
+<a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a><span class="nt">webserver_document_root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/var/www/html</span>
+<a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a>
+<a id="__codelineno-29-8" name="__codelineno-29-8" href="#__codelineno-29-8"></a><span class="c1"># El nombre del servidor usado en la configuracion del virtual host</span>
+<a id="__codelineno-29-9" name="__codelineno-29-9" href="#__codelineno-29-9"></a><span class="nt">webserver_server_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localhost</span>
+<a id="__codelineno-29-10" name="__codelineno-29-10" href="#__codelineno-29-10"></a>
+<a id="__codelineno-29-11" name="__codelineno-29-11" href="#__codelineno-29-11"></a><span class="c1"># Si iniciar y habilitar el servicio del servidor web</span>
+<a id="__codelineno-29-12" name="__codelineno-29-12" href="#__codelineno-29-12"></a><span class="nt">webserver_service_enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-29-13" name="__codelineno-29-13" href="#__codelineno-29-13"></a>
+<a id="__codelineno-29-14" name="__codelineno-29-14" href="#__codelineno-29-14"></a><span class="c1"># El numero maximo de conexiones simultaneas de clientes</span>
+<a id="__codelineno-29-15" name="__codelineno-29-15" href="#__codelineno-29-15"></a><span class="nt">webserver_max_connections</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">256</span>
+<a id="__codelineno-29-16" name="__codelineno-29-16" href="#__codelineno-29-16"></a>
+<a id="__codelineno-29-17" name="__codelineno-29-17" href="#__codelineno-29-17"></a><span class="c1"># El email de administrador mostrado en paginas de error del servidor</span>
+<a id="__codelineno-29-18" name="__codelineno-29-18" href="#__codelineno-29-18"></a><span class="c1"># webserver_admin_email:</span>
+<a id="__codelineno-29-19" name="__codelineno-29-19" href="#__codelineno-29-19"></a>
+<a id="__codelineno-29-20" name="__codelineno-29-20" href="#__codelineno-29-20"></a><span class="c1"># Paquetes a instalar (sobrescribible por plataforma via vars/)</span>
+<a id="__codelineno-29-21" name="__codelineno-29-21" href="#__codelineno-29-21"></a><span class="c1"># webserver_packages:</span>
+</code></pre></div>
+<p>Cada variable tiene el prefijo <code>webserver_</code>. Las dos variables comentadas (<code>webserver_admin_email</code>, <code>webserver_packages</code>) no tienen un valor por defecto seguro, así que se listan pero no se definen. Los usuarios saben que estas opciones existen leyendo este archivo.</p>
+<h3 id="varsmainyml">vars/main.yml</h3>
+<p>Constantes internas que no deberían sobrescribirse:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="nn">---</span>
+<a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="nt">__webserver_packages_default</span><span class="p">:</span>
+<a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpd</span>
+<a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a><span class="nt">__webserver_service_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpd</span>
+<a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a><span class="nt">__webserver_config_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc/httpd/conf</span>
+<a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a><span class="nt">__webserver_config_file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpd.conf</span>
+</code></pre></div>
+<p>El prefijo de doble guión bajo marca estas como internas. El nombre del servicio, el directorio de configuración y los paquetes por defecto son detalles de implementación que los usuarios no deberían necesitar cambiar.</p>
+<h3 id="tasksmainyml">tasks/main.yml</h3>
+<p>La lista de tareas une todo. Observa cómo usa patrones de cada módulo anterior: gestión de paquetes (Módulo 2), templates con backup (Módulo 5), handlers (Módulo 5) y lógica basada en variables (Módulo 4):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="nn">---</span>
+<a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install web server packages</span>
+<a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a><span class="w">  </span><span class="nt">ansible.builtin.package</span><span class="p">:</span>
+<a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">webserver_packages</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">default(__webserver_packages_default)</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a><span class="w">    </span><span class="nt">state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">present</span>
+<a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a>
+<a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Ensure document root exists</span>
+<a id="__codelineno-31-8" name="__codelineno-31-8" href="#__codelineno-31-8"></a><span class="w">  </span><span class="nt">ansible.builtin.file</span><span class="p">:</span>
+<a id="__codelineno-31-9" name="__codelineno-31-9" href="#__codelineno-31-9"></a><span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">webserver_document_root</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-31-10" name="__codelineno-31-10" href="#__codelineno-31-10"></a><span class="w">    </span><span class="nt">state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">directory</span>
+<a id="__codelineno-31-11" name="__codelineno-31-11" href="#__codelineno-31-11"></a><span class="w">    </span><span class="nt">owner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">root</span>
+<a id="__codelineno-31-12" name="__codelineno-31-12" href="#__codelineno-31-12"></a><span class="w">    </span><span class="nt">group</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">root</span>
+<a id="__codelineno-31-13" name="__codelineno-31-13" href="#__codelineno-31-13"></a><span class="w">    </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0755&quot;</span>
+<a id="__codelineno-31-14" name="__codelineno-31-14" href="#__codelineno-31-14"></a>
+<a id="__codelineno-31-15" name="__codelineno-31-15" href="#__codelineno-31-15"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deploy web server configuration</span>
+<a id="__codelineno-31-16" name="__codelineno-31-16" href="#__codelineno-31-16"></a><span class="w">  </span><span class="nt">ansible.builtin.template</span><span class="p">:</span>
+<a id="__codelineno-31-17" name="__codelineno-31-17" href="#__codelineno-31-17"></a><span class="w">    </span><span class="nt">src</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">role_path</span><span class="nv"> </span><span class="s">}}/templates/webserver.conf.j2&quot;</span>
+<a id="__codelineno-31-18" name="__codelineno-31-18" href="#__codelineno-31-18"></a><span class="w">    </span><span class="nt">dest</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">__webserver_config_dir</span><span class="nv"> </span><span class="s">}}/{{</span><span class="nv"> </span><span class="s">__webserver_config_file</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-31-19" name="__codelineno-31-19" href="#__codelineno-31-19"></a><span class="w">    </span><span class="nt">owner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">root</span>
+<a id="__codelineno-31-20" name="__codelineno-31-20" href="#__codelineno-31-20"></a><span class="w">    </span><span class="nt">group</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">root</span>
+<a id="__codelineno-31-21" name="__codelineno-31-21" href="#__codelineno-31-21"></a><span class="w">    </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0644&quot;</span>
+<a id="__codelineno-31-22" name="__codelineno-31-22" href="#__codelineno-31-22"></a><span class="w">    </span><span class="nt">backup</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-31-23" name="__codelineno-31-23" href="#__codelineno-31-23"></a><span class="w">  </span><span class="nt">notify</span><span class="p">:</span>
+<a id="__codelineno-31-24" name="__codelineno-31-24" href="#__codelineno-31-24"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">webserver_validate_config</span>
+<a id="__codelineno-31-25" name="__codelineno-31-25" href="#__codelineno-31-25"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">webserver_reload</span>
+<a id="__codelineno-31-26" name="__codelineno-31-26" href="#__codelineno-31-26"></a>
+<a id="__codelineno-31-27" name="__codelineno-31-27" href="#__codelineno-31-27"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deploy default index page</span>
+<a id="__codelineno-31-28" name="__codelineno-31-28" href="#__codelineno-31-28"></a><span class="w">  </span><span class="nt">ansible.builtin.template</span><span class="p">:</span>
+<a id="__codelineno-31-29" name="__codelineno-31-29" href="#__codelineno-31-29"></a><span class="w">    </span><span class="nt">src</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">role_path</span><span class="nv"> </span><span class="s">}}/templates/index.html.j2&quot;</span>
+<a id="__codelineno-31-30" name="__codelineno-31-30" href="#__codelineno-31-30"></a><span class="w">    </span><span class="nt">dest</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">webserver_document_root</span><span class="nv"> </span><span class="s">}}/index.html&quot;</span>
+<a id="__codelineno-31-31" name="__codelineno-31-31" href="#__codelineno-31-31"></a><span class="w">    </span><span class="nt">owner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">root</span>
+<a id="__codelineno-31-32" name="__codelineno-31-32" href="#__codelineno-31-32"></a><span class="w">    </span><span class="nt">group</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">root</span>
+<a id="__codelineno-31-33" name="__codelineno-31-33" href="#__codelineno-31-33"></a><span class="w">    </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0644&quot;</span>
+<a id="__codelineno-31-34" name="__codelineno-31-34" href="#__codelineno-31-34"></a><span class="w">    </span><span class="nt">backup</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-31-35" name="__codelineno-31-35" href="#__codelineno-31-35"></a>
+<a id="__codelineno-31-36" name="__codelineno-31-36" href="#__codelineno-31-36"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Ensure web server service is in the desired state</span>
+<a id="__codelineno-31-37" name="__codelineno-31-37" href="#__codelineno-31-37"></a><span class="w">  </span><span class="nt">ansible.builtin.service</span><span class="p">:</span>
+<a id="__codelineno-31-38" name="__codelineno-31-38" href="#__codelineno-31-38"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">__webserver_service_name</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-31-39" name="__codelineno-31-39" href="#__codelineno-31-39"></a><span class="w">    </span><span class="nt">state</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">webserver_service_enabled</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">ternary(&#39;started&#39;,</span><span class="nv"> </span><span class="s">&#39;stopped&#39;)</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-31-40" name="__codelineno-31-40" href="#__codelineno-31-40"></a><span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">webserver_service_enabled</span><span class="nv"> </span><span class="s">}}&quot;</span>
+</code></pre></div>
+<p>Patrones clave a observar:</p>
+<ul>
+<li><strong><code>{{ role_path }}/templates/</code></strong> para rutas explícitas de templates</li>
+<li><strong><code>backup: true</code></strong> en cada tarea de template/copy</li>
+<li><strong>FQCNs</strong> en todo (<code>ansible.builtin.package</code>, no <code>package</code>)</li>
+<li><strong>Notificación de handlers</strong> usa los tópicos <code>listen</code> (<code>webserver_validate_config</code>, <code>webserver_reload</code>)</li>
+<li><strong><code>| default(__webserver_packages_default)</code></strong> permite a los usuarios sobrescribir paquetes mientras proporciona un respaldo integrado</li>
+</ul>
+<h3 id="handlersmainyml">handlers/main.yml</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="nn">---</span>
+<a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Validate webserver configuration</span>
+<a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a><span class="w">  </span><span class="nt">ansible.builtin.command</span><span class="p">:</span>
+<a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a><span class="w">    </span><span class="nt">cmd</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;httpd</span><span class="nv"> </span><span class="s">-t&quot;</span>
+<a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a><span class="w">  </span><span class="nt">changed_when</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a><span class="w">  </span><span class="nt">listen</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;webserver_validate_config&quot;</span>
+<a id="__codelineno-32-7" name="__codelineno-32-7" href="#__codelineno-32-7"></a>
+<a id="__codelineno-32-8" name="__codelineno-32-8" href="#__codelineno-32-8"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Reload webserver</span>
+<a id="__codelineno-32-9" name="__codelineno-32-9" href="#__codelineno-32-9"></a><span class="w">  </span><span class="nt">ansible.builtin.service</span><span class="p">:</span>
+<a id="__codelineno-32-10" name="__codelineno-32-10" href="#__codelineno-32-10"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">__webserver_service_name</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-32-11" name="__codelineno-32-11" href="#__codelineno-32-11"></a><span class="w">    </span><span class="nt">state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">reloaded</span>
+<a id="__codelineno-32-12" name="__codelineno-32-12" href="#__codelineno-32-12"></a><span class="w">  </span><span class="nt">listen</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;webserver_reload&quot;</span>
+<a id="__codelineno-32-13" name="__codelineno-32-13" href="#__codelineno-32-13"></a>
+<a id="__codelineno-32-14" name="__codelineno-32-14" href="#__codelineno-32-14"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Restart webserver</span>
+<a id="__codelineno-32-15" name="__codelineno-32-15" href="#__codelineno-32-15"></a><span class="w">  </span><span class="nt">ansible.builtin.service</span><span class="p">:</span>
+<a id="__codelineno-32-16" name="__codelineno-32-16" href="#__codelineno-32-16"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">__webserver_service_name</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-32-17" name="__codelineno-32-17" href="#__codelineno-32-17"></a><span class="w">    </span><span class="nt">state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">restarted</span>
+<a id="__codelineno-32-18" name="__codelineno-32-18" href="#__codelineno-32-18"></a><span class="w">  </span><span class="nt">listen</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;webserver_restart&quot;</span>
+</code></pre></div>
+<p>Observa <code>changed_when: false</code> en el comando de validación. Es una verificación de solo lectura, así que nunca debería reportar un cambio.</p>
+<h3 id="templates">Templates</h3>
+<p>El template de configuración del servidor web (<code>webserver.conf.j2</code>) usa patrones del Módulo 5:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="cp">{{</span> <span class="nv">ansible_managed</span> <span class="o">|</span> <span class="nf">comment</span> <span class="cp">}}</span>
+<a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a><span class="x">#</span>
+<a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a><span class="x"># Web server configuration for </span><span class="cp">{{</span> <span class="nv">webserver_server_name</span> <span class="cp">}}</span>
+<a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a>
+<a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a><span class="x">Listen </span><span class="cp">{{</span> <span class="nv">webserver_port</span> <span class="cp">}}</span>
+<a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a>
+<a id="__codelineno-33-7" name="__codelineno-33-7" href="#__codelineno-33-7"></a><span class="x">ServerName </span><span class="cp">{{</span> <span class="nv">webserver_server_name</span> <span class="cp">}}</span>
+<a id="__codelineno-33-8" name="__codelineno-33-8" href="#__codelineno-33-8"></a><span class="x">DocumentRoot &quot;</span><span class="cp">{{</span> <span class="nv">webserver_document_root</span> <span class="cp">}}</span><span class="x">&quot;</span>
+<a id="__codelineno-33-9" name="__codelineno-33-9" href="#__codelineno-33-9"></a>
+<a id="__codelineno-33-10" name="__codelineno-33-10" href="#__codelineno-33-10"></a><span class="x">MaxRequestWorkers </span><span class="cp">{{</span> <span class="nv">webserver_max_connections</span> <span class="cp">}}</span>
+<a id="__codelineno-33-11" name="__codelineno-33-11" href="#__codelineno-33-11"></a>
+<a id="__codelineno-33-12" name="__codelineno-33-12" href="#__codelineno-33-12"></a><span class="cp">{%</span> <span class="k">if</span> <span class="nv">webserver_admin_email</span> <span class="k">is</span> <span class="nf">defined</span> <span class="cp">%}</span>
+<a id="__codelineno-33-13" name="__codelineno-33-13" href="#__codelineno-33-13"></a><span class="x">ServerAdmin </span><span class="cp">{{</span> <span class="nv">webserver_admin_email</span> <span class="cp">}}</span>
+<a id="__codelineno-33-14" name="__codelineno-33-14" href="#__codelineno-33-14"></a><span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span>
+<a id="__codelineno-33-15" name="__codelineno-33-15" href="#__codelineno-33-15"></a>
+<a id="__codelineno-33-16" name="__codelineno-33-16" href="#__codelineno-33-16"></a><span class="x">&lt;Directory &quot;</span><span class="cp">{{</span> <span class="nv">webserver_document_root</span> <span class="cp">}}</span><span class="x">&quot;&gt;</span>
+<a id="__codelineno-33-17" name="__codelineno-33-17" href="#__codelineno-33-17"></a><span class="x">    AllowOverride None</span>
+<a id="__codelineno-33-18" name="__codelineno-33-18" href="#__codelineno-33-18"></a><span class="x">    Require all granted</span>
+<a id="__codelineno-33-19" name="__codelineno-33-19" href="#__codelineno-33-19"></a><span class="x">&lt;/Directory&gt;</span>
+<a id="__codelineno-33-20" name="__codelineno-33-20" href="#__codelineno-33-20"></a>
+<a id="__codelineno-33-21" name="__codelineno-33-21" href="#__codelineno-33-21"></a><span class="x">ErrorLog &quot;logs/error_log&quot;</span>
+<a id="__codelineno-33-22" name="__codelineno-33-22" href="#__codelineno-33-22"></a><span class="x">CustomLog &quot;logs/access_log&quot; combined</span>
+</code></pre></div>
+<p>Y un simple <code>index.html.j2</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="cp">{{</span> <span class="nv">ansible_managed</span> <span class="o">|</span> <span class="nf">comment</span><span class="o">(</span><span class="s1">&#39;&lt;!--&#39;</span><span class="o">,</span> <span class="s1">&#39;--&gt;&#39;</span><span class="o">)</span> <span class="cp">}}</span>
+<a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a><span class="x">&lt;!DOCTYPE html&gt;</span>
+<a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a><span class="x">&lt;html lang=&quot;en&quot;&gt;</span>
+<a id="__codelineno-34-4" name="__codelineno-34-4" href="#__codelineno-34-4"></a><span class="x">&lt;head&gt;</span>
+<a id="__codelineno-34-5" name="__codelineno-34-5" href="#__codelineno-34-5"></a><span class="x">    &lt;meta charset=&quot;UTF-8&quot;&gt;</span>
+<a id="__codelineno-34-6" name="__codelineno-34-6" href="#__codelineno-34-6"></a><span class="x">    &lt;title&gt;</span><span class="cp">{{</span> <span class="nv">webserver_server_name</span> <span class="cp">}}</span><span class="x">&lt;/title&gt;</span>
+<a id="__codelineno-34-7" name="__codelineno-34-7" href="#__codelineno-34-7"></a><span class="x">&lt;/head&gt;</span>
+<a id="__codelineno-34-8" name="__codelineno-34-8" href="#__codelineno-34-8"></a><span class="x">&lt;body&gt;</span>
+<a id="__codelineno-34-9" name="__codelineno-34-9" href="#__codelineno-34-9"></a><span class="x">    &lt;h1&gt;Welcome to </span><span class="cp">{{</span> <span class="nv">webserver_server_name</span> <span class="cp">}}</span><span class="x">&lt;/h1&gt;</span>
+<a id="__codelineno-34-10" name="__codelineno-34-10" href="#__codelineno-34-10"></a><span class="x">    &lt;p&gt;This page is managed by Ansible.&lt;/p&gt;</span>
+<a id="__codelineno-34-11" name="__codelineno-34-11" href="#__codelineno-34-11"></a><span class="x">    &lt;p&gt;Served by the &lt;code&gt;parasoltech.infrastructure.webserver&lt;/code&gt; role.&lt;/p&gt;</span>
+<a id="__codelineno-34-12" name="__codelineno-34-12" href="#__codelineno-34-12"></a><span class="x">&lt;/body&gt;</span>
+<a id="__codelineno-34-13" name="__codelineno-34-13" href="#__codelineno-34-13"></a><span class="x">&lt;/html&gt;</span>
+</code></pre></div>
+<p>Observa cómo <code>{{ ansible_managed | comment('&lt;!--', '--&gt;') }}</code> usa delimitadores de comentario personalizados para HTML. El filtro <code>| comment</code> acepta argumentos para cambiar la sintaxis de comentario del <code>#</code> predeterminado.</p>
+<h3 id="usar-el-rol-en-un-playbook">Usar el Rol en un Playbook</h3>
+<p>Un playbook que usa este rol es corto porque la complejidad está dentro del rol:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a><span class="nn">---</span>
+<a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deploy web servers</span>
+<a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">webservers</span>
+<a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a>
+<a id="__codelineno-35-5" name="__codelineno-35-5" href="#__codelineno-35-5"></a><span class="w">  </span><span class="nt">roles</span><span class="p">:</span>
+<a id="__codelineno-35-6" name="__codelineno-35-6" href="#__codelineno-35-6"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">role</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">parasoltech.infrastructure.webserver</span>
+<a id="__codelineno-35-7" name="__codelineno-35-7" href="#__codelineno-35-7"></a><span class="w">      </span><span class="nt">vars</span><span class="p">:</span>
+<a id="__codelineno-35-8" name="__codelineno-35-8" href="#__codelineno-35-8"></a><span class="w">        </span><span class="nt">webserver_port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8080</span>
+<a id="__codelineno-35-9" name="__codelineno-35-9" href="#__codelineno-35-9"></a><span class="w">        </span><span class="nt">webserver_server_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">web.parasol.example</span>
+<a id="__codelineno-35-10" name="__codelineno-35-10" href="#__codelineno-35-10"></a><span class="w">        </span><span class="nt">webserver_document_root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/var/www/parasol</span>
+<a id="__codelineno-35-11" name="__codelineno-35-11" href="#__codelineno-35-11"></a><span class="w">        </span><span class="nt">webserver_admin_email</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">admin@parasol.example</span>
+</code></pre></div>
+<p>El playbook es una lista de roles, no una lista de tareas. Toda la lógica -- instalar paquetes, desplegar templates, gestionar servicios -- vive dentro del rol. El playbook solo dice <em>qué</em> aplicar y <em>dónde</em>.</p>
+<h2 id="ejercicios">Ejercicios</h2>
+<h3 id="ejercicio-1-explorar-la-estructura-de-la-coleccion">Ejercicio 1: Explorar la Estructura de la Colección</h3>
+<p>Navega a la colección compañera y examina la estructura:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a><span class="nb">cd</span><span class="w"> </span>ansible/collections/parasoltech/infrastructure
+<a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a>find<span class="w"> </span>.<span class="w"> </span>-type<span class="w"> </span>f<span class="w"> </span><span class="p">|</span><span class="w"> </span>sort
+</code></pre></div>
+<p>Abre los archivos clave y verifica:</p>
+<ol>
+<li><code>galaxy.yml</code> tiene el namespace, nombre y versión correctos</li>
+<li><code>roles/webserver/defaults/main.yml</code> tiene todas las variables con prefijo <code>webserver_</code></li>
+<li><code>roles/webserver/vars/main.yml</code> tiene variables internas con prefijo <code>__webserver_</code></li>
+<li><code>roles/webserver/meta/argument_specs.yml</code> coincide con los defaults</li>
+</ol>
+<h3 id="ejercicio-2-crear-una-nueva-coleccion-con-ansible-creator">Ejercicio 2: Crear una Nueva Colección con ansible-creator</h3>
+<p>Crea una segunda colección usando <code>ansible-creator</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a>ansible-creator<span class="w"> </span>init<span class="w"> </span>collection<span class="w"> </span>parasoltech.monitoring<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a><span class="w">  </span>~/ansible/collections/parasoltech/monitoring
+</code></pre></div>
+<p>Explora los archivos generados. Compara la estructura con la colección <code>parasoltech.infrastructure</code>. Observa cómo <code>ansible-creator</code> genera el mismo esquema cada vez. Scaffolding consistente significa colecciones consistentes.</p>
+<h3 id="ejercicio-3-usar-ade-para-gestion-de-dependencias">Ejercicio 3: Usar ade para Gestión de Dependencias</h3>
+<p>Instala la colección <code>parasoltech.infrastructure</code> en modo editable:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a><span class="nb">cd</span><span class="w"> </span>ansible/collections/parasoltech/infrastructure
+<a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a>ade<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</code></pre></div>
+<p>Verifica el árbol de dependencias:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a>ade<span class="w"> </span>tree<span class="w"> </span>-v
+</code></pre></div>
+<p>Deberías ver <code>ansible.posix</code> listado como dependencia (declarado en <code>galaxy.yml</code>).</p>
+<h3 id="ejercicio-4-agregar-validacion-de-argumentos">Ejercicio 4: Agregar Validación de Argumentos</h3>
+<p>Agrega una nueva variable al rol <code>webserver</code>:</p>
+<ol>
+<li>Agrega <code>webserver_log_level</code> a <code>defaults/main.yml</code> con un valor por defecto de <code>warn</code></li>
+<li>Agrega la entrada correspondiente en <code>meta/argument_specs.yml</code> con <code>type: str</code> y <code>choices: [debug, info, notice, warn, error, crit]</code></li>
+<li>Usa la nueva variable en el template <code>webserver.conf.j2</code></li>
+</ol>
+<p>Prueba que la validación funciona pasando un valor inválido:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a>ansible-playbook<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;webserver_log_level=invalid&quot;</span><span class="w"> </span>tu-playbook.yml
+</code></pre></div>
+<p>Ansible debería rechazar el valor antes de ejecutar cualquier tarea.</p>
+<h3 id="ejercicio-5-construir-la-coleccion">Ejercicio 5: Construir la Colección</h3>
+<p>Construye la colección en un tarball distribuible:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a><span class="nb">cd</span><span class="w"> </span>~/ansible/collections/parasoltech/infrastructure
+<a id="__codelineno-41-2" name="__codelineno-41-2" href="#__codelineno-41-2"></a>ansible-galaxy<span class="w"> </span>collection<span class="w"> </span>build
+</code></pre></div>
+<p>Examina el archivo <code>.tar.gz</code> resultante. Observa que los directorios listados en <code>build_ignore</code> (<code>.venv</code>, <code>collections</code>, <code>.tox</code>, <code>.ade</code>) no están incluidos en el archivo.</p>
+<h2 id="resumen">Resumen</h2>
+<p>En este módulo:</p>
+<ul>
+<li>Aprendiste la estructura de directorios de un rol y cómo Ansible ensambla tareas, defaults, vars, handlers, templates y metadatos en una unidad reutilizable</li>
+<li>Entendiste la diferencia crítica entre <code>defaults/main.yml</code> (orientado al usuario, baja precedencia) y <code>vars/main.yml</code> (interno, alta precedencia)</li>
+<li>Aplicaste convenciones de nomenclatura: prefijar todas las variables del rol con el nombre del rol, prefijar variables internas con doble guión bajo, nunca usar guiones en nombres de roles</li>
+<li>Creaste validación de argumentos con <code>meta/argument_specs.yml</code> para fallar rápido ante entradas incorrectas</li>
+<li>Creaste el scaffolding de una colección y rol con <code>ansible-creator</code> y gestionaste el entorno de desarrollo con <code>ade</code></li>
+<li>Configuraste <code>galaxy.yml</code> con metadatos, dependencias, versión y reglas de build ignore</li>
+<li>Usaste Fully Qualified Collection Names para referenciar contenido de forma inequívoca</li>
+<li>Entendiste el versionado semántico y cómo comunica el impacto de los cambios</li>
+</ul>
+<p>La CoP en Parasol Tech ahora tiene un estándar: toda automatización reutilizable va a la colección <code>parasoltech.infrastructure</code> con roles correctamente nombrados, validados y documentados. El equipo de base de datos instala la colección y usa el rol <code>webserver</code> sin copiar un solo archivo. Cuando el equipo de plataforma corrige un error, incrementan la versión patch y cada consumidor obtiene la corrección en su próxima instalación.</p>
+<h2 id="proximos-pasos">Próximos Pasos</h2>
+<p>Siguiente: <a href="../7-testing-your-automation/">Módulo 7 -- Testing de tu Automatización</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

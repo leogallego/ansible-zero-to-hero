@@ -1,0 +1,2353 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A progressive course teaching Ansible from first principles to production-grade automation">
+      
+      
+      
+        <link rel="canonical" href="https://leogallego.github.io/ansible-zero-to-hero/es/modules/4-variables-and-facts/">
+      
+      
+        <link rel="prev" href="../3-managing-inventory/">
+      
+      
+        <link rel="next" href="../5-templates-and-handlers/">
+      
+      
+        
+          <link rel="alternate" href="../../../modules/4-variables-and-facts/" hreflang="en">
+        
+          <link rel="alternate" href="./" hreflang="es">
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>4. Variables and Facts - Ansible Zero to Hero</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#modulo-4-variables-y-facts" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../../" title="Ansible Zero to Hero" class="md-header__button md-logo" aria-label="Ansible Zero to Hero" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Ansible Zero to Hero
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              4. Variables and Facts
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Seleccionar idioma">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="../../../modules/4-variables-and-facts/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="es" class="md-select__link">
+              Español
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/leogallego/ansible-zero-to-hero" title="Ir al repositorio" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    leogallego/ansible-zero-to-hero
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Pestañas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../1-introduction/" class="md-tabs__link">
+          
+  
+  
+  Modules
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../" title="Ansible Zero to Hero" class="md-nav__button md-logo" aria-label="Ansible Zero to Hero" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Ansible Zero to Hero
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/leogallego/ansible-zero-to-hero" title="Ir al repositorio" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    leogallego/ansible-zero-to-hero
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Modules
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../2-your-first-playbook/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Your First Playbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../3-managing-inventory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Managing Inventory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Variables and Facts
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Variables and Facts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objetivos-de-aprendizaje" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos de Aprendizaje
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#la-historia-hasta-ahora" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Historia Hasta Ahora
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tipos-de-variables-y-donde-definirlas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tipos de Variables y Dónde Definirlas
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tipos de Variables y Dónde Definirlas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#de-donde-vienen-las-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        De Dónde Vienen las Variables
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#convenciones-de-nombres-de-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Convenciones de Nombres de Variables
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#precedencia-de-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Precedencia de Variables
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Precedencia de Variables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#la-cadena-simplificada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Cadena Simplificada
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#viendo-la-precedencia-en-accion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Viendo la Precedencia en Acción
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reglas-de-precedencia-para-recordar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reglas de Precedencia para Recordar
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#facts-de-ansible" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Facts de Ansible
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Facts de Ansible">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#accediendo-a-los-facts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Accediendo a los Facts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#categorias-comunes-de-facts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Categorías Comunes de Facts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#el-playbook-de-demostracion-de-facts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        El Playbook de Demostración de Facts
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recopilacion-de-facts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recopilación de Facts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Recopilación de Facts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#como-funciona-la-recopilacion-de-facts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cómo Funciona la Recopilación de Facts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#desactivando-la-recopilacion-de-facts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Desactivando la Recopilación de Facts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subconjuntos-minimos-de-facts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subconjuntos Mínimos de Facts
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#variables-registradas-y-set_fact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Variables Registradas y set_fact
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Variables Registradas y set_fact">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#registrando-la-salida-de-tareas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registrando la Salida de Tareas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#campos-comunes-de-variables-registradas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Campos Comunes de Variables Registradas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usando-set_fact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usando set_fact
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cuando-usar-cada-uno" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cuándo Usar Cada Uno
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#depuracion-de-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Depuración de Variables
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Depuración de Variables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#el-modulo-ansiblebuiltindebug" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        El Módulo ansible.builtin.debug
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#el-parametro-verbosity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        El Parámetro verbosity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inspeccionando-variables-en-ansible-navigator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inspeccionando Variables en ansible-navigator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#viendo-todas-las-variables-de-un-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Viendo Todas las Variables de un Host
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#condicionales-con-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Condicionales con when
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Condicionales con when">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#when-basico-con-facts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        when Básico con Facts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#combinando-condiciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Combinando Condiciones
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#condiciones-con-variables-registradas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Condiciones con Variables Registradas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#condiciones-en-bucles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Condiciones en Bucles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ejercicios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicios
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ejercicios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-1-ejecuta-la-demo-de-precedencia-de-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 1: Ejecuta la Demo de Precedencia de Variables
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-2-explora-los-facts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 2: Explora los Facts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-3-ejecuta-los-condicionales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 3: Ejecuta los Condicionales
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-4-agrega-tus-propias-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 4: Agrega Tus Propias Variables
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-5-combina-facts-y-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 5: Combina Facts y Variables
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resumen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proximos-pasos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Próximos Pasos
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../5-templates-and-handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Templates and Handlers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../6-roles-and-collections/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Roles and Collections
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../7-testing-your-automation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Testing Your Automation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../8-packaging-and-deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Packaging and Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../9-scaling-with-aap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Scaling with AAP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objetivos-de-aprendizaje" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos de Aprendizaje
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#la-historia-hasta-ahora" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Historia Hasta Ahora
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tipos-de-variables-y-donde-definirlas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tipos de Variables y Dónde Definirlas
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tipos de Variables y Dónde Definirlas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#de-donde-vienen-las-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        De Dónde Vienen las Variables
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#convenciones-de-nombres-de-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Convenciones de Nombres de Variables
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#precedencia-de-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Precedencia de Variables
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Precedencia de Variables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#la-cadena-simplificada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Cadena Simplificada
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#viendo-la-precedencia-en-accion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Viendo la Precedencia en Acción
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reglas-de-precedencia-para-recordar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reglas de Precedencia para Recordar
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#facts-de-ansible" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Facts de Ansible
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Facts de Ansible">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#accediendo-a-los-facts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Accediendo a los Facts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#categorias-comunes-de-facts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Categorías Comunes de Facts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#el-playbook-de-demostracion-de-facts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        El Playbook de Demostración de Facts
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recopilacion-de-facts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recopilación de Facts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Recopilación de Facts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#como-funciona-la-recopilacion-de-facts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cómo Funciona la Recopilación de Facts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#desactivando-la-recopilacion-de-facts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Desactivando la Recopilación de Facts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subconjuntos-minimos-de-facts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subconjuntos Mínimos de Facts
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#variables-registradas-y-set_fact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Variables Registradas y set_fact
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Variables Registradas y set_fact">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#registrando-la-salida-de-tareas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registrando la Salida de Tareas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#campos-comunes-de-variables-registradas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Campos Comunes de Variables Registradas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usando-set_fact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usando set_fact
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cuando-usar-cada-uno" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cuándo Usar Cada Uno
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#depuracion-de-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Depuración de Variables
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Depuración de Variables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#el-modulo-ansiblebuiltindebug" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        El Módulo ansible.builtin.debug
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#el-parametro-verbosity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        El Parámetro verbosity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inspeccionando-variables-en-ansible-navigator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inspeccionando Variables en ansible-navigator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#viendo-todas-las-variables-de-un-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Viendo Todas las Variables de un Host
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#condicionales-con-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Condicionales con when
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Condicionales con when">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#when-basico-con-facts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        when Básico con Facts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#combinando-condiciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Combinando Condiciones
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#condiciones-con-variables-registradas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Condiciones con Variables Registradas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#condiciones-en-bucles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Condiciones en Bucles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ejercicios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicios
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ejercicios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-1-ejecuta-la-demo-de-precedencia-de-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 1: Ejecuta la Demo de Precedencia de Variables
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-2-explora-los-facts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 2: Explora los Facts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-3-ejecuta-los-condicionales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 3: Ejecuta los Condicionales
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-4-agrega-tus-propias-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 4: Agrega Tus Propias Variables
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-5-combina-facts-y-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 5: Combina Facts y Variables
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resumen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proximos-pasos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Próximos Pasos
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="modulo-4-variables-y-facts">Módulo 4: Variables y Facts</h1>
+<h2 id="objetivos-de-aprendizaje">Objetivos de Aprendizaje</h2>
+<p>Al finalizar este módulo serás capaz de:</p>
+<ul>
+<li>Definir variables en diferentes niveles de precedencia y predecir cuál gana</li>
+<li>Acceder a facts de Ansible usando notación de corchetes (<code>ansible_facts['key']</code>)</li>
+<li>Usar variables registradas y <code>set_fact</code> para datos dinámicos</li>
+<li>Depurar variables con <code>ansible.builtin.debug</code> y <code>ansible-navigator</code></li>
+</ul>
+<h2 id="la-historia-hasta-ahora">La Historia Hasta Ahora</h2>
+<p>Jordan, el compañero de equipo de Lionel, se une al equipo de plataforma de Parasol Tech. Juntos revisan los playbooks del Módulo 2 y el inventario del Módulo 3. Todo funciona, pero hay un problema: los valores de configuración están escritos directamente en el código. El mismo playbook necesita instalar paquetes diferentes en desarrollo y producción, usar diferentes niveles de log y activar o desactivar el monitoreo según el entorno.</p>
+<p>"Necesitamos parametrizar todo," dice Jordan. "Un playbook, múltiples entornos. El sistema de variables es como Ansible hace esto."</p>
+<h2 id="tipos-de-variables-y-donde-definirlas">Tipos de Variables y Dónde Definirlas</h2>
+<p>Las variables en Ansible son pares clave-valor que te permiten parametrizar tu automatización. En lugar de escribir directamente un nombre de paquete o una ruta de archivo, referencias una variable, y el valor proviene del contexto en el que se ejecuta el playbook.</p>
+<h3 id="de-donde-vienen-las-variables">De Dónde Vienen las Variables</h3>
+<p>Hay varios lugares donde puedes definir variables, cada uno con un alcance y propósito diferente:</p>
+<table>
+<thead>
+<tr>
+<th>Ubicación</th>
+<th>Alcance</th>
+<th>Cuándo usarla</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>defaults/main.yml</code> (en un rol)</td>
+<td>Valores por defecto del rol</td>
+<td>Precedencia más baja; valores seguros que los usuarios pueden sobreescribir</td>
+</tr>
+<tr>
+<td><code>group_vars/*.yml</code></td>
+<td>Todos los hosts de un grupo</td>
+<td>Valores específicos de entorno o función</td>
+</tr>
+<tr>
+<td><code>host_vars/*.yml</code></td>
+<td>Un solo host</td>
+<td>Sobreescrituras por host (DB primaria vs. réplica, etc.)</td>
+</tr>
+<tr>
+<td><code>vars/main.yml</code> (en un rol)</td>
+<td>Internos del rol</td>
+<td>Constantes y valores internos que los usuarios no deben cambiar</td>
+</tr>
+<tr>
+<td><code>vars:</code> en un play</td>
+<td>Alcance del play</td>
+<td>Valores específicos de ese play</td>
+</tr>
+<tr>
+<td><code>vars:</code> en una tarea</td>
+<td>Alcance de la tarea</td>
+<td>Valores específicos de esa tarea</td>
+</tr>
+<tr>
+<td><code>set_fact</code></td>
+<td>Alcance del host (en ejecución)</td>
+<td>Valores calculados o dinámicos</td>
+</tr>
+<tr>
+<td><code>register</code></td>
+<td>Alcance del host (en ejecución)</td>
+<td>Salida capturada de una tarea</td>
+</tr>
+<tr>
+<td>Extra vars (<code>-e</code>)</td>
+<td>Global</td>
+<td>Sobreescrituras desde la línea de comandos; precedencia más alta</td>
+</tr>
+</tbody>
+</table>
+<p>Ya usaste varias de estas en el Módulo 3 sin pensarlo. El archivo <code>group_vars/all.yml</code> define <code>parasol_organization</code>, <code>parasol_ntp_server</code> y <code>parasol_dns_servers</code> para todos los hosts. El archivo <code>group_vars/dev.yml</code> establece <code>parasol_environment: "dev"</code> y <code>parasol_log_level: "debug"</code> para todos los hosts de desarrollo.</p>
+<h3 id="convenciones-de-nombres-de-variables">Convenciones de Nombres de Variables</h3>
+<p>Buenos nombres de variables previenen colisiones y hacen evidente su origen:</p>
+<ul>
+<li><strong>Prefija con contexto</strong>: <code>parasol_ntp_server</code>, no solo <code>ntp_server</code>. Si luego agregas un rol llamado <code>ntp</code>, un <code>ntp_server</code> sin prefijo colisionaría con las variables propias del rol.</li>
+<li><strong>Usa snake_case</strong>: <code>parasol_backup_schedule</code>, no <code>parasolBackupSchedule</code> ni <code>parasol-backup-schedule</code>.</li>
+<li><strong>Sin caracteres especiales</strong> más allá de guiones bajos; los guiones y puntos rompen la resolución de variables.</li>
+</ul>
+<p>Cuando trabajes dentro de un rol (Módulo 6), prefijarás cada variable con el nombre del rol. Por ahora, Parasol Tech prefija todo con <code>parasol_</code> como espacio de nombres organizacional.</p>
+<h2 id="precedencia-de-variables">Precedencia de Variables</h2>
+<p>Cuando el mismo nombre de variable se define en múltiples lugares, Ansible necesita una regla para decidir cuál valor gana. Esta regla es la <strong>cadena de precedencia</strong>.</p>
+<h3 id="la-cadena-simplificada">La Cadena Simplificada</h3>
+<p>La lista completa de precedencia de Ansible tiene más de 20 niveles, pero en la práctica solo necesitas pensar en estos seis niveles (de menor a mayor precedencia):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>1. Valores por defecto del rol  (defaults/main.yml)           -- mas baja
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>2. Variables de inventario      (group_vars/, host_vars/)
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>3. Play vars / role vars
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>4. Task vars / block vars
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>5. set_fact / variables registradas
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>6. Extra vars (-e)                                             -- mas alta (SIEMPRE GANAN)
+</code></pre></div>
+<p>Cada nivel sobreescribe al anterior. Si la misma variable aparece en múltiples niveles, la definición con mayor precedencia gana.</p>
+<h3 id="viendo-la-precedencia-en-accion">Viendo la Precedencia en Acción</h3>
+<p>El playbook complementario <code>variable-precedence.yml</code> demuestra esto. Define <code>demo_message</code> a nivel de play y usa <code>set_fact</code> para sobreescribirla:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Demonstrate variable precedence</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localhost</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">connection</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">local</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="nt">gather_facts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="nt">vars</span><span class="p">:</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="nt">demo_message</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Defined</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">play</span><span class="nv"> </span><span class="s">vars&quot;</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">  </span><span class="nt">tasks</span><span class="p">:</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Display the winning value of demo_message</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">      </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">        </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;demo_message</span><span class="nv"> </span><span class="s">=</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">demo_message</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">        </span><span class="nt">verbosity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+</code></pre></div>
+<p>Ejecútalo:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">cd</span><span class="w"> </span>ansible
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-04/variable-precedence.yml<span class="w"> </span>--mode<span class="w"> </span>stdout
+</code></pre></div>
+<p>Ahora ejecútalo de nuevo, pasando una extra var:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-04/variable-precedence.yml<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span>--mode<span class="w"> </span>stdout<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;demo_message=&#39;Extra vars win!&#39;&quot;</span>
+</code></pre></div>
+<p>La salida cambia porque las extra vars están en la cima de la cadena de precedencia. Por esto las extra vars se reservan para sobreescrituras y depuración: evitan toda otra definición.</p>
+<h3 id="reglas-de-precedencia-para-recordar">Reglas de Precedencia para Recordar</h3>
+<div class="admonition warning">
+<p class="admonition-title">Mantenlo simple</p>
+<p>La fuente más común de confusión en Ansible es la precedencia de variables. Minimiza la cantidad de niveles que usas. Una buena regla general:</p>
+<ul>
+<li><strong>Valores por defecto del rol</strong> para valores seguros por defecto</li>
+<li><strong>Variables de inventario</strong> para el estado deseado específico del entorno</li>
+<li><strong>Role vars</strong> para constantes internas</li>
+<li><strong>Extra vars</strong> para sobreescrituras de depuración</li>
+</ul>
+<p>Si te encuentras usando más de cuatro niveles para la misma variable, tu diseño necesita simplificación.</p>
+</div>
+<div class="admonition danger">
+<p class="admonition-title">Nunca pongas valores por defecto en <code>vars/main.yml</code></p>
+<p>Las variables en <code>vars/main.yml</code> (role vars) tienen mayor precedencia que las variables de inventario. Si pones un valor por defecto ahí, los usuarios no podrán sobreescribirlo desde <code>group_vars/</code> o <code>host_vars/</code> porque el role var siempre gana. Los valores por defecto para usuarios van en <code>defaults/main.yml</code>.</p>
+</div>
+<h2 id="facts-de-ansible">Facts de Ansible</h2>
+<p>Los <strong>facts</strong> son variables que Ansible descubre automáticamente sobre el sistema de destino. Describen lo que el sistema <em>es</em>: su sistema operativo, direcciones IP, cantidad de CPUs, memoria, disposición de discos y más. Los facts representan <strong>información as-is</strong> (lo que es verdad ahora), a diferencia de las variables, que representan <strong>información to-be</strong> (lo que quieres que el sistema llegue a ser).</p>
+<h3 id="accediendo-a-los-facts">Accediendo a los Facts</h3>
+<p>Los facts se almacenan en el diccionario <code>ansible_facts</code>. Se accede a ellos usando <strong>notación de corchetes</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="l l-Scalar l-Scalar-Plain">ansible_facts[&#39;distribution&#39;]</span><span class="w">        </span><span class="c1"># &quot;Fedora&quot;, &quot;Ubuntu&quot;, &quot;RedHat&quot;, etc.</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="l l-Scalar l-Scalar-Plain">ansible_facts[&#39;os_family&#39;]</span><span class="w">           </span><span class="c1"># &quot;RedHat&quot;, &quot;Debian&quot;, &quot;Suse&quot;, etc.</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="l l-Scalar l-Scalar-Plain">ansible_facts[&#39;distribution_version&#39;]</span><span class="w"> </span><span class="c1"># &quot;42&quot;, &quot;24.04&quot;, &quot;9.4&quot;, etc.</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="l l-Scalar l-Scalar-Plain">ansible_facts[&#39;memtotal_mb&#39;]</span><span class="w">         </span><span class="c1"># RAM total en megabytes</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="l l-Scalar l-Scalar-Plain">ansible_facts[&#39;hostname&#39;]</span><span class="w">            </span><span class="c1"># Nombre de host corto</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="l l-Scalar l-Scalar-Plain">ansible_facts[&#39;default_ipv4&#39;]</span><span class="w">        </span><span class="c1"># Info de direccion IPv4 por defecto (dict)</span>
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Siempre usa notación de corchetes</p>
+<p>Verás código antiguo y tutoriales usando <code>ansible_distribution</code> o <code>ansible_facts.distribution</code> (notación de punto). <strong>Siempre usa <code>ansible_facts['distribution']</code></strong>. La notación de corchetes es explícita, inequívoca y la práctica recomendada.</p>
+</div>
+<h3 id="categorias-comunes-de-facts">Categorías Comunes de Facts</h3>
+<table>
+<thead>
+<tr>
+<th>Categoría</th>
+<th>Claves de ejemplo</th>
+<th>Qué te dicen</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Info del SO</td>
+<td><code>distribution</code>, <code>os_family</code>, <code>distribution_version</code></td>
+<td>Qué SO está ejecutándose</td>
+</tr>
+<tr>
+<td>Hardware</td>
+<td><code>architecture</code>, <code>processor_count</code>, <code>memtotal_mb</code></td>
+<td>CPU, memoria, arquitectura</td>
+</tr>
+<tr>
+<td>Red</td>
+<td><code>hostname</code>, <code>fqdn</code>, <code>default_ipv4</code>, <code>all_ipv4_addresses</code></td>
+<td>Configuración de red</td>
+</tr>
+<tr>
+<td>Almacenamiento</td>
+<td><code>mounts</code>, <code>devices</code></td>
+<td>Info de disco y sistema de archivos</td>
+</tr>
+<tr>
+<td>Fecha/hora</td>
+<td><code>date_time</code></td>
+<td>Fecha y hora actual en el destino</td>
+</tr>
+</tbody>
+</table>
+<h3 id="el-playbook-de-demostracion-de-facts">El Playbook de Demostración de Facts</h3>
+<p>El playbook complementario <code>facts-demo.yml</code> recopila facts y los muestra:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Gather and display system facts</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localhost</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span><span class="nt">connection</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">local</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span><span class="nt">tasks</span><span class="p">:</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Display operating system information</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">      </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">        </span><span class="nt">msg</span><span class="p">:</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Distribution:</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">ansible_facts[&#39;distribution&#39;]</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Major</span><span class="nv"> </span><span class="s">version:</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">ansible_facts[&#39;distribution_major_version&#39;]</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Full</span><span class="nv"> </span><span class="s">version:</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">ansible_facts[&#39;distribution_version&#39;]</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;OS</span><span class="nv"> </span><span class="s">family:</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">ansible_facts[&#39;os_family&#39;]</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">        </span><span class="nt">verbosity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+</code></pre></div>
+<p>Ejecútalo:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-04/facts-demo.yml<span class="w"> </span>--mode<span class="w"> </span>stdout
+</code></pre></div>
+<h2 id="recopilacion-de-facts">Recopilación de Facts</h2>
+<h3 id="como-funciona-la-recopilacion-de-facts">Cómo Funciona la Recopilación de Facts</h3>
+<p>Cuando un play comienza y <code>gather_facts</code> es <code>true</code> (el valor por defecto), Ansible ejecuta el módulo <code>ansible.builtin.setup</code> en cada host de destino. Este módulo recopila información del sistema y llena el diccionario <code>ansible_facts</code>. Esto sucede antes de que se ejecute cualquier tarea del play.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Comportamiento por defecto -- los facts se recopilan automaticamente</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Play with facts</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">all</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">  </span><span class="c1"># gather_facts: true  (esto es el valor por defecto, no necesitas escribirlo)</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">  </span><span class="nt">tasks</span><span class="p">:</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Use a fact</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">      </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">        </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Running</span><span class="nv"> </span><span class="s">on</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">ansible_facts[&#39;distribution&#39;]</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">        </span><span class="nt">verbosity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+</code></pre></div>
+<h3 id="desactivando-la-recopilacion-de-facts">Desactivando la Recopilación de Facts</h3>
+<p>Si tu play no necesita facts, puedes desactivar la recopilación para acelerar las cosas:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Play without facts</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">all</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span><span class="nt">gather_facts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span><span class="nt">tasks</span><span class="p">:</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Do something that does not need facts</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">      </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">        </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;No</span><span class="nv"> </span><span class="s">facts</span><span class="nv"> </span><span class="s">needed</span><span class="nv"> </span><span class="s">here&quot;</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">        </span><span class="nt">verbosity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+</code></pre></div>
+<p>Esto es especialmente útil cuando apuntas a muchos hosts, ya que la recopilación de facts se ejecuta en cada host y puede agregar tiempo significativo a la ejecución del playbook.</p>
+<h3 id="subconjuntos-minimos-de-facts">Subconjuntos Mínimos de Facts</h3>
+<p>A veces necesitas <em>algunos</em> facts pero no todos. El módulo <code>ansible.builtin.setup</code> acepta un parámetro <code>gather_subset</code> que te permite elegir qué categorías recopilar:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Gather only network and hardware facts</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localhost</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span><span class="nt">connection</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">local</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">  </span><span class="nt">gather_facts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">  </span><span class="nt">tasks</span><span class="p">:</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Gather a minimal subset</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">      </span><span class="nt">ansible.builtin.setup</span><span class="p">:</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="w">        </span><span class="nt">gather_subset</span><span class="p">:</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;!all&quot;</span>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;!min&quot;</span>
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">network</span>
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hardware</span>
+</code></pre></div>
+<p>El <code>!all</code> elimina el conjunto completo por defecto, <code>!min</code> elimina el conjunto mínimo (que se recopila por defecto incluso cuando excluyes <code>all</code>), y luego agregas de vuelta solo lo que necesitas. Los subconjuntos comunes incluyen: <code>min</code>, <code>network</code>, <code>hardware</code>, <code>virtual</code>, <code>ohai</code> y <code>facter</code>.</p>
+<p>El playbook complementario <code>facts-demo.yml</code> incluye un segundo play que demuestra la recopilación de subconjuntos mínimos.</p>
+<h2 id="variables-registradas-y-set_fact">Variables Registradas y set_fact</h2>
+<p>A veces necesitas datos que no están disponibles hasta el momento de la ejecución: la salida de un comando, la existencia de un archivo o un valor calculado a partir de otras variables. Ansible proporciona dos mecanismos para esto: <code>register</code> y <code>set_fact</code>.</p>
+<h3 id="registrando-la-salida-de-tareas">Registrando la Salida de Tareas</h3>
+<p>La palabra clave <code>register</code> captura el resultado completo de una tarea en una variable:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check if a configuration file exists</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span><span class="nt">ansible.builtin.stat</span><span class="p">:</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc/myapp.conf</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">  </span><span class="nt">register</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__myapp_config</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Display whether the config file exists</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Config</span><span class="nv"> </span><span class="s">file</span><span class="nv"> </span><span class="s">exists:</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">__myapp_config.stat.exists</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="w">    </span><span class="nt">verbosity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+</code></pre></div>
+<p>La variable registrada (<code>__myapp_config</code>) es un diccionario que contiene los valores de retorno del módulo. Diferentes módulos retornan diferentes estructuras; consulta la documentación del módulo para ver qué claves están disponibles.</p>
+<div class="admonition tip">
+<p class="admonition-title">Nombres de variables registradas</p>
+<p>Prefija las variables registradas internas (no visibles para el usuario) con doble guion bajo: <code>__myapp_config</code>, no <code>myapp_config</code>. Esto indica que la variable es un detalle de implementación, no algo que un usuario deba establecer o sobreescribir.</p>
+</div>
+<h3 id="campos-comunes-de-variables-registradas">Campos Comunes de Variables Registradas</h3>
+<p>La mayoría de las variables registradas comparten estos campos estándar:</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>changed</code></td>
+<td>Si la tarea hizo un cambio (<code>true</code>/<code>false</code>)</td>
+</tr>
+<tr>
+<td><code>failed</code></td>
+<td>Si la tarea falló</td>
+</tr>
+<tr>
+<td><code>rc</code></td>
+<td>Código de retorno (para módulos <code>command</code>/<code>shell</code>)</td>
+</tr>
+<tr>
+<td><code>stdout</code></td>
+<td>Salida estándar como una sola cadena</td>
+</tr>
+<tr>
+<td><code>stdout_lines</code></td>
+<td>Salida estándar como una lista de líneas</td>
+</tr>
+<tr>
+<td><code>stderr</code></td>
+<td>Salida de error estándar</td>
+</tr>
+<tr>
+<td><code>skipped</code></td>
+<td>Si la tarea fue omitida</td>
+</tr>
+</tbody>
+</table>
+<h3 id="usando-set_fact">Usando <code>set_fact</code></h3>
+<p>El módulo <code>ansible.builtin.set_fact</code> crea o sobreescribe una variable en tiempo de ejecución. A diferencia de <code>register</code>, que captura la salida de una tarea, <code>set_fact</code> te permite calcular y asignar valores arbitrarios:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Set a computed variable</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">  </span><span class="nt">ansible.builtin.set_fact</span><span class="p">:</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">    </span><span class="nt">app_base_url</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;https://{{</span><span class="nv"> </span><span class="s">ansible_facts[&#39;fqdn&#39;]</span><span class="nv"> </span><span class="s">}}:{{</span><span class="nv"> </span><span class="s">app_port</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">default(8443)</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Display the computed URL</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Application</span><span class="nv"> </span><span class="s">URL:</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">app_base_url</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">    </span><span class="nt">verbosity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+</code></pre></div>
+<p>Los facts establecidos con <code>set_fact</code> tienen mayor precedencia que las play vars y las variables de inventario, y persisten durante el resto del play (y entre plays si se establece <code>cacheable: true</code>).</p>
+<h3 id="cuando-usar-cada-uno">Cuándo Usar Cada Uno</h3>
+<table>
+<thead>
+<tr>
+<th>Mecanismo</th>
+<th>Usar cuando</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>register</code></td>
+<td>Necesitas la salida de una tarea (resultado de comando, estado de archivo, respuesta de API)</td>
+</tr>
+<tr>
+<td><code>set_fact</code></td>
+<td>Necesitas calcular un valor a partir de otras variables o facts</td>
+</tr>
+</tbody>
+</table>
+<h2 id="depuracion-de-variables">Depuración de Variables</h2>
+<p>Cuando un playbook no se comporta como esperas, necesitas formas de inspeccionar variables y entender qué valores está usando Ansible realmente.</p>
+<h3 id="el-modulo-ansiblebuiltindebug">El Módulo <code>ansible.builtin.debug</code></h3>
+<p>El módulo <code>debug</code> imprime mensajes o valores de variables durante la ejecución del playbook. Es el equivalente en Ansible de una declaración <code>print()</code>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># Imprimir un mensaje</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Display a status message</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Processing</span><span class="nv"> </span><span class="s">host</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">inventory_hostname</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">    </span><span class="nt">verbosity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="c1"># Imprimir una variable completa</span>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Display the full registered result</span>
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="w">    </span><span class="nt">var</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__myapp_config</span>
+<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="w">    </span><span class="nt">verbosity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+</code></pre></div>
+<h3 id="el-parametro-verbosity">El Parámetro <code>verbosity</code></h3>
+<p>Cada tarea de debug debe incluir un parámetro <code>verbosity:</code>. Esto controla el nivel mínimo de verbosidad en el que se muestra el mensaje:</p>
+<table>
+<thead>
+<tr>
+<th>Verbosidad</th>
+<th>Cuándo se muestra</th>
+<th>Usar para</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0</code></td>
+<td>Siempre (ejecución por defecto)</td>
+<td>Salida que es el propósito del playbook (demos, reportes)</td>
+</tr>
+<tr>
+<td><code>1</code></td>
+<td><code>-v</code></td>
+<td>Información básica de depuración</td>
+</tr>
+<tr>
+<td><code>2</code></td>
+<td><code>-vv</code></td>
+<td>Estado interno detallado</td>
+</tr>
+<tr>
+<td><code>3</code></td>
+<td><code>-vvv</code></td>
+<td>Depuración profunda (volcados completos de variables)</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1"># Siempre visible -- este debug ES la salida (contexto de enseñanza/demo)</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Display the result</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Environment:</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">parasol_environment</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">    </span><span class="nt">verbosity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="c1"># Solo con -v -- para depuracion</span>
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Show intermediate state</span>
+<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
+<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="w">    </span><span class="nt">var</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__intermediate_result</span>
+<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="w">    </span><span class="nt">verbosity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a>
+<a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="c1"># Solo con -vv -- internos detallados</span>
+<a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Dump full variable for deep debugging</span>
+<a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a><span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
+<a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a><span class="w">    </span><span class="nt">var</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hostvars[inventory_hostname]</span>
+<a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a><span class="w">    </span><span class="nt">verbosity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+</code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Regla general para verbosity</p>
+<p>En playbooks de producción, establece <code>verbosity: 1</code> o mayor en todas las tareas de debug para que sean silenciosas durante ejecuciones normales. En playbooks de enseñanza y demostración (como el código complementario de este curso), <code>verbosity: 0</code> es apropiado porque mostrar la salida <em>es</em> el propósito.</p>
+</div>
+<h3 id="inspeccionando-variables-en-ansible-navigator">Inspeccionando Variables en <code>ansible-navigator</code></h3>
+<p>Cuando ejecutas un playbook en el modo interactivo de <code>ansible-navigator</code> (el predeterminado, sin <code>--mode stdout</code>), puedes profundizar en los resultados de las tareas e inspeccionar variables visualmente:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-04/facts-demo.yml
+</code></pre></div>
+<p>En modo interactivo:</p>
+<ol>
+<li>La pantalla principal muestra la lista de plays; presiona un número para seleccionar un play</li>
+<li>Cada play muestra sus tareas; presiona un número para seleccionar una tarea</li>
+<li>La pantalla de detalle de la tarea muestra el resultado completo, incluyendo todas las variables registradas y facts</li>
+<li>Presiona <code>0</code> para ver el detalle del host con todos los valores de variables</li>
+</ol>
+<p>Esto es frecuentemente más rápido que agregar tareas de debug, especialmente cuando no estás seguro de qué variable necesitas inspeccionar.</p>
+<h3 id="viendo-todas-las-variables-de-un-host">Viendo Todas las Variables de un Host</h3>
+<p>También puedes usar <code>ansible-navigator</code> para inspeccionar todas las variables asignadas a un host sin ejecutar un playbook:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>ansible-navigator<span class="w"> </span>inventory<span class="w"> </span>--host<span class="w"> </span>localhost<span class="w"> </span>--mode<span class="w"> </span>stdout
+</code></pre></div>
+<p>Esto muestra todas las variables que Ansible asignaría a ese host, incluyendo group vars, host vars y variables especiales incorporadas.</p>
+<h2 id="condicionales-con-when">Condicionales con <code>when</code></h2>
+<p>Las variables y facts se vuelven verdaderamente poderosos cuando los usas para tomar decisiones. La palabra clave <code>when</code> te permite ejecutar condicionalmente una tarea basándote en el valor de una variable, un fact o un resultado registrado.</p>
+<h3 id="when-basico-con-facts"><code>when</code> Básico con Facts</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install EPEL repository on Red Hat systems</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">  </span><span class="nt">ansible.builtin.yum_repository</span><span class="p">:</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">epel</span>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">EPEL Repository</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="w">    </span><span class="nt">baseurl</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://download.example/pub/epel/$releasever/$basearch/</span>
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="w">    </span><span class="nt">gpgcheck</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="w">  </span><span class="nt">when</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ansible_facts[&#39;os_family&#39;] == &quot;RedHat&quot;</span>
+</code></pre></div>
+<p>La tarea solo se ejecuta si el host de destino es un sistema de la familia Red Hat (RHEL, Fedora, CentOS, etc.). En sistemas basados en Debian, la tarea se omite.</p>
+<h3 id="combinando-condiciones">Combinando Condiciones</h3>
+<p>Se pueden combinar múltiples condiciones como una lista (lógica AND) o con <code>or</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="c1"># AND -- todas las condiciones deben ser verdaderas (sintaxis de lista)</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Configure production monitoring</span>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">  </span><span class="nt">ansible.builtin.template</span><span class="p">:</span>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">    </span><span class="nt">src</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">monitoring.conf.j2</span>
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="w">    </span><span class="nt">dest</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc/monitoring.conf</span>
+<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="w">  </span><span class="nt">when</span><span class="p">:</span>
+<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ansible_facts[&#39;os_family&#39;] == &quot;RedHat&quot;</span>
+<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">parasol_monitoring_enabled | default(false)</span>
+<a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a>
+<a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="c1"># OR -- cualquier condicion es suficiente</span>
+<a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Alert on low resources</span>
+<a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a><span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
+<a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a><span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Resource</span><span class="nv"> </span><span class="s">warning</span><span class="nv"> </span><span class="s">on</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">inventory_hostname</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a><span class="w">    </span><span class="nt">verbosity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a><span class="w">  </span><span class="nt">when</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
+<a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a><span class="w">    </span><span class="no">ansible_facts[&#39;memtotal_mb&#39;] &lt; 512</span>
+<a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a><span class="w">    </span><span class="no">or ansible_facts[&#39;processor_count&#39;] &lt; 2</span>
+</code></pre></div>
+<h3 id="condiciones-con-variables-registradas">Condiciones con Variables Registradas</h3>
+<p>Un patrón común es ejecutar una verificación, registrar el resultado y actuar condicionalmente:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check if application config exists</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="w">  </span><span class="nt">ansible.builtin.stat</span><span class="p">:</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc/myapp.conf</span>
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">  </span><span class="nt">register</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__myapp_config</span>
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>
+<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Create default config if missing</span>
+<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="w">  </span><span class="nt">ansible.builtin.copy</span><span class="p">:</span>
+<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="w">    </span><span class="nt">dest</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc/myapp.conf</span>
+<a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a><span class="w">    </span><span class="nt">content</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;#</span><span class="nv"> </span><span class="s">Default</span><span class="nv"> </span><span class="s">configuration\n&quot;</span>
+<a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="w">    </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0644&quot;</span>
+<a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a><span class="w">  </span><span class="nt">when</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">not __myapp_config.stat.exists</span>
+</code></pre></div>
+<h3 id="condiciones-en-bucles">Condiciones en Bucles</h3>
+<p>Cuando combinas <code>when</code> con <code>loop</code>, la condición se evalúa para cada elemento:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install only required packages</span>
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="w">  </span><span class="nt">ansible.builtin.dnf</span><span class="p">:</span>
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">item.name</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="w">    </span><span class="nt">state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">present</span>
+<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="w">  </span><span class="nt">loop</span><span class="p">:</span>
+<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">httpd</span>
+<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="w">      </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">debug-tools</span>
+<a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a><span class="w">      </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a><span class="w">  </span><span class="nt">when</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">item.required</span>
+</code></pre></div>
+<p>El playbook complementario <code>conditionals.yml</code> demuestra todos estos patrones.</p>
+<h2 id="ejercicios">Ejercicios</h2>
+<h3 id="ejercicio-1-ejecuta-la-demo-de-precedencia-de-variables">Ejercicio 1: Ejecuta la Demo de Precedencia de Variables</h3>
+<p>Ejecuta el playbook de precedencia y observa la salida:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="nb">cd</span><span class="w"> </span>ansible
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-04/variable-precedence.yml<span class="w"> </span>--mode<span class="w"> </span>stdout
+</code></pre></div>
+<p>Luego ejecútalo de nuevo con una sobreescritura de extra var:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-04/variable-precedence.yml<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="w">  </span>--mode<span class="w"> </span>stdout<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;demo_message=&#39;I am from extra vars&#39;&quot;</span>
+</code></pre></div>
+<p>Responde: ¿Qué valor tiene <code>demo_message</code> en cada ejecución? ¿Por qué?</p>
+<h3 id="ejercicio-2-explora-los-facts">Ejercicio 2: Explora los Facts</h3>
+<p>Ejecuta el playbook de demostración de facts:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-04/facts-demo.yml<span class="w"> </span>--mode<span class="w"> </span>stdout
+</code></pre></div>
+<p>Luego ejecútalo de nuevo en modo interactivo para profundizar en el conjunto completo de facts:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-04/facts-demo.yml
+</code></pre></div>
+<p>Navega a la primera tarea del primer play y explora el diccionario <code>ansible_facts</code>. ¿Puedes encontrar la versión de Python? ¿La versión del kernel? ¿La lista de sistemas de archivos montados?</p>
+<h3 id="ejercicio-3-ejecuta-los-condicionales">Ejercicio 3: Ejecuta los Condicionales</h3>
+<p>Ejecuta el playbook de condicionales:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-04/conditionals.yml<span class="w"> </span>--mode<span class="w"> </span>stdout
+</code></pre></div>
+<p>Observa cuáles tareas se ejecutan y cuáles se omiten. La salida depende de tu sistema. En un sistema Fedora, las tareas de la familia Red Hat se ejecutarán y las tareas de Debian se omitirán (y viceversa en Ubuntu).</p>
+<h3 id="ejercicio-4-agrega-tus-propias-variables">Ejercicio 4: Agrega Tus Propias Variables</h3>
+<p>Crea un archivo <code>ansible/inventory/group_vars/webservers.yml</code> (si no lo hiciste ya en los ejercicios del Módulo 3) con variables específicas de servidores web:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="nn">---</span>
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="nt">parasol_http_port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8080</span>
+<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="nt">parasol_max_connections</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
+<a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="nt">parasol_document_root</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/var/www/html&quot;</span>
+</code></pre></div>
+<p>Luego crea un playbook corto que muestre estas variables para un host de servidor web. Usa <code>--limit</code> para apuntar a un host específico y ver el conjunto de variables fusionadas.</p>
+<h3 id="ejercicio-5-combina-facts-y-variables">Ejercicio 5: Combina Facts y Variables</h3>
+<p>Escribe un playbook que:</p>
+<ol>
+<li>Recopile facts</li>
+<li>Use <code>set_fact</code> para calcular una variable (por ejemplo, <code>parasol_app_memory_limit</code> como el 50% de <code>ansible_facts['memtotal_mb']</code>)</li>
+<li>Muestre el valor calculado con <code>ansible.builtin.debug</code></li>
+<li>Use <code>when</code> para imprimir una advertencia si el valor calculado está por debajo de un umbral</li>
+</ol>
+<p>Este ejercicio combina todo lo de este módulo: facts, <code>set_fact</code>, <code>debug</code> con <code>verbosity</code> y <code>when</code>.</p>
+<h2 id="resumen">Resumen</h2>
+<p>En este módulo:</p>
+<ul>
+<li>Aprendiste dónde definir variables (valores por defecto del rol, inventario, play vars, extra vars) y por qué importa el alcance</li>
+<li>Exploraste la cadena de precedencia de variables y comprobaste que las extra vars siempre ganan</li>
+<li>Accediste a facts del sistema usando notación de corchetes <code>ansible_facts['key']</code></li>
+<li>Usaste <code>gather_subset</code> para recopilar solo los facts que necesitas</li>
+<li>Capturaste la salida de tareas con <code>register</code> y calculaste valores con <code>set_fact</code></li>
+<li>Depuraste variables usando <code>ansible.builtin.debug</code> con <code>verbosity</code> y el modo interactivo de <code>ansible-navigator</code></li>
+<li>Usaste <code>when</code> para ejecutar tareas condicionalmente basándote en facts, variables y resultados registrados</li>
+</ul>
+<p>Lionel y Jordan ahora tienen las herramientas para escribir playbooks que se adaptan a cualquier entorno. El mismo playbook lee diferentes valores de <code>group_vars/dev.yml</code> y <code>group_vars/production.yml</code>, toma decisiones basadas en facts del sistema y calcula valores en tiempo de ejecución. No más configuración escrita directamente en el código.</p>
+<h2 id="proximos-pasos">Próximos Pasos</h2>
+<p>Siguiente: <a href="../5-templates-and-handlers/">Módulo 5 -- Templates y Handlers</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

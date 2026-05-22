@@ -1,0 +1,2293 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A progressive course teaching Ansible from first principles to production-grade automation">
+      
+      
+      
+        <link rel="canonical" href="https://leogallego.github.io/ansible-zero-to-hero/modules/5-templates-and-handlers/">
+      
+      
+        <link rel="prev" href="../4-variables-and-facts/">
+      
+      
+        <link rel="next" href="../6-roles-and-collections/">
+      
+      
+        
+          <link rel="alternate" href="./" hreflang="en">
+        
+          <link rel="alternate" href="../../es/modules/5-templates-and-handlers/" hreflang="es">
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>5. Templates and Handlers - Ansible Zero to Hero</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#module-5-templates-and-handlers" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Ansible Zero to Hero" class="md-header__button md-logo" aria-label="Ansible Zero to Hero" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Ansible Zero to Hero
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              5. Templates and Handlers
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Select language">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="../../es/modules/5-templates-and-handlers/" hreflang="es" class="md-select__link">
+              Español
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/leogallego/ansible-zero-to-hero" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    leogallego/ansible-zero-to-hero
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../1-introduction/" class="md-tabs__link">
+          
+  
+  
+  Modules
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Ansible Zero to Hero" class="md-nav__button md-logo" aria-label="Ansible Zero to Hero" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Ansible Zero to Hero
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/leogallego/ansible-zero-to-hero" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    leogallego/ansible-zero-to-hero
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Modules
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../2-your-first-playbook/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Your First Playbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../3-managing-inventory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Managing Inventory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../4-variables-and-facts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Variables and Facts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Templates and Handlers
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Templates and Handlers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning Objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-story-so-far" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Story So Far
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jinja2-template-basics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Jinja2 Template Basics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Jinja2 Template Basics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-three-delimiters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Three Delimiters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variables-in-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Variables in Templates
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Filters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conditionals-in-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conditionals in Templates
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#loops-in-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Loops in Templates
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-template-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Template Module
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The Template Module">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-validate-parameter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The validate Parameter
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#template-resolution-in-roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Template Resolution in Roles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#template-best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Template Best Practices
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Template Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#always-include-ansible_managed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Always Include ansible_managed
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#always-use-backup-true" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Always Use backup: true
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#never-include-timestamps-or-dates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Never Include Timestamps or Dates
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-mode-with-quoted-strings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use mode with Quoted Strings
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#handlers-and-notify" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Handlers and Notify
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Handlers and Notify">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-handlers-are" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Handlers Are
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#notifying-multiple-handlers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Notifying Multiple Handlers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#handler-deduplication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Handler Deduplication
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#when-handlers-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When Handlers Run
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="When Handlers Run">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#default-behavior-end-of-play" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Default Behavior: End of Play
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flushing-handlers-with-meta-flush_handlers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flushing Handlers with meta: flush_handlers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#handler-execution-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Handler Execution Order
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#handlers-and-failures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Handlers and Failures
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#putting-it-all-together" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Putting It All Together
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Putting It All Together">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-nginxconfj2-template" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The nginx.conf.j2 Template
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-motdj2-template" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The motd.j2 Template
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-deploy-configyml-playbook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The deploy-config.yml Playbook
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-handler-chainyml-playbook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The handler-chain.yml Playbook
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exercises">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercise-1-deploy-configuration-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 1: Deploy Configuration Files
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-2-explore-handler-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 2: Explore Handler Behavior
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-3-add-ssl-to-the-nginx-template" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 3: Add SSL to the nginx Template
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-4-write-your-own-template" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 4: Write Your Own Template
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-5-environment-specific-motd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 5: Environment-Specific MOTD
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next Steps
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../6-roles-and-collections/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Roles and Collections
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../7-testing-your-automation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Testing Your Automation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../8-packaging-and-deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Packaging and Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../9-scaling-with-aap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Scaling with AAP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning Objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-story-so-far" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Story So Far
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jinja2-template-basics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Jinja2 Template Basics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Jinja2 Template Basics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-three-delimiters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Three Delimiters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variables-in-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Variables in Templates
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Filters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conditionals-in-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conditionals in Templates
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#loops-in-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Loops in Templates
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-template-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Template Module
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The Template Module">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-validate-parameter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The validate Parameter
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#template-resolution-in-roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Template Resolution in Roles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#template-best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Template Best Practices
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Template Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#always-include-ansible_managed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Always Include ansible_managed
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#always-use-backup-true" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Always Use backup: true
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#never-include-timestamps-or-dates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Never Include Timestamps or Dates
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-mode-with-quoted-strings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use mode with Quoted Strings
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#handlers-and-notify" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Handlers and Notify
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Handlers and Notify">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-handlers-are" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Handlers Are
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#notifying-multiple-handlers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Notifying Multiple Handlers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#handler-deduplication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Handler Deduplication
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#when-handlers-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When Handlers Run
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="When Handlers Run">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#default-behavior-end-of-play" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Default Behavior: End of Play
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flushing-handlers-with-meta-flush_handlers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flushing Handlers with meta: flush_handlers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#handler-execution-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Handler Execution Order
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#handlers-and-failures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Handlers and Failures
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#putting-it-all-together" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Putting It All Together
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Putting It All Together">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-nginxconfj2-template" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The nginx.conf.j2 Template
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-motdj2-template" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The motd.j2 Template
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-deploy-configyml-playbook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The deploy-config.yml Playbook
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-handler-chainyml-playbook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The handler-chain.yml Playbook
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exercises">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercise-1-deploy-configuration-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 1: Deploy Configuration Files
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-2-explore-handler-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 2: Explore Handler Behavior
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-3-add-ssl-to-the-nginx-template" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 3: Add SSL to the nginx Template
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-4-write-your-own-template" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 4: Write Your Own Template
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-5-environment-specific-motd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 5: Environment-Specific MOTD
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next Steps
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="module-5-templates-and-handlers">Module 5: Templates and Handlers</h1>
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>By the end of this module you will be able to:</p>
+<ul>
+<li>Write Jinja2 templates with variables, filters, loops, and conditionals</li>
+<li>Use <code>{{ ansible_managed | comment }}</code> and <code>backup: true</code> in template tasks</li>
+<li>Configure handler chains with <code>notify</code> and understand when handlers run</li>
+<li>Explain why templates should not include timestamps or dates</li>
+</ul>
+<h2 id="the-story-so-far">The Story So Far</h2>
+<p>Lionel and Jordan have parameterized the Parasol Tech playbooks with variables and facts. Every environment reads its own values from <code>group_vars/</code>, and playbooks adapt dynamically using <code>when</code> conditions. But there is a new problem.</p>
+<p>"We need to deploy configuration files," Lionel says. "Nginx config, MOTD banners, application settings, and each one needs different values per environment. I could use <code>ansible.builtin.copy</code> with a static file, but then I need a separate file for dev, staging, and production. That does not scale."</p>
+<p>"That is exactly what templates are for," Jordan replies. "You write one template with placeholders, and Ansible fills in the values at deploy time. And when the config changes, handlers restart the service automatically."</p>
+<h2 id="jinja2-template-basics">Jinja2 Template Basics</h2>
+<p>Ansible uses the <strong>Jinja2</strong> templating engine. A Jinja2 template is a text file in any format (YAML, INI, TOML, XML, plain text) with special delimiters that Ansible evaluates at runtime.</p>
+<h3 id="the-three-delimiters">The Three Delimiters</h3>
+<table>
+<thead>
+<tr>
+<th>Delimiter</th>
+<th>Purpose</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>{{ ... }}</code></td>
+<td>Output a variable or expression</td>
+<td><code>server_name {{ parasol_nginx_server_name }};</code></td>
+</tr>
+<tr>
+<td><code>{% ... %}</code></td>
+<td>Execute logic (loops, conditionals)</td>
+<td><code>{% if parasol_nginx_ssl_enabled %}</code></td>
+</tr>
+<tr>
+<td><code>{# ... #}</code></td>
+<td>Comment (not included in output)</td>
+<td><code>{# This line is ignored #}</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="variables-in-templates">Variables in Templates</h3>
+<p>Any variable available to the play (inventory variables, facts, registered variables, <code>set_fact</code> values) is available inside templates:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="x"># Simple variable substitution</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="x">server_name </span><span class="cp">{{</span> <span class="nv">parasol_nginx_server_name</span> <span class="cp">}}</span><span class="x">;</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="x">listen </span><span class="cp">{{</span> <span class="nv">parasol_nginx_http_port</span> <span class="o">|</span> <span class="nf">default</span><span class="o">(</span><span class="m">80</span><span class="o">)</span> <span class="cp">}}</span><span class="x">;</span>
+</code></pre></div>
+<p>The <code>| default(80)</code> is a <strong>filter</strong>: it provides a fallback value if the variable is not defined. Filters are one of Jinja2's most useful features.</p>
+<h3 id="filters">Filters</h3>
+<p>Filters transform variable values using the pipe (<code>|</code>) syntax. Here are the filters you will use most often:</p>
+<table>
+<thead>
+<tr>
+<th>Filter</th>
+<th>What it does</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>default(value)</code></td>
+<td>Provide a fallback if undefined</td>
+<td><code>{{ port | default(8080) }}</code></td>
+</tr>
+<tr>
+<td><code>upper</code> / <code>lower</code></td>
+<td>Change case</td>
+<td><code>{{ env | upper }}</code> produces <code>PRODUCTION</code></td>
+</tr>
+<tr>
+<td><code>int</code> / <code>float</code></td>
+<td>Type conversion</td>
+<td><code>{{ count | int }}</code></td>
+</tr>
+<tr>
+<td><code>join(sep)</code></td>
+<td>Join a list into a string</td>
+<td><code>{{ servers | join(', ') }}</code></td>
+</tr>
+<tr>
+<td><code>comment</code></td>
+<td>Wrap text in comment syntax</td>
+<td><code>{{ ansible_managed | comment }}</code></td>
+</tr>
+<tr>
+<td><code>regex_replace</code></td>
+<td>Regex substitution</td>
+<td><code>{{ path | regex_replace('/tmp', '/var') }}</code></td>
+</tr>
+<tr>
+<td><code>length</code></td>
+<td>Count items in a list or string</td>
+<td><code>{{ items | length }}</code></td>
+</tr>
+</tbody>
+</table>
+<p>The companion template <code>motd.j2</code> uses several of these:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="cp">{{</span> <span class="nv">ansible_managed</span> <span class="o">|</span> <span class="nf">comment</span> <span class="cp">}}</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="x">=============================================</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="x">  Welcome to </span><span class="cp">{{</span> <span class="nv">inventory_hostname</span> <span class="cp">}}</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="x">  Organization: </span><span class="cp">{{</span> <span class="nv">parasol_organization</span> <span class="o">|</span> <span class="nf">default</span><span class="o">(</span><span class="s1">&#39;Unknown&#39;</span><span class="o">)</span> <span class="cp">}}</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="x">  Environment:  </span><span class="cp">{{</span> <span class="nv">parasol_environment</span> <span class="o">|</span> <span class="nf">default</span><span class="o">(</span><span class="s1">&#39;unknown&#39;</span><span class="o">)</span> <span class="o">|</span> <span class="nf">upper</span> <span class="cp">}}</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="cp">{%</span> <span class="k">if</span> <span class="nv">parasol_admin_email</span> <span class="k">is</span> <span class="nf">defined</span> <span class="cp">%}</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="x">  Contact:      </span><span class="cp">{{</span> <span class="nv">parasol_admin_email</span> <span class="cp">}}</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="x">=============================================</span>
+</code></pre></div>
+<p>Notice how <code>upper</code> is chained after <code>default</code>. Filters can be piped together. The <code>| comment</code> filter on <code>ansible_managed</code> wraps the managed-by string in the appropriate comment syntax for the file format.</p>
+<h3 id="conditionals-in-templates">Conditionals in Templates</h3>
+<p>Use <code>{% if %}</code>, <code>{% elif %}</code>, and <code>{% endif %}</code> to include or exclude sections:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cp">{%</span> <span class="k">if</span> <span class="nv">parasol_nginx_ssl_enabled</span> <span class="o">|</span> <span class="nf">default</span><span class="o">(</span><span class="kp">false</span><span class="o">)</span> <span class="cp">%}</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="x">    listen 443 ssl;</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="x">    ssl_certificate     </span><span class="cp">{{</span> <span class="nv">parasol_nginx_ssl_cert</span> <span class="cp">}}</span><span class="x">;</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="x">    ssl_certificate_key </span><span class="cp">{{</span> <span class="nv">parasol_nginx_ssl_key</span> <span class="cp">}}</span><span class="x">;</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="cp">{%</span> <span class="k">else</span> <span class="cp">%}</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="x">    listen 80;</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span>
+</code></pre></div>
+<p>You can also test whether a variable exists:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cp">{%</span> <span class="k">if</span> <span class="nv">parasol_admin_email</span> <span class="k">is</span> <span class="nf">defined</span> <span class="cp">%}</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="x">  Contact: </span><span class="cp">{{</span> <span class="nv">parasol_admin_email</span> <span class="cp">}}</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span>
+</code></pre></div>
+<h3 id="loops-in-templates">Loops in Templates</h3>
+<p>Use <code>{% for %}</code> and <code>{% endfor %}</code> to iterate over lists:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="x">upstream app_backend {</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="cp">{%</span> <span class="k">for</span> <span class="nv">server</span> <span class="k">in</span> <span class="nv">parasol_nginx_upstream_servers</span> <span class="cp">%}</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="x">    server </span><span class="cp">{{</span> <span class="nv">server.address</span> <span class="cp">}}</span><span class="x">:</span><span class="cp">{{</span> <span class="nv">server.port</span> <span class="o">|</span> <span class="nf">default</span><span class="o">(</span><span class="m">8080</span><span class="o">)</span> <span class="cp">}}</span><span class="x">;</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="cp">{%</span> <span class="k">endfor</span> <span class="cp">%}</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="x">}</span>
+</code></pre></div>
+<p>This is one of the most powerful template features. The companion template <code>nginx.conf.j2</code> uses a loop to generate an upstream block dynamically from a list of backend servers defined in inventory variables.</p>
+<p>You can also access loop metadata:</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>loop.index</code></td>
+<td>Current iteration (1-indexed)</td>
+</tr>
+<tr>
+<td><code>loop.index0</code></td>
+<td>Current iteration (0-indexed)</td>
+</tr>
+<tr>
+<td><code>loop.first</code></td>
+<td><code>true</code> on the first iteration</td>
+</tr>
+<tr>
+<td><code>loop.last</code></td>
+<td><code>true</code> on the last iteration</td>
+</tr>
+<tr>
+<td><code>loop.length</code></td>
+<td>Total number of items</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="cp">{%</span> <span class="k">for</span> <span class="nv">server</span> <span class="k">in</span> <span class="nv">parasol_nginx_upstream_servers</span> <span class="cp">%}</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="x">    # Server </span><span class="cp">{{</span> <span class="nb">loop</span><span class="nv">.index</span> <span class="cp">}}</span><span class="x"> of </span><span class="cp">{{</span> <span class="nb">loop</span><span class="nv">.length</span> <span class="cp">}}</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="x">    server </span><span class="cp">{{</span> <span class="nv">server.address</span> <span class="cp">}}</span><span class="x">:</span><span class="cp">{{</span> <span class="nv">server.port</span> <span class="o">|</span> <span class="nf">default</span><span class="o">(</span><span class="m">8080</span><span class="o">)</span> <span class="cp">}}</span><span class="x">;</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="cp">{%</span> <span class="k">endfor</span> <span class="cp">%}</span>
+</code></pre></div>
+<h2 id="the-template-module">The Template Module</h2>
+<p>The <code>ansible.builtin.template</code> module renders a Jinja2 template on the control node and copies the result to the target host. It works like <code>ansible.builtin.copy</code>, but processes the file through Jinja2 first.</p>
+<h3 id="basic-usage">Basic Usage</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deploy nginx configuration</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="nt">ansible.builtin.template</span><span class="p">:</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span><span class="nt">src</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx.conf.j2</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">    </span><span class="nt">dest</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc/nginx/nginx.conf</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">    </span><span class="nt">owner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">root</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">    </span><span class="nt">group</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">root</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">    </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0644&quot;</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">    </span><span class="nt">backup</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+<p>Key parameters:</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>src</code></td>
+<td>Path to the Jinja2 template (relative to <code>templates/</code> in a role, or an absolute/relative path)</td>
+</tr>
+<tr>
+<td><code>dest</code></td>
+<td>Destination path on the target host</td>
+</tr>
+<tr>
+<td><code>owner</code> / <code>group</code></td>
+<td>File ownership</td>
+</tr>
+<tr>
+<td><code>mode</code></td>
+<td>File permissions (always quote to avoid octal interpretation)</td>
+</tr>
+<tr>
+<td><code>backup</code></td>
+<td>Create a backup of the existing file before overwriting</td>
+</tr>
+<tr>
+<td><code>validate</code></td>
+<td>Command to validate the rendered file before deploying</td>
+</tr>
+</tbody>
+</table>
+<h3 id="the-validate-parameter">The <code>validate</code> Parameter</h3>
+<p>For configuration files that have a syntax checker, use <code>validate</code> to catch errors before deployment:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deploy nginx configuration</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span><span class="nt">ansible.builtin.template</span><span class="p">:</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="nt">src</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx.conf.j2</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span><span class="nt">dest</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc/nginx/nginx.conf</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">    </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0644&quot;</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">    </span><span class="nt">backup</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">    </span><span class="nt">validate</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;nginx</span><span class="nv"> </span><span class="s">-t</span><span class="nv"> </span><span class="s">-c</span><span class="nv"> </span><span class="s">%s&quot;</span>
+</code></pre></div>
+<p>The <code>%s</code> is replaced with the path to the rendered temporary file. If validation fails, the task fails and the original file is untouched. This is a safety net that prevents deploying broken configurations.</p>
+<h3 id="template-resolution-in-roles">Template Resolution in Roles</h3>
+<p>When used inside a role, the <code>src</code> path is resolved relative to the role's <code>templates/</code> directory. You do not need to specify the full path:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Inside a role, this looks for roles/myrole/templates/nginx.conf.j2</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deploy nginx configuration</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span><span class="nt">ansible.builtin.template</span><span class="p">:</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">    </span><span class="nt">src</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx.conf.j2</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">    </span><span class="nt">dest</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc/nginx/nginx.conf</span>
+</code></pre></div>
+<p>Outside a role (in a standalone playbook), you need to provide the path relative to the playbook or use an absolute path. The companion playbook <code>deploy-config.yml</code> uses <code>{{ playbook_dir }}</code> to build the path:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deploy nginx configuration from template</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span><span class="nt">ansible.builtin.template</span><span class="p">:</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span><span class="nt">src</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">playbook_dir</span><span class="nv"> </span><span class="s">}}/../../templates/nginx.conf.j2&quot;</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">    </span><span class="nt">dest</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">parasol_demo_dir</span><span class="nv"> </span><span class="s">}}/nginx.conf&quot;</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">    </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0644&quot;</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">    </span><span class="nt">backup</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+<h2 id="template-best-practices">Template Best Practices</h2>
+<h3 id="always-include-ansible_managed">Always Include <code>ansible_managed</code></h3>
+<p>Every template should start with the <code>{{ ansible_managed | comment }}</code> marker. This generates a comment at the top of the rendered file that warns anyone editing it directly:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a># Ansible managed
+</code></pre></div>
+<p>This is critical in operations. If someone opens a configuration file on a server and sees this marker, they know not to edit it by hand, because the next Ansible run will overwrite their changes.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="cp">{{</span> <span class="nv">ansible_managed</span> <span class="o">|</span> <span class="nf">comment</span> <span class="cp">}}</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="x"># Application configuration</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="x">server_port=</span><span class="cp">{{</span> <span class="nv">app_port</span> <span class="o">|</span> <span class="nf">default</span><span class="o">(</span><span class="m">8443</span><span class="o">)</span> <span class="cp">}}</span>
+</code></pre></div>
+<p>The <code>| comment</code> filter automatically uses the correct comment syntax. For most files it uses <code>#</code>, but you can customize it for formats that use different comment styles.</p>
+<h3 id="always-use-backup-true">Always Use <code>backup: true</code></h3>
+<p>Always include <code>backup: true</code> in <code>ansible.builtin.template</code> and <code>ansible.builtin.copy</code> tasks:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deploy application config</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">  </span><span class="nt">ansible.builtin.template</span><span class="p">:</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">    </span><span class="nt">src</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app.conf.j2</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">    </span><span class="nt">dest</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc/myapp/app.conf</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">    </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0644&quot;</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="w">    </span><span class="nt">backup</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+<p>When Ansible overwrites a file, the backup is saved alongside it with a timestamp suffix (e.g., <code>app.conf.2026-05-21@12:30:45~</code>). This gives you a quick rollback path if something goes wrong.</p>
+<h3 id="never-include-timestamps-or-dates">Never Include Timestamps or Dates</h3>
+<p>Templates must produce the same output when run with the same inputs. If you include a timestamp:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c">{# BAD — breaks idempotency #}</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="x"># Generated on </span><span class="cp">{{</span> <span class="nv">ansible_facts</span><span class="o">[</span><span class="s1">&#39;date_time&#39;</span><span class="o">][</span><span class="s1">&#39;iso8601&#39;</span><span class="o">]</span> <span class="cp">}}</span>
+</code></pre></div>
+<p>The rendered file will be different on every run, even if nothing else changed. This means the <code>template</code> task will always report <code>changed</code>, which triggers handlers unnecessarily and makes it impossible to tell whether a real configuration change occurred.</p>
+<div class="admonition danger">
+<p class="admonition-title">Timestamps break idempotency</p>
+<p>Never use <code>ansible_facts['date_time']</code>, <code>now()</code>, or any time-based value in a template. The <code>ansible_managed</code> marker already tells operators the file is managed by Ansible, and that is sufficient.</p>
+</div>
+<h3 id="use-mode-with-quoted-strings">Use <code>mode</code> with Quoted Strings</h3>
+<p>Always quote the <code>mode</code> parameter:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0644&quot;</span><span class="w">   </span><span class="c1"># Correct — string</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0644</span><span class="w">     </span><span class="c1"># WRONG — YAML interprets as decimal integer 420</span>
+</code></pre></div>
+<p>YAML treats unquoted numbers starting with <code>0</code> as octal, but only if they are valid octal. <code>0644</code> happens to work, but <code>0755</code> could surprise you in edge cases. Quoting removes all ambiguity.</p>
+<h2 id="handlers-and-notify">Handlers and Notify</h2>
+<p>Deploying a new configuration file is only half the job. The service reading that file usually needs to be reloaded or restarted to pick up the changes. This is what <strong>handlers</strong> are for.</p>
+<h3 id="what-handlers-are">What Handlers Are</h3>
+<p>A handler is a task that runs only when notified by another task. It is defined in the <code>handlers:</code> section of a play, and tasks trigger it using the <code>notify</code> keyword:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deploy nginx configuration</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">  </span><span class="nt">ansible.builtin.template</span><span class="p">:</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">    </span><span class="nt">src</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx.conf.j2</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">    </span><span class="nt">dest</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc/nginx/nginx.conf</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">    </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0644&quot;</span>
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">    </span><span class="nt">backup</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="w">  </span><span class="nt">notify</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Reload nginx</span>
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>
+<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="nt">handlers</span><span class="p">:</span>
+<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Reload nginx</span>
+<a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="w">    </span><span class="nt">ansible.builtin.systemd</span><span class="p">:</span>
+<a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx</span>
+<a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="w">      </span><span class="nt">state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">reloaded</span>
+</code></pre></div>
+<p>The handler <code>Reload nginx</code> will only execute if the template task reports <code>changed</code>, meaning the rendered file is different from what was already on disk. If the file has not changed, the handler is not notified and the service is left alone.</p>
+<p>This is the key insight: <strong>handlers make service restarts idempotent</strong>. You do not restart nginx on every run, only when the configuration actually changed.</p>
+<h3 id="notifying-multiple-handlers">Notifying Multiple Handlers</h3>
+<p>A single task can notify multiple handlers by passing a list:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deploy nginx configuration</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">  </span><span class="nt">ansible.builtin.template</span><span class="p">:</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">    </span><span class="nt">src</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx.conf.j2</span>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">    </span><span class="nt">dest</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc/nginx/nginx.conf</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="w">    </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0644&quot;</span>
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="w">    </span><span class="nt">backup</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="w">  </span><span class="nt">notify</span><span class="p">:</span>
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Validate nginx configuration</span>
+<a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Reload nginx</span>
+</code></pre></div>
+<p>Both handlers will be triggered if the template changes. The companion playbook <code>deploy-config.yml</code> demonstrates this pattern.</p>
+<h3 id="handler-deduplication">Handler Deduplication</h3>
+<p>If multiple tasks notify the same handler, it still only runs <strong>once</strong>. Ansible deduplicates handler notifications:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nt">tasks</span><span class="p">:</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deploy main config</span>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">    </span><span class="nt">ansible.builtin.template</span><span class="p">:</span>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">      </span><span class="nt">src</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx.conf.j2</span>
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="w">      </span><span class="nt">dest</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc/nginx/nginx.conf</span>
+<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="w">      </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0644&quot;</span>
+<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="w">      </span><span class="nt">backup</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="w">    </span><span class="nt">notify</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Reload nginx</span>
+<a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a>
+<a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deploy SSL config</span>
+<a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="w">    </span><span class="nt">ansible.builtin.template</span><span class="p">:</span>
+<a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a><span class="w">      </span><span class="nt">src</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ssl.conf.j2</span>
+<a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a><span class="w">      </span><span class="nt">dest</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc/nginx/conf.d/ssl.conf</span>
+<a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a><span class="w">      </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0644&quot;</span>
+<a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a><span class="w">      </span><span class="nt">backup</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a><span class="w">    </span><span class="nt">notify</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Reload nginx</span>
+</code></pre></div>
+<p>Even if both templates change, the <code>Reload nginx</code> handler runs only once. This is exactly what you want. You do not want to reload nginx twice in the same play.</p>
+<h2 id="when-handlers-run">When Handlers Run</h2>
+<p>Understanding handler timing is critical to writing correct playbooks.</p>
+<h3 id="default-behavior-end-of-play">Default Behavior: End of Play</h3>
+<p>By default, handlers run <strong>at the end of the play</strong>, after all tasks have completed. They do not run immediately after the notifying task:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>TASK [Deploy main config]        → changed (notifies Reload nginx)
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>TASK [Deploy SSL config]         → changed (notifies Reload nginx)
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>TASK [Deploy upstream config]    → ok (no notification)
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>TASK [Display status message]    → ok
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>HANDLER [Reload nginx]           → runs once, here at the end
+</code></pre></div>
+<p>This means if a task later in the play depends on the handler having already run (e.g., a health check that needs the reloaded service), you have a problem. The handler has not run yet.</p>
+<h3 id="flushing-handlers-with-meta-flush_handlers">Flushing Handlers with <code>meta: flush_handlers</code></h3>
+<p>You can force all pending handlers to run immediately using <code>meta: flush_handlers</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="nt">tasks</span><span class="p">:</span>
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deploy nginx configuration</span>
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">    </span><span class="nt">ansible.builtin.template</span><span class="p">:</span>
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="w">      </span><span class="nt">src</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nginx.conf.j2</span>
+<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="w">      </span><span class="nt">dest</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc/nginx/nginx.conf</span>
+<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="w">      </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0644&quot;</span>
+<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="w">      </span><span class="nt">backup</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="w">    </span><span class="nt">notify</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Reload nginx</span>
+<a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a>
+<a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Force handlers to run now</span>
+<a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a><span class="w">    </span><span class="nt">ansible.builtin.meta</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">flush_handlers</span>
+<a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a>
+<a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Verify nginx is responding</span>
+<a id="__codelineno-19-14" name="__codelineno-19-14" href="#__codelineno-19-14"></a><span class="w">    </span><span class="nt">ansible.builtin.uri</span><span class="p">:</span>
+<a id="__codelineno-19-15" name="__codelineno-19-15" href="#__codelineno-19-15"></a><span class="w">      </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;http://localhost/&quot;</span>
+<a id="__codelineno-19-16" name="__codelineno-19-16" href="#__codelineno-19-16"></a><span class="w">      </span><span class="nt">status_code</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">200</span>
+</code></pre></div>
+<p>After <code>flush_handlers</code>, all notified handlers execute immediately. The <code>Verify nginx is responding</code> task can then safely assume the service is running with the new configuration.</p>
+<p>The companion playbook <code>handler-chain.yml</code> demonstrates <code>flush_handlers</code> in action.</p>
+<h3 id="handler-execution-order">Handler Execution Order</h3>
+<p>When multiple handlers are notified, they run in the order they are <strong>defined</strong> in the <code>handlers:</code> section, not in the order they were notified. This is a common source of confusion.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="nt">tasks</span><span class="p">:</span>
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deploy config</span>
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">    </span><span class="nt">ansible.builtin.copy</span><span class="p">:</span>
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">      </span><span class="nt">dest</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/tmp/demo.txt</span>
+<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="w">      </span><span class="nt">content</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;demo\n&quot;</span>
+<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="w">      </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0644&quot;</span>
+<a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="w">    </span><span class="nt">notify</span><span class="p">:</span>
+<a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Third handler (C)</span><span class="w">    </span><span class="c1"># notified first</span>
+<a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">First handler (A)</span><span class="w">    </span><span class="c1"># notified second</span>
+<a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Second handler (B)</span><span class="w">   </span><span class="c1"># notified third</span>
+<a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a>
+<a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a><span class="nt">handlers</span><span class="p">:</span>
+<a id="__codelineno-20-13" name="__codelineno-20-13" href="#__codelineno-20-13"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">First handler (A)</span><span class="w">    </span><span class="c1"># runs first (defined first)</span>
+<a id="__codelineno-20-14" name="__codelineno-20-14" href="#__codelineno-20-14"></a><span class="w">    </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
+<a id="__codelineno-20-15" name="__codelineno-20-15" href="#__codelineno-20-15"></a><span class="w">      </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;A&quot;</span>
+<a id="__codelineno-20-16" name="__codelineno-20-16" href="#__codelineno-20-16"></a><span class="w">      </span><span class="nt">verbosity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<a id="__codelineno-20-17" name="__codelineno-20-17" href="#__codelineno-20-17"></a>
+<a id="__codelineno-20-18" name="__codelineno-20-18" href="#__codelineno-20-18"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Second handler (B)</span><span class="w">   </span><span class="c1"># runs second (defined second)</span>
+<a id="__codelineno-20-19" name="__codelineno-20-19" href="#__codelineno-20-19"></a><span class="w">    </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
+<a id="__codelineno-20-20" name="__codelineno-20-20" href="#__codelineno-20-20"></a><span class="w">      </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;B&quot;</span>
+<a id="__codelineno-20-21" name="__codelineno-20-21" href="#__codelineno-20-21"></a><span class="w">      </span><span class="nt">verbosity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<a id="__codelineno-20-22" name="__codelineno-20-22" href="#__codelineno-20-22"></a>
+<a id="__codelineno-20-23" name="__codelineno-20-23" href="#__codelineno-20-23"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Third handler (C)</span><span class="w">    </span><span class="c1"># runs third (defined third)</span>
+<a id="__codelineno-20-24" name="__codelineno-20-24" href="#__codelineno-20-24"></a><span class="w">    </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
+<a id="__codelineno-20-25" name="__codelineno-20-25" href="#__codelineno-20-25"></a><span class="w">      </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;C&quot;</span>
+<a id="__codelineno-20-26" name="__codelineno-20-26" href="#__codelineno-20-26"></a><span class="w">      </span><span class="nt">verbosity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+</code></pre></div>
+<p>The handlers run in order A, B, C, following the definition order in <code>handlers:</code>, not the notification order. This lets you control execution sequence by arranging handlers in the right order in the <code>handlers:</code> section.</p>
+<div class="admonition tip">
+<p class="admonition-title">Ordering handlers intentionally</p>
+<p>If you need <code>Validate config</code> to run before <code>Reload service</code>, define <code>Validate config</code> first in the <code>handlers:</code> section. The notification order in <code>notify:</code> does not matter.</p>
+</div>
+<h3 id="handlers-and-failures">Handlers and Failures</h3>
+<p>If a task fails during the play, pending handlers <strong>do not run</strong> by default. This is a safety measure: if something went wrong, you probably do not want to reload the service.</p>
+<p>You can override this behavior at the play level:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deploy with force handlers</span>
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">webservers</span>
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="w">  </span><span class="nt">force_handlers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+<p>With <code>force_handlers: true</code>, handlers will run even if a later task fails. Use this when the handler action is safe and important (e.g., reloading a config that was successfully deployed before the failure occurred).</p>
+<h2 id="putting-it-all-together">Putting It All Together</h2>
+<p>The companion code for this module ties all the concepts together.</p>
+<h3 id="the-nginxconfj2-template">The nginx.conf.j2 Template</h3>
+<p>This template (<code>ansible/templates/nginx.conf.j2</code>) demonstrates:</p>
+<ul>
+<li><strong><code>{{ ansible_managed | comment }}</code></strong> at the top</li>
+<li><strong>Variables with defaults</strong>: <code>{{ parasol_nginx_worker_connections | default(1024) }}</code></li>
+<li><strong>Conditionals</strong>: SSL configuration is only included when <code>parasol_nginx_ssl_enabled</code> is <code>true</code></li>
+<li><strong>Loops</strong>: The upstream server pool is generated from a list variable</li>
+</ul>
+<h3 id="the-motdj2-template">The motd.j2 Template</h3>
+<p>A simpler template (<code>ansible/templates/motd.j2</code>) showing:</p>
+<ul>
+<li><strong>Filters</strong>: <code>upper</code> to capitalize the environment name</li>
+<li><strong>Conditionals</strong>: A production warning only appears when the environment is <code>production</code></li>
+<li><strong><code>is defined</code> test</strong>: The contact line only appears if <code>parasol_admin_email</code> is set</li>
+</ul>
+<h3 id="the-deploy-configyml-playbook">The deploy-config.yml Playbook</h3>
+<p>This playbook (<code>ansible/playbooks/module-05/deploy-config.yml</code>) deploys both templates to a demo directory and demonstrates:</p>
+<ul>
+<li>Template deployment with <code>backup: true</code></li>
+<li>Handler notification on change</li>
+<li>Multiple handlers chained to one task</li>
+</ul>
+<h3 id="the-handler-chainyml-playbook">The handler-chain.yml Playbook</h3>
+<p>This playbook (<code>ansible/playbooks/module-05/handler-chain.yml</code>) focuses on handler behavior:</p>
+<ul>
+<li>Handler execution order (definition order, not notification order)</li>
+<li><code>meta: flush_handlers</code> to force immediate execution</li>
+<li>Handler deduplication (two tasks notifying the same handler)</li>
+<li>Idempotency -- handlers do not fire when no change occurs</li>
+</ul>
+<h2 id="exercises">Exercises</h2>
+<h3 id="exercise-1-deploy-configuration-files">Exercise 1: Deploy Configuration Files</h3>
+<p>Run the deploy-config playbook:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="nb">cd</span><span class="w"> </span>ansible
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-05/deploy-config.yml<span class="w"> </span>--mode<span class="w"> </span>stdout
+</code></pre></div>
+<p>Examine the generated files:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>cat<span class="w"> </span>~/ansible-demo/nginx.conf
+<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>cat<span class="w"> </span>~/ansible-demo/motd
+</code></pre></div>
+<p>Look at the top of each file. Do you see the <code># Ansible managed</code> comment? This is the <code>{{ ansible_managed | comment }}</code> marker in action.</p>
+<p>Run the playbook again without changing anything. Notice that the tasks report <code>ok</code> (not <code>changed</code>) and the handlers do <strong>not</strong> run. This is idempotency.</p>
+<h3 id="exercise-2-explore-handler-behavior">Exercise 2: Explore Handler Behavior</h3>
+<p>Run the handler chain playbook:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-05/handler-chain.yml<span class="w"> </span>--mode<span class="w"> </span>stdout
+</code></pre></div>
+<p>Watch the output carefully:</p>
+<ol>
+<li>The three handlers run in A, B, C order (definition order), even though they were notified in C, A, B order</li>
+<li><code>meta: flush_handlers</code> causes them to run mid-play</li>
+<li>The second copy task does not trigger handlers because the content is unchanged</li>
+<li>The deduplicated handler runs only once despite being notified by two tasks</li>
+</ol>
+<h3 id="exercise-3-add-ssl-to-the-nginx-template">Exercise 3: Add SSL to the nginx Template</h3>
+<p>Modify the <code>deploy-config.yml</code> playbook to enable SSL:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="nt">vars</span><span class="p">:</span>
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="w">  </span><span class="nt">parasol_nginx_ssl_enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="w">  </span><span class="nt">parasol_nginx_ssl_cert</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/etc/pki/tls/certs/parasol.crt&quot;</span>
+<a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="w">  </span><span class="nt">parasol_nginx_ssl_key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/etc/pki/tls/private/parasol.key&quot;</span>
+</code></pre></div>
+<p>Run the playbook again and examine the generated <code>nginx.conf</code>. You should see the SSL configuration block appear, including the redirect from HTTP to HTTPS.</p>
+<h3 id="exercise-4-write-your-own-template">Exercise 4: Write Your Own Template</h3>
+<p>Create a template for an application configuration file. For example, create <code>ansible/templates/app.conf.j2</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="cp">{{</span> <span class="nv">ansible_managed</span> <span class="o">|</span> <span class="nf">comment</span> <span class="cp">}}</span>
+<a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>
+<a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="x">[server]</span>
+<a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="x">port=</span><span class="cp">{{</span> <span class="nv">parasol_app_port</span> <span class="o">|</span> <span class="nf">default</span><span class="o">(</span><span class="m">8443</span><span class="o">)</span> <span class="cp">}}</span>
+<a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a><span class="x">bind_address=</span><span class="cp">{{</span> <span class="nv">parasol_app_bind</span> <span class="o">|</span> <span class="nf">default</span><span class="o">(</span><span class="s1">&#39;0.0.0.0&#39;</span><span class="o">)</span> <span class="cp">}}</span>
+<a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a><span class="x">workers=</span><span class="cp">{{</span> <span class="nv">parasol_app_workers</span> <span class="o">|</span> <span class="nf">default</span><span class="o">(</span><span class="m">4</span><span class="o">)</span> <span class="cp">}}</span>
+<a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a>
+<a id="__codelineno-26-8" name="__codelineno-26-8" href="#__codelineno-26-8"></a><span class="x">[logging]</span>
+<a id="__codelineno-26-9" name="__codelineno-26-9" href="#__codelineno-26-9"></a><span class="x">level=</span><span class="cp">{{</span> <span class="nv">parasol_log_level</span> <span class="o">|</span> <span class="nf">default</span><span class="o">(</span><span class="s1">&#39;info&#39;</span><span class="o">)</span> <span class="cp">}}</span>
+<a id="__codelineno-26-10" name="__codelineno-26-10" href="#__codelineno-26-10"></a><span class="x">file=/var/log/myapp/app.log</span>
+<a id="__codelineno-26-11" name="__codelineno-26-11" href="#__codelineno-26-11"></a>
+<a id="__codelineno-26-12" name="__codelineno-26-12" href="#__codelineno-26-12"></a><span class="x">[database]</span>
+<a id="__codelineno-26-13" name="__codelineno-26-13" href="#__codelineno-26-13"></a><span class="cp">{%</span> <span class="k">if</span> <span class="nv">parasol_db_host</span> <span class="k">is</span> <span class="nf">defined</span> <span class="cp">%}</span>
+<a id="__codelineno-26-14" name="__codelineno-26-14" href="#__codelineno-26-14"></a><span class="x">host=</span><span class="cp">{{</span> <span class="nv">parasol_db_host</span> <span class="cp">}}</span>
+<a id="__codelineno-26-15" name="__codelineno-26-15" href="#__codelineno-26-15"></a><span class="x">port=</span><span class="cp">{{</span> <span class="nv">parasol_db_port</span> <span class="o">|</span> <span class="nf">default</span><span class="o">(</span><span class="m">5432</span><span class="o">)</span> <span class="cp">}}</span>
+<a id="__codelineno-26-16" name="__codelineno-26-16" href="#__codelineno-26-16"></a><span class="x">name=</span><span class="cp">{{</span> <span class="nv">parasol_db_name</span> <span class="o">|</span> <span class="nf">default</span><span class="o">(</span><span class="s1">&#39;myapp&#39;</span><span class="o">)</span> <span class="cp">}}</span>
+<a id="__codelineno-26-17" name="__codelineno-26-17" href="#__codelineno-26-17"></a><span class="cp">{%</span> <span class="k">else</span> <span class="cp">%}</span>
+<a id="__codelineno-26-18" name="__codelineno-26-18" href="#__codelineno-26-18"></a><span class="x"># No database configured — using local SQLite</span>
+<a id="__codelineno-26-19" name="__codelineno-26-19" href="#__codelineno-26-19"></a><span class="x">file=/var/lib/myapp/data.db</span>
+<a id="__codelineno-26-20" name="__codelineno-26-20" href="#__codelineno-26-20"></a><span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span>
+</code></pre></div>
+<p>Write a playbook that deploys this template with <code>backup: true</code> and notifies a handler when the file changes.</p>
+<h3 id="exercise-5-environment-specific-motd">Exercise 5: Environment-Specific MOTD</h3>
+<p>Run the deploy-config playbook with the production environment override:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-05/deploy-config.yml<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="w">  </span>--mode<span class="w"> </span>stdout<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;parasol_environment=production&quot;</span>
+</code></pre></div>
+<p>Compare the MOTD output with the default (dev) run. The production version includes the warning message because the template checks <code>parasol_environment</code>.</p>
+<p>This demonstrates a key principle: <strong>one template, multiple outputs</strong>. The same <code>motd.j2</code> file produces different results based on the variables provided.</p>
+<h2 id="summary">Summary</h2>
+<p>In this module you:</p>
+<ul>
+<li>Learned the three Jinja2 delimiters (<code>{{ }}</code>, <code>{% %}</code>, <code>{# #}</code>) and how to use variables, filters, loops, and conditionals in templates</li>
+<li>Used the <code>ansible.builtin.template</code> module with <code>backup: true</code> and <code>validate</code> to deploy rendered configuration files safely</li>
+<li>Added <code>{{ ansible_managed | comment }}</code> to every template so operators know the file is managed by Ansible</li>
+<li>Understood why timestamps and dates must never appear in templates (they break idempotency)</li>
+<li>Configured handlers with <code>notify</code> to restart or reload services only when configuration actually changes</li>
+<li>Explored handler execution order (definition order, not notification order), deduplication, and <code>meta: flush_handlers</code></li>
+<li>Used <code>force_handlers</code> to ensure critical handlers run even when later tasks fail</li>
+</ul>
+<p>Lionel and Jordan now deploy configuration files as templates. One <code>nginx.conf.j2</code> works across dev, staging, and production, and each environment fills in its own values from inventory variables. When the config changes, handlers reload the service automatically. When it does not change, nothing happens. The automation is idempotent and self-documenting.</p>
+<h2 id="next-steps">Next Steps</h2>
+<p>Next: <a href="../6-roles-and-collections/">Module 6 -- Roles and Collections</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

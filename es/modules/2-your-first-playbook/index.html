@@ -1,0 +1,1964 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A progressive course teaching Ansible from first principles to production-grade automation">
+      
+      
+      
+        <link rel="canonical" href="https://leogallego.github.io/ansible-zero-to-hero/es/modules/2-your-first-playbook/">
+      
+      
+        <link rel="prev" href="../1-introduction/">
+      
+      
+        <link rel="next" href="../3-managing-inventory/">
+      
+      
+        
+          <link rel="alternate" href="../../../modules/2-your-first-playbook/" hreflang="en">
+        
+          <link rel="alternate" href="./" hreflang="es">
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>2. Your First Playbook - Ansible Zero to Hero</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#modulo-2-tu-primer-playbook" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../../" title="Ansible Zero to Hero" class="md-header__button md-logo" aria-label="Ansible Zero to Hero" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Ansible Zero to Hero
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              2. Your First Playbook
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Seleccionar idioma">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="../../../modules/2-your-first-playbook/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="es" class="md-select__link">
+              Español
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/leogallego/ansible-zero-to-hero" title="Ir al repositorio" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    leogallego/ansible-zero-to-hero
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Pestañas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../1-introduction/" class="md-tabs__link">
+          
+  
+  
+  Modules
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../" title="Ansible Zero to Hero" class="md-nav__button md-logo" aria-label="Ansible Zero to Hero" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Ansible Zero to Hero
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/leogallego/ansible-zero-to-hero" title="Ir al repositorio" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    leogallego/ansible-zero-to-hero
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Modules
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Your First Playbook
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Your First Playbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objetivos-de-aprendizaje" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos de Aprendizaje
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#la-historia-hasta-ahora" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Historia Hasta Ahora
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#anatomia-de-un-playbook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Anatomía de un Playbook
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fundamentos-de-yaml-para-ansible" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fundamentos de YAML para Ansible
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fundamentos de YAML para Ansible">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#indentacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Indentación
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#listas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Listas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cadenas-de-texto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cadenas de texto
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#booleanos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Booleanos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#documentos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documentos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#escribiendo-tu-primer-playbook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Escribiendo Tu Primer Playbook
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Escribiendo Tu Primer Playbook">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#el-otro-playbook-de-acompanamiento" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        El Otro Playbook de Acompañamiento
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ejecutando-playbooks-con-ansible-navigator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejecutando Playbooks con ansible-navigator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ejecutando Playbooks con ansible-navigator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#por-que-ansible-navigator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Por qué ansible-navigator?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejecutando-un-playbook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejecutando un Playbook
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modo-tui-interactivo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modo TUI Interactivo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stdout-vs-modo-interactivo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        stdout vs. modo interactivo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modo-check-y-modo-diff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modo Check y Modo Diff
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Modo Check y Modo Diff">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#modo-check-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modo Check (--check)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modo-diff-diff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modo Diff (--diff)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#combinando-check-y-diff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Combinando Check y Diff
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#entendiendo-la-idempotencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entendiendo la Idempotencia
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Entendiendo la Idempotencia">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#viendo-la-idempotencia-en-accion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Viendo la Idempotencia en Acción
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#por-que-importa-la-idempotencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Por Qué Importa la Idempotencia
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ejercicios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicios
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ejercicios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-1-ejecutar-el-playbook-install-packages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 1: Ejecutar el playbook install-packages
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-2-explorar-con-la-tui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 2: Explorar con la TUI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-3-previsualizar-con-check-y-diff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 3: Previsualizar con check y diff
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-4-escribe-tu-propio-playbook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 4: Escribe tu propio playbook
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resumen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proximos-pasos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Próximos Pasos
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../3-managing-inventory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Managing Inventory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../4-variables-and-facts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Variables and Facts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../5-templates-and-handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Templates and Handlers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../6-roles-and-collections/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Roles and Collections
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../7-testing-your-automation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Testing Your Automation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../8-packaging-and-deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Packaging and Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../9-scaling-with-aap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Scaling with AAP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objetivos-de-aprendizaje" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos de Aprendizaje
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#la-historia-hasta-ahora" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Historia Hasta Ahora
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#anatomia-de-un-playbook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Anatomía de un Playbook
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fundamentos-de-yaml-para-ansible" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fundamentos de YAML para Ansible
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fundamentos de YAML para Ansible">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#indentacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Indentación
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#listas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Listas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cadenas-de-texto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cadenas de texto
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#booleanos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Booleanos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#documentos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documentos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#escribiendo-tu-primer-playbook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Escribiendo Tu Primer Playbook
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Escribiendo Tu Primer Playbook">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#el-otro-playbook-de-acompanamiento" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        El Otro Playbook de Acompañamiento
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ejecutando-playbooks-con-ansible-navigator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejecutando Playbooks con ansible-navigator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ejecutando Playbooks con ansible-navigator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#por-que-ansible-navigator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Por qué ansible-navigator?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejecutando-un-playbook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejecutando un Playbook
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modo-tui-interactivo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modo TUI Interactivo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stdout-vs-modo-interactivo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        stdout vs. modo interactivo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modo-check-y-modo-diff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modo Check y Modo Diff
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Modo Check y Modo Diff">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#modo-check-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modo Check (--check)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modo-diff-diff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modo Diff (--diff)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#combinando-check-y-diff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Combinando Check y Diff
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#entendiendo-la-idempotencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entendiendo la Idempotencia
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Entendiendo la Idempotencia">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#viendo-la-idempotencia-en-accion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Viendo la Idempotencia en Acción
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#por-que-importa-la-idempotencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Por Qué Importa la Idempotencia
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ejercicios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicios
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ejercicios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-1-ejecutar-el-playbook-install-packages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 1: Ejecutar el playbook install-packages
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-2-explorar-con-la-tui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 2: Explorar con la TUI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-3-previsualizar-con-check-y-diff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 3: Previsualizar con check y diff
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-4-escribe-tu-propio-playbook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 4: Escribe tu propio playbook
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resumen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proximos-pasos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Próximos Pasos
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="modulo-2-tu-primer-playbook">Módulo 2: Tu Primer Playbook</h1>
+<h2 id="objetivos-de-aprendizaje">Objetivos de Aprendizaje</h2>
+<p>Al finalizar este módulo serás capaz de:</p>
+<ul>
+<li>Describir la anatomía de un playbook (plays, tasks, módulos)</li>
+<li>Escribir y ejecutar un playbook simple</li>
+<li>Usar <code>ansible-navigator</code> para ejecutar e inspeccionar ejecuciones de playbooks</li>
+<li>Explicar la idempotencia y verificarla con el modo check y el modo diff</li>
+</ul>
+<h2 id="la-historia-hasta-ahora">La Historia Hasta Ahora</h2>
+<p>Lionel ha ejecutado algunos comandos ad-hoc y ve el potencial. Pero los comandos individuales no son repetibles: si Lionel necesita instalar los mismos tres paquetes en un nuevo servidor el mes que viene, tendrá que recordar los comandos exactos de memoria o buscarlos en una wiki. Lo que se necesita es una forma de definir un conjunto de tareas una vez y ejecutarlas de manera confiable, siempre.</p>
+<p>Es hora de escribir un playbook.</p>
+<h2 id="anatomia-de-un-playbook">Anatomía de un Playbook</h2>
+<p>Un <strong>playbook</strong> es un archivo YAML que describe el estado deseado de uno o más sistemas. Es la unidad fundamental de automatización reutilizable en Ansible.</p>
+<p>Un playbook contiene uno o más <strong>plays</strong>. Cada play apunta a un conjunto de hosts y define una lista ordenada de <strong>tasks</strong> (tareas) para ejecutar en esos hosts. Cada task invoca un <strong>módulo</strong>, los mismos módulos que usaste con comandos ad-hoc en el Módulo 1.</p>
+<p>Esta es la estructura general:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Playbook (archivo YAML)
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  └── Play 1
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  │     ├── hosts: qué máquinas apuntar
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  │     ├── become: si escalar privilegios
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>  │     └── tasks:
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>  │           ├── Task 1 → invoca un módulo
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>  │           ├── Task 2 → invoca un módulo
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>  │           └── Task 3 → invoca un módulo
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>  └── Play 2
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>        ├── hosts: un conjunto diferente de máquinas
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>        └── tasks:
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>              └── Task 1 → invoca un módulo
+</code></pre></div>
+<p>Terminología clave:</p>
+<table>
+<thead>
+<tr>
+<th>Término</th>
+<th>Definición</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Playbook</strong></td>
+<td>Un archivo YAML que contiene uno o más plays</td>
+</tr>
+<tr>
+<td><strong>Play</strong></td>
+<td>Una asociación de hosts con tasks: "en estos hosts, hacer estas cosas"</td>
+</tr>
+<tr>
+<td><strong>Task</strong></td>
+<td>Una acción individual que invoca un módulo con parámetros específicos</td>
+</tr>
+<tr>
+<td><strong>Módulo</strong></td>
+<td>Una unidad de código que realiza una operación específica (instalar un paquete, copiar un archivo, gestionar un servicio)</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition info">
+<p class="admonition-title">Un play vs. muchos plays</p>
+<p>Los playbooks simples a menudo contienen un solo play. A medida que tu automatización crece, usarás múltiples plays para apuntar a diferentes grupos de hosts en el mismo playbook. Por ejemplo, un play para configurar el servidor de base de datos y otro para configurar los servidores web.</p>
+</div>
+<h2 id="fundamentos-de-yaml-para-ansible">Fundamentos de YAML para Ansible</h2>
+<p>Los playbooks de Ansible están escritos en YAML (YAML Ain't Markup Language). Si nunca has trabajado con YAML, aquí están los conceptos esenciales que necesitas para Ansible.</p>
+<h3 id="indentacion">Indentación</h3>
+<p>YAML usa indentación para representar estructura, como Python, pero con <strong>solo espacios, nunca tabulaciones</strong>. Ansible usa <strong>indentación de 2 espacios</strong> por convención.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Correcto: indentación de 2 espacios</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install packages</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">ansible.builtin.package</span><span class="p">:</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">curl</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nt">state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">present</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Incorrecto: indentación inconsistente causará un error de sintaxis</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install packages</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">ansible.builtin.package</span><span class="p p-Indicator">:</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">curl</span>
+</code></pre></div>
+<h3 id="listas">Listas</h3>
+<p>Las listas usan un guion seguido de un espacio (<code>-</code>). Los elementos de la lista se indentan bajo su clave padre:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Una lista de paquetes</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nt">name</span><span class="p">:</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tree</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">curl</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">jq</span>
+</code></pre></div>
+<h3 id="cadenas-de-texto">Cadenas de texto</h3>
+<p>La mayoría de las cadenas en YAML no necesitan comillas. Usa comillas cuando un valor contiene caracteres especiales o podría malinterpretarse:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># No necesita comillas</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install packages</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># Necesita comillas: los dos puntos confundirían al parser</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="nt">message</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Status:</span><span class="nv"> </span><span class="s">completed&quot;</span>
+</code></pre></div>
+<h3 id="booleanos">Booleanos</h3>
+<p>YAML soporta varias formas de booleanos, pero en Ansible siempre usamos <code>true</code> y <code>false</code> en minúsculas:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Correcto</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nt">become</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="c1"># Incorrecto -- no uses estas formas</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="nt">become</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">yes</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">No</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="nt">become</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Siempre usa <code>true</code>/<code>false</code></p>
+<p>YAML acepta <code>yes</code>, <code>no</code>, <code>True</code>, <code>False</code> y otras variantes como booleanos. Ansible los entenderá, pero <code>ansible-lint</code> marcará cualquier cosa que no sea <code>true</code>/<code>false</code>. Sé consistente desde el principio.</p>
+</div>
+<h3 id="documentos">Documentos</h3>
+<p>Un archivo YAML comienza con tres guiones (<code>---</code>). Esto marca el inicio de un documento YAML:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nn">---</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">My first play</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localhost</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span><span class="nt">tasks</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+</code></pre></div>
+<p>Los <code>---</code> son opcionales pero se consideran buena práctica. Los verás al inicio de cada playbook en este curso.</p>
+<h2 id="escribiendo-tu-primer-playbook">Escribiendo Tu Primer Playbook</h2>
+<p>Recorramos un playbook real línea por línea. Abre el archivo <code>ansible/playbooks/module-02/install-packages.yml</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nn">---</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="c1"># Module 2 - Install common packages on localhost</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="c1"># This playbook demonstrates the ansible.builtin.package module</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># to install packages in a distribution-agnostic way.</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install common utility packages</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localhost</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">  </span><span class="nt">connection</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">local</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">  </span><span class="nt">become</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="w">  </span><span class="nt">tasks</span><span class="p">:</span>
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install utility packages</span>
+<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="w">      </span><span class="nt">ansible.builtin.package</span><span class="p">:</span>
+<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="w">        </span><span class="nt">name</span><span class="p">:</span>
+<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tree</span>
+<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">curl</span>
+<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">jq</span>
+<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a><span class="w">        </span><span class="nt">state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">present</span>
+</code></pre></div>
+<p>Esto es lo que hace cada parte:</p>
+<p><strong><code>---</code></strong>: marca el inicio del documento YAML.</p>
+<p><strong><code># Module 2 - ...</code></strong>: comentarios. Los comentarios en YAML comienzan con <code>#</code> y son ignorados por Ansible.</p>
+<p><strong><code>- name: Install common utility packages</code></strong>: el inicio de un <strong>play</strong>. El guion indica que este es el primer elemento de una lista (un playbook es una lista de plays). El <code>name</code> le da al play una descripción legible que aparece en la salida cuando lo ejecutas.</p>
+<p><strong><code>hosts: localhost</code></strong>: indica a Ansible qué hosts apunta este play. Aquí apuntamos solo a <code>localhost</code>, la máquina en la que estamos trabajando.</p>
+<p><strong><code>connection: local</code></strong>: indica a Ansible que ejecute las tareas directamente en la máquina local en lugar de conectarse por SSH. Esto es lo que quieres cuando apuntas a localhost.</p>
+<p><strong><code>become: true</code></strong>: indica a Ansible que escale privilegios (equivalente a <code>sudo</code>). Instalar paquetes requiere acceso root, así que lo necesitamos.</p>
+<p><strong><code>tasks:</code></strong>: comienza la lista de tareas para este play.</p>
+<p><strong><code>- name: Install utility packages</code></strong>: el inicio de una <strong>task</strong>. Cada task debería tener un nombre descriptivo en forma imperativa; te dice qué hace la task cuando lees la salida.</p>
+<p><strong><code>ansible.builtin.package:</code></strong>: el <strong>módulo</strong> que usa esta task. <code>ansible.builtin.package</code> es un módulo genérico de gestión de paquetes que funciona en diferentes distribuciones de Linux (llama a <code>dnf</code> en Fedora/RHEL, <code>apt</code> en Debian/Ubuntu, etc.). Nota que usamos el Fully Qualified Collection Name.</p>
+<p><strong><code>name:</code> (bajo el módulo)</strong>: un parámetro del módulo <code>package</code> que especifica qué paquetes instalar. Pasamos una lista de tres paquetes.</p>
+<p><strong><code>state: present</code></strong>: otro parámetro del módulo. <code>present</code> significa "asegúrate de que estos paquetes estén instalados". Si ya están instalados, Ansible no hace nada. Si faltan, Ansible los instala.</p>
+<div class="admonition tip">
+<p class="admonition-title">Por qué <code>ansible.builtin.package</code> en lugar de <code>ansible.builtin.dnf</code>?</p>
+<p>El módulo <code>package</code> detecta automáticamente el gestor de paquetes del sistema y llama al correcto. Esto hace tu playbook portable entre distribuciones. Usa módulos específicos de distribución (<code>dnf</code>, <code>apt</code>) solo cuando necesites funcionalidades específicas de ese gestor de paquetes.</p>
+</div>
+<h3 id="el-otro-playbook-de-acompanamiento">El Otro Playbook de Acompañamiento</h3>
+<p>El directorio <code>ansible/playbooks/module-02/</code> también contiene el playbook <code>create-files.yml</code> para practicar.</p>
+<p><strong><code>create-files.yml</code></strong> demuestra la creación de directorios y archivos:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nn">---</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Create directories and files</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localhost</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span><span class="nt">connection</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">local</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">  </span><span class="nt">tasks</span><span class="p">:</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Create project directory</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">      </span><span class="nt">ansible.builtin.file</span><span class="p">:</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">~/ansible-demo</span>
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="w">        </span><span class="nt">state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">directory</span>
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="w">        </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0755&quot;</span>
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>
+<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Create logs subdirectory</span>
+<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="w">      </span><span class="nt">ansible.builtin.file</span><span class="p">:</span>
+<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">~/ansible-demo/logs</span>
+<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a><span class="w">        </span><span class="nt">state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">directory</span>
+<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a><span class="w">        </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0755&quot;</span>
+<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>
+<a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Create a welcome file</span>
+<a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a><span class="w">      </span><span class="nt">ansible.builtin.copy</span><span class="p">:</span>
+<a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a><span class="w">        </span><span class="nt">dest</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">~/ansible-demo/README.txt</span>
+<a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a><span class="w">        </span><span class="nt">content</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a><span class="w">          </span><span class="no">Welcome to Ansible!</span>
+<a id="__codelineno-8-24" name="__codelineno-8-24" href="#__codelineno-8-24"></a><span class="w">          </span><span class="no">This file was created by an Ansible playbook.</span>
+<a id="__codelineno-8-25" name="__codelineno-8-25" href="#__codelineno-8-25"></a><span class="w">        </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0644&quot;</span>
+<a id="__codelineno-8-26" name="__codelineno-8-26" href="#__codelineno-8-26"></a>
+<a id="__codelineno-8-27" name="__codelineno-8-27" href="#__codelineno-8-27"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Create an application config file</span>
+<a id="__codelineno-8-28" name="__codelineno-8-28" href="#__codelineno-8-28"></a><span class="w">      </span><span class="nt">ansible.builtin.copy</span><span class="p">:</span>
+<a id="__codelineno-8-29" name="__codelineno-8-29" href="#__codelineno-8-29"></a><span class="w">        </span><span class="nt">dest</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">~/ansible-demo/app.conf</span>
+<a id="__codelineno-8-30" name="__codelineno-8-30" href="#__codelineno-8-30"></a><span class="w">        </span><span class="nt">content</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a id="__codelineno-8-31" name="__codelineno-8-31" href="#__codelineno-8-31"></a><span class="w">          </span><span class="no"># Application configuration</span>
+<a id="__codelineno-8-32" name="__codelineno-8-32" href="#__codelineno-8-32"></a><span class="w">          </span><span class="no">app_name=demo</span>
+<a id="__codelineno-8-33" name="__codelineno-8-33" href="#__codelineno-8-33"></a><span class="w">          </span><span class="no">log_level=info</span>
+<a id="__codelineno-8-34" name="__codelineno-8-34" href="#__codelineno-8-34"></a><span class="w">          </span><span class="no">log_dir=~/ansible-demo/logs</span>
+<a id="__codelineno-8-35" name="__codelineno-8-35" href="#__codelineno-8-35"></a><span class="w">        </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0644&quot;</span>
+</code></pre></div>
+<p>Nota que este playbook no usa <code>become: true</code> porque estamos escribiendo en el directorio home del usuario, lo cual no requiere privilegios de root.</p>
+<p>El módulo <code>ansible.builtin.file</code> gestiona archivos y directorios. Con <code>state: directory</code>, crea un directorio. El módulo <code>ansible.builtin.copy</code> crea archivos con contenido específico usando el parámetro <code>content</code>.</p>
+<div class="admonition info">
+<p class="admonition-title">Gestión de servicios</p>
+<p>La gestión de servicios con <code>ansible.builtin.service</code> funciona en sistemas con un sistema de inicio (systemd). En un entorno de contenedor como el devcontainer, los servicios no están disponibles. Usarás la gestión de servicios en módulos posteriores cuando trabajes con hosts reales o máquinas virtuales.</p>
+</div>
+<h2 id="ejecutando-playbooks-con-ansible-navigator">Ejecutando Playbooks con ansible-navigator</h2>
+<p>En el Módulo 1 ejecutaste comandos ad-hoc con <code>ansible</code>. Para playbooks, usaremos <strong><code>ansible-navigator</code></strong>, una herramienta que proporciona una interfaz de usuario de texto enriquecida (TUI) para ejecutar e inspeccionar contenido de Ansible.</p>
+<h3 id="por-que-ansible-navigator">Por qué ansible-navigator?</h3>
+<p><code>ansible-navigator</code> reemplaza al antiguo comando <code>ansible-playbook</code> y añade:</p>
+<ul>
+<li>Una TUI interactiva para explorar resultados de plays y tasks</li>
+<li>La capacidad de ejecutar playbooks dentro de Execution Environments (imágenes de contenedor con todas las dependencias incluidas)</li>
+<li>Una forma estándar de inspeccionar contenido de automatización</li>
+</ul>
+<p>Todavía puedes usar <code>ansible-playbook</code> directamente, y <code>ansible-navigator</code> lo llama internamente, pero la TUI facilita mucho la exploración de resultados.</p>
+<h3 id="ejecutando-un-playbook">Ejecutando un Playbook</h3>
+<p>Navega al directorio <code>ansible/</code> (donde vive <code>ansible.cfg</code>) y ejecuta:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">cd</span><span class="w"> </span>ansible
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-02/install-packages.yml<span class="w"> </span>--mode<span class="w"> </span>stdout
+</code></pre></div>
+<p>La opción <code>--mode stdout</code> ejecuta el playbook en modo de salida estándar: la salida va directamente a tu terminal, similar a <code>ansible-playbook</code>. Esta es la forma más simple de ejecutar un playbook.</p>
+<p>Deberías ver una salida como esta:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>PLAY [Install common utility packages] ****************************************
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>TASK [Gathering Facts] *********************************************************
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>ok: [localhost]
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>TASK [Install utility packages] ************************************************
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>changed: [localhost]
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>PLAY RECAP *********************************************************************
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>localhost                  : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+</code></pre></div>
+<p>Desglosemos la salida:</p>
+<ul>
+<li><strong>PLAY</strong>: muestra el nombre del play de tu playbook</li>
+<li><strong>TASK [Gathering Facts]</strong>: Ansible recopila automáticamente información del sistema antes de ejecutar tus tareas (viste esto con <code>ansible.builtin.setup</code> en el Módulo 1). Este es un comportamiento por defecto que puede desactivarse.</li>
+<li><strong>TASK [Install utility packages]</strong>: tu tarea se ejecutó y reporta <code>changed</code>, lo que significa que los paquetes fueron instalados</li>
+<li><strong>PLAY RECAP</strong>: un resumen mostrando cuántas tareas tuvieron éxito (<code>ok</code>), cuántas realizaron cambios (<code>changed</code>), y si alguna falló</li>
+</ul>
+<h3 id="modo-tui-interactivo">Modo TUI Interactivo</h3>
+<p>Ahora prueba ejecutar un playbook en modo interactivo:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-02/create-files.yml
+</code></pre></div>
+<p>Sin <code>--mode stdout</code>, <code>ansible-navigator</code> abre su TUI. Verás una pantalla mostrando los resultados del play. Desde aquí puedes:</p>
+<ul>
+<li>Presionar una tecla numérica para profundizar en un play o task específico</li>
+<li>Presionar ++esc++ para volver a la pantalla anterior</li>
+<li>Presionar ++d++ para ver la documentación de la task</li>
+<li>Presionar ++0++ para inspeccionar el primer (y único) play</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Navegando la TUI</p>
+<p>La TUI es una herramienta de exploración poderosa. Profundiza en una task para ver sus parámetros de entrada exactos, la salida del módulo, y si realizó cambios. Úsala para depurar cuando algo no se comporta como esperabas.</p>
+</div>
+<p>Cuando termines de explorar, presiona ++esc++ hasta salir de vuelta a tu terminal, o presiona ++colon++ y escribe <code>quit</code>.</p>
+<h3 id="stdout-vs-modo-interactivo">stdout vs. modo interactivo</h3>
+<table>
+<thead>
+<tr>
+<th>Modo</th>
+<th>Comando</th>
+<th>Mejor Para</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>stdout</td>
+<td><code>--mode stdout</code></td>
+<td>Pipelines CI/CD, ejecuciones rápidas, scripting</td>
+</tr>
+<tr>
+<td>interactivo</td>
+<td>(por defecto)</td>
+<td>Explorar resultados, depurar, aprender</td>
+</tr>
+</tbody>
+</table>
+<p>A lo largo de este curso usaremos ambos modos. Cuando mostremos salida en el texto del módulo, usamos <code>--mode stdout</code> por claridad. Cuando ejecutes ejercicios por tu cuenta, prueba el modo interactivo para explorar.</p>
+<div class="admonition tip">
+<p class="admonition-title">Configurar valores por defecto de navigator</p>
+<p>Puedes crear un archivo <code>ansible-navigator.yml</code> en el directorio de tu proyecto para establecer valores por defecto y evitar escribir opciones cada vez:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nn">---</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nt">ansible-navigator</span><span class="p">:</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stdout</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">  </span><span class="nt">playbook-artifact</span><span class="p">:</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">    </span><span class="nt">enable</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+</code></pre></div>
+<p>Con esta configuración, <code>ansible-navigator run</code> usa el modo stdout por defecto sin generar archivos de artefactos. Consulta la <a href="https://ansible.readthedocs.io/projects/navigator/">documentación de ansible-navigator</a> para ver todas las opciones disponibles.</p>
+</div>
+<h2 id="modo-check-y-modo-diff">Modo Check y Modo Diff</h2>
+<p>Antes de ejecutar un playbook en un sistema real, a menudo quieres previsualizar qué <em>haría</em> sin realmente aplicar cambios. Ansible proporciona dos opciones para esto.</p>
+<h3 id="modo-check-check">Modo Check (<code>--check</code>)</h3>
+<p>El modo check es una ejecución simulada. Ansible recorre todas las tasks y reporta qué <em>cambiaría</em>, pero no aplica ningún cambio:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-02/create-files.yml<span class="w"> </span>--mode<span class="w"> </span>stdout<span class="w"> </span>--check
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>PLAY [Create directories and files] ********************************************
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>TASK [Gathering Facts] *********************************************************
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>ok: [localhost]
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>TASK [Create project directory] ************************************************
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>changed: [localhost]
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>TASK [Create logs subdirectory] ************************************************
+<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>changed: [localhost]
+<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>
+<a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a>TASK [Create a welcome file] ***************************************************
+<a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a>changed: [localhost]
+<a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a>
+<a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a>TASK [Create an application config file] ***************************************
+<a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a>changed: [localhost]
+<a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a>
+<a id="__codelineno-14-18" name="__codelineno-14-18" href="#__codelineno-14-18"></a>PLAY RECAP *********************************************************************
+<a id="__codelineno-14-19" name="__codelineno-14-19" href="#__codelineno-14-19"></a>localhost                  : ok=5    changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+</code></pre></div>
+<p>La salida muestra <code>changed</code> para cada task, pero nada cambió realmente en el sistema. El modo check te dice "estas tasks <em>harían</em> cambios si las ejecutaras de verdad."</p>
+<div class="admonition info">
+<p class="admonition-title">No todos los módulos soportan el modo check</p>
+<p>La mayoría de los módulos de Ansible soportan el modo check, pero algunos (particularmente <code>ansible.builtin.command</code> y <code>ansible.builtin.shell</code>) no lo hacen por defecto porque Ansible no puede predecir qué haría un comando arbitrario. Los módulos bien diseñados reportan con precisión en modo check.</p>
+</div>
+<h3 id="modo-diff-diff">Modo Diff (<code>--diff</code>)</h3>
+<p>El modo diff muestra las diferencias exactas que serían (o fueron) aplicadas. Es más útil con módulos relacionados con archivos:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-02/create-files.yml<span class="w"> </span>--mode<span class="w"> </span>stdout<span class="w"> </span>--diff
+</code></pre></div>
+<p>Cuando un archivo se crea o modifica, la salida incluye un diff mostrando el antes y después:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>TASK [Create a welcome file] ***************************************************
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>--- before
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>+++ after: ~/ansible-demo/README.txt
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>@@ -0,0 +1,2 @@
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>+Welcome to Ansible!
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>+This file was created by an Ansible playbook.
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>changed: [localhost]
+</code></pre></div>
+<h3 id="combinando-check-y-diff">Combinando Check y Diff</h3>
+<p>La previsualización más poderosa combina ambas opciones:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-02/create-files.yml<span class="w"> </span>--mode<span class="w"> </span>stdout<span class="w"> </span>--check<span class="w"> </span>--diff
+</code></pre></div>
+<p>Esto te muestra exactamente qué <em>cambiaría</em> sin hacer ningún cambio. Es la forma más segura de previsualizar tu automatización antes de aplicarla a sistemas en producción.</p>
+<h2 id="entendiendo-la-idempotencia">Entendiendo la Idempotencia</h2>
+<p>La <strong>idempotencia</strong> es el concepto más importante en Ansible. Una operación es idempotente si ejecutarla múltiples veces produce el mismo resultado que ejecutarla una vez.</p>
+<h3 id="viendo-la-idempotencia-en-accion">Viendo la Idempotencia en Acción</h3>
+<p>Ejecuta el playbook <code>create-files.yml</code> dos veces:</p>
+<p><strong>Primera ejecución:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-02/create-files.yml<span class="w"> </span>--mode<span class="w"> </span>stdout
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>PLAY RECAP *********************************************************************
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>localhost                  : ok=5    changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+</code></pre></div>
+<p>Cuatro tasks reportaron <code>changed</code>: los directorios y archivos fueron creados.</p>
+<p><strong>Segunda ejecución (mismo comando):</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-02/create-files.yml<span class="w"> </span>--mode<span class="w"> </span>stdout
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>PLAY RECAP *********************************************************************
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>localhost                  : ok=5    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+</code></pre></div>
+<p>Cero cambios la segunda vez. Los directorios y archivos ya existen con el contenido y permisos correctos, así que Ansible no tiene nada que hacer. Cada task reporta <code>ok</code> en lugar de <code>changed</code>.</p>
+<h3 id="por-que-importa-la-idempotencia">Por Qué Importa la Idempotencia</h3>
+<p>La idempotencia significa:</p>
+<ul>
+<li><strong>Re-ejecuciones seguras</strong>: puedes ejecutar un playbook tantas veces como quieras sin romper nada. Si una ejecución de playbook se interrumpe a mitad de camino, simplemente ejecútalo de nuevo.</li>
+<li><strong>Detección de desviaciones</strong>: si alguien cambia manualmente un archivo que Ansible gestiona, la siguiente ejecución del playbook lo devolverá al estado deseado y reportará <code>changed</code>.</li>
+<li><strong>Confianza</strong>: sabes exactamente en qué estado están tus sistemas porque el playbook define el estado deseado y Ansible lo aplica.</li>
+</ul>
+<p>Esto es fundamentalmente diferente de los scripts de shell. Un script que ejecuta <code>mkdir ~/ansible-demo</code> fallará en la segunda ejecución porque el directorio ya existe. El módulo <code>ansible.builtin.file</code> con <code>state: directory</code> verifica si el directorio existe primero y solo lo crea si es necesario.</p>
+<div class="admonition tip">
+<p class="admonition-title">changed=0 es el objetivo</p>
+<p>Cuando ejecutas un playbook contra un sistema que ya está en el estado deseado, el resultado ideal es <code>changed=0</code>. Esto confirma que tu automatización es precisa y el sistema coincide con el estado declarado. Si ves cambios inesperados en una re-ejecución, investiga: algo está cambiando el sistema fuera de Ansible, o una task no es verdaderamente idempotente.</p>
+</div>
+<h2 id="ejercicios">Ejercicios</h2>
+<h3 id="ejercicio-1-ejecutar-el-playbook-install-packages">Ejercicio 1: Ejecutar el playbook install-packages</h3>
+<p>Navega al directorio <code>ansible/</code> y ejecuta:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-02/install-packages.yml<span class="w"> </span>--mode<span class="w"> </span>stdout
+</code></pre></div>
+<p>Observa la salida. Luego ejecútalo de nuevo y confirma que la segunda ejecución muestra <code>changed=0</code>.</p>
+<h3 id="ejercicio-2-explorar-con-la-tui">Ejercicio 2: Explorar con la TUI</h3>
+<p>Ejecuta el playbook <code>create-files.yml</code> en modo interactivo:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-02/create-files.yml
+</code></pre></div>
+<p>Navega la TUI: profundiza en una task, examina los parámetros del módulo y los resultados, luego sal.</p>
+<h3 id="ejercicio-3-previsualizar-con-check-y-diff">Ejercicio 3: Previsualizar con check y diff</h3>
+<p>Ejecuta el playbook <code>create-files.yml</code> con <code>--check</code> y <code>--diff</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-02/create-files.yml<span class="w"> </span>--mode<span class="w"> </span>stdout<span class="w"> </span>--check<span class="w"> </span>--diff
+</code></pre></div>
+<p>Si ya has ejecutado el playbook una vez, la salida debería mostrar <code>changed=0</code> en modo check porque los archivos ya existen. Elimina el directorio <code>~/ansible-demo</code> (<code>rm -rf ~/ansible-demo</code>) y ejecuta el comando check+diff de nuevo para ver qué <em>crearía</em> Ansible.</p>
+<h3 id="ejercicio-4-escribe-tu-propio-playbook">Ejercicio 4: Escribe tu propio playbook</h3>
+<p>Crea un nuevo playbook llamado <code>ansible/playbooks/module-02/my-playbook.yml</code> que:</p>
+<ol>
+<li>Cree un directorio en <code>~/my-project</code></li>
+<li>Cree un archivo en <code>~/my-project/hello.txt</code> con el contenido que quieras</li>
+<li>Cree un subdirectorio en <code>~/my-project/data</code></li>
+</ol>
+<p>Ejecútalo, verifica que los archivos fueron creados, luego ejecútalo de nuevo para confirmar la idempotencia.</p>
+<h2 id="resumen">Resumen</h2>
+<p>En este módulo:</p>
+<ul>
+<li>Aprendiste la anatomía de un playbook: los plays contienen tasks, y las tasks invocan módulos</li>
+<li>Cubriste los fundamentos de YAML necesarios para escribir playbooks (indentación, listas, booleanos, cadenas)</li>
+<li>Recorriste un playbook completo línea por línea</li>
+<li>Ejecutaste playbooks con <code>ansible-navigator</code> tanto en modo stdout como en modo TUI interactivo</li>
+<li>Usaste el modo check (<code>--check</code>) y el modo diff (<code>--diff</code>) para previsualizar cambios de forma segura</li>
+<li>Observaste la idempotencia en acción: ejecutar un playbook dos veces produce cero cambios la segunda vez</li>
+</ul>
+<p>Lionel ahora tiene dos playbooks que pueden ejecutarse repetidamente para lograr un estado del sistema consistente. Pero todos apuntan a <code>localhost</code>. ¿Qué pasa cuando Lionel necesita gestionar múltiples servidores en diferentes entornos?</p>
+<h2 id="proximos-pasos">Próximos Pasos</h2>
+<p>Siguiente: <a href="../3-managing-inventory/">Módulo 3 -- Gestión del Inventario</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,1576 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A progressive course teaching Ansible from first principles to production-grade automation">
+      
+      
+      
+        <link rel="canonical" href="https://leogallego.github.io/ansible-zero-to-hero/es/modules/1-introduction/">
+      
+      
+        <link rel="prev" href="../../">
+      
+      
+        <link rel="next" href="../2-your-first-playbook/">
+      
+      
+        
+          <link rel="alternate" href="../../../modules/1-introduction/" hreflang="en">
+        
+          <link rel="alternate" href="./" hreflang="es">
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>1. Introduction - Ansible Zero to Hero</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#modulo-1-introduccion-a-ansible" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../../" title="Ansible Zero to Hero" class="md-header__button md-logo" aria-label="Ansible Zero to Hero" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Ansible Zero to Hero
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              1. Introduction
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Seleccionar idioma">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="../../../modules/1-introduction/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="es" class="md-select__link">
+              Español
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/leogallego/ansible-zero-to-hero" title="Ir al repositorio" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    leogallego/ansible-zero-to-hero
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Pestañas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+  Modules
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../" title="Ansible Zero to Hero" class="md-nav__button md-logo" aria-label="Ansible Zero to Hero" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Ansible Zero to Hero
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/leogallego/ansible-zero-to-hero" title="Ir al repositorio" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    leogallego/ansible-zero-to-hero
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Modules
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objetivos-de-aprendizaje" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos de Aprendizaje
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#la-historia-hasta-ahora" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Historia Hasta Ahora
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#que-es-ansible" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ¿Qué es Ansible?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#por-que-automatizar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ¿Por qué Automatizar?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ansible-development-tools-adt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ansible Development Tools (adt)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-del-entorno" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuración del Entorno
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuración del Entorno">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verificacion-del-entorno" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verificación del Entorno
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tus-primeros-comandos-ad-hoc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tus Primeros Comandos Ad-Hoc
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tus Primeros Comandos Ad-Hoc">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ping
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recopilar-facts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recopilar Facts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejecutar-un-comando" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejecutar un Comando
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#entendiendo-los-modulos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entendiendo los Módulos
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Entendiendo los Módulos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fully-qualified-collection-names-fqcns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fully Qualified Collection Names (FQCNs)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#encontrar-modulos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Encontrar Módulos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resumen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proximos-pasos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Próximos Pasos
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../2-your-first-playbook/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Your First Playbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../3-managing-inventory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Managing Inventory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../4-variables-and-facts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Variables and Facts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../5-templates-and-handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Templates and Handlers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../6-roles-and-collections/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Roles and Collections
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../7-testing-your-automation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Testing Your Automation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../8-packaging-and-deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Packaging and Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../9-scaling-with-aap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Scaling with AAP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objetivos-de-aprendizaje" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos de Aprendizaje
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#la-historia-hasta-ahora" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Historia Hasta Ahora
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#que-es-ansible" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ¿Qué es Ansible?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#por-que-automatizar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ¿Por qué Automatizar?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ansible-development-tools-adt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ansible Development Tools (adt)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-del-entorno" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuración del Entorno
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuración del Entorno">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verificacion-del-entorno" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verificación del Entorno
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tus-primeros-comandos-ad-hoc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tus Primeros Comandos Ad-Hoc
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tus Primeros Comandos Ad-Hoc">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ping
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recopilar-facts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recopilar Facts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejecutar-un-comando" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejecutar un Comando
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#entendiendo-los-modulos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entendiendo los Módulos
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Entendiendo los Módulos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fully-qualified-collection-names-fqcns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fully Qualified Collection Names (FQCNs)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#encontrar-modulos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Encontrar Módulos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resumen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proximos-pasos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Próximos Pasos
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="modulo-1-introduccion-a-ansible">Módulo 1: Introducción a Ansible</h1>
+<h2 id="objetivos-de-aprendizaje">Objetivos de Aprendizaje</h2>
+<p>Al finalizar este módulo serás capaz de:</p>
+<ul>
+<li>Explicar qué es Ansible y por qué importa la automatización</li>
+<li>Configurar tu entorno de desarrollo (devcontainer o sandbox de Red Hat)</li>
+<li>Verificar tu instalación de Ansible Development Tools</li>
+<li>Ejecutar comandos ad-hoc contra localhost</li>
+<li>Navegar el índice de módulos de Ansible</li>
+</ul>
+<h2 id="la-historia-hasta-ahora">La Historia Hasta Ahora</h2>
+<p>Lionel es ingeniero de plataformas en <strong>Parasol Tech</strong>, la división de infraestructura de Parasol Insurance Corp. Cada semana, Lionel pasa horas repitiendo las mismas tareas: aprovisionar servidores, instalar paquetes, configurar servicios y verificar que todo sea consistente entre entornos. El trabajo es tedioso, propenso a errores e imposible de escalar.</p>
+<p>Una tarde, un colega pasa por el escritorio de Lionel. "¿Todavía haces todo eso a mano? Deberías probar Ansible." Esa noche, Lionel abre una terminal y empieza a explorar.</p>
+<p>Aquí es donde tu viaje también comienza.</p>
+<h2 id="que-es-ansible">¿Qué es Ansible?</h2>
+<p>Ansible es un motor de automatización de código abierto que te permite describir el estado deseado de tus sistemas y luego lo hace realidad. En lugar de escribir scripts que ejecutan comandos paso a paso, declaras <em>cómo</em> debería verse el sistema, y Ansible se encarga de <em>cómo</em> llegar ahí.</p>
+<p>Cuatro propiedades hacen que Ansible destaque:</p>
+<p><strong>Sin agentes</strong>: Ansible no requiere que se instale ningún software en las máquinas que administra. Se conecta por SSH estándar (o WinRM para Windows) y ejecuta tareas de forma remota. Sin demonios, sin agentes, sin infraestructura adicional.</p>
+<p><strong>Declarativo</strong>: Describes el estado deseado ("este paquete debe estar instalado", "este servicio debe estar ejecutándose") en lugar de los pasos para llegar ahí. Los módulos de Ansible manejan los detalles de implementación.</p>
+<p><strong>Idempotente</strong>: Ejecutar la misma automatización dos veces produce el mismo resultado. Si un paquete ya está instalado, Ansible omite el paso. Si un archivo ya tiene el contenido correcto, Ansible lo deja como está. Esto significa que puedes re-ejecutar tu automatización de forma segura sin miedo a romper cosas.</p>
+<p><strong>Simple</strong>: Ansible usa YAML como lenguaje de configuración. Si puedes leer un archivo YAML, puedes leer un playbook de Ansible. No hay un lenguaje de programación personalizado que aprender.</p>
+<div class="admonition info">
+<p class="admonition-title">Cómo se conecta Ansible</p>
+<p>Para destinos Linux/Unix, Ansible usa SSH. Copia pequeños programas en Python (llamados módulos) al host remoto, los ejecuta, recopila los resultados y limpia. El host administrado solo necesita Python y SSH -- nada más.</p>
+</div>
+<h2 id="por-que-automatizar">¿Por qué Automatizar?</h2>
+<p>El flujo de trabajo manual de Lionel tiene varios problemas que la automatización resuelve:</p>
+<table>
+<thead>
+<tr>
+<th>Enfoque Manual</th>
+<th>Con Automatización</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Los pasos viven en la cabeza de Lionel o en una wiki desactualizada</td>
+<td>El playbook <em>es</em> la documentación, siempre actual</td>
+</tr>
+<tr>
+<td>Cada servidor está configurado ligeramente diferente</td>
+<td>Cada servidor recibe exactamente la misma configuración</td>
+</tr>
+<tr>
+<td>Toma 45 minutos por servidor</td>
+<td>Toma segundos, se ejecuta en paralelo en docenas de servidores</td>
+</tr>
+<tr>
+<td>Los errores se descubren días después en producción</td>
+<td>El modo check detecta problemas antes de que ocurran</td>
+</tr>
+<tr>
+<td>Solo Lionel sabe cómo hacerlo</td>
+<td>Cualquier persona del equipo puede leer y ejecutar el playbook</td>
+</tr>
+</tbody>
+</table>
+<p>La automatización convierte el conocimiento tribal en código que puede ser versionado, revisado, probado y compartido. Cuando Lionel escribe un playbook, se convierte en un documento vivo que describe exactamente cómo está configurada la infraestructura de Parasol Tech.</p>
+<h2 id="ansible-development-tools-adt">Ansible Development Tools (adt)</h2>
+<p>Red Hat proporciona un conjunto de herramientas de línea de comandos llamado <strong>Ansible Development Tools</strong> (<code>adt</code>). Piensa en <code>adt</code> como la caja de herramientas completa para desarrollar, probar y empaquetar contenido de Ansible. Usarás muchas de estas herramientas a lo largo del curso.</p>
+<p>Esto es lo que incluye el paquete:</p>
+<table>
+<thead>
+<tr>
+<th>Herramienta</th>
+<th>Propósito</th>
+<th>Primer Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ansible-core</code></td>
+<td>El motor central: <code>ansible-playbook</code>, <code>ansible-galaxy</code>, comandos ad-hoc</td>
+<td>Este módulo</td>
+</tr>
+<tr>
+<td><code>ansible-navigator</code></td>
+<td>TUI para ejecutar e inspeccionar ejecuciones de playbooks</td>
+<td>Módulo 2</td>
+</tr>
+<tr>
+<td><code>ansible-creator</code></td>
+<td>Scaffolding para roles, colecciones y proyectos de playbooks</td>
+<td>Módulo 6</td>
+</tr>
+<tr>
+<td><code>ade</code></td>
+<td>Gestión de entornos de desarrollo (instalación, árboles de dependencias)</td>
+<td>Módulo 6</td>
+</tr>
+<tr>
+<td><code>ansible-lint</code></td>
+<td>Análisis estático y corrección automática de contenido Ansible</td>
+<td>Módulo 7</td>
+</tr>
+<tr>
+<td><code>molecule</code></td>
+<td>Pruebas de integración para roles y colecciones</td>
+<td>Módulo 7</td>
+</tr>
+<tr>
+<td><code>pytest-ansible</code></td>
+<td>Pruebas funcionales de módulos y plugins</td>
+<td>Módulo 7</td>
+</tr>
+<tr>
+<td><code>tox-ansible</code></td>
+<td>Orquestación de pruebas y gestión de matrices</td>
+<td>Módulo 7</td>
+</tr>
+<tr>
+<td><code>ansible-builder</code></td>
+<td>Creación de Execution Environments (imágenes de contenedor)</td>
+<td>Módulo 8</td>
+</tr>
+<tr>
+<td><code>ansible-sign</code></td>
+<td>Firma de contenido para seguridad de la cadena de suministro</td>
+<td>Módulo 8</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="admonition-title">No necesitas memorizar esto</p>
+<p>Aprenderás cada herramienta cuando sea relevante en el curso. Por ahora, solo debes saber que <code>adt</code> instala todo lo que necesitas de una sola vez.</p>
+</div>
+<h2 id="configuracion-del-entorno">Configuración del Entorno</h2>
+<p>Tienes dos opciones para tu entorno de laboratorio. Ambas te dan las mismas herramientas; elige la que se adapte a tu flujo de trabajo.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Devcontainer Local</label><label for="__tabbed_1_2">Red Hat Devtools Sandbox</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>El repositorio incluye una configuración de devcontainer que prepara un entorno de desarrollo completo dentro de un contenedor.</p>
+<p><strong>Prerequisitos:</strong></p>
+<ul>
+<li><a href="https://code.visualstudio.com/">VS Code</a> con la <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers">extensión Dev Containers</a></li>
+<li><a href="https://www.docker.com/">Docker</a> o <a href="https://podman.io/">Podman</a> instalado y ejecutándose</li>
+</ul>
+<p><strong>Pasos:</strong></p>
+<ol>
+<li>
+<p>Clona el repositorio del curso:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/leogallego/ansible-zero-to-hero.git
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>ansible-zero-to-hero
+</code></pre></div>
+</li>
+<li>
+<p>Abre la carpeta en VS Code:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>code<span class="w"> </span>.
+</code></pre></div>
+</li>
+<li>
+<p>Cuando VS Code detecte el directorio <code>.devcontainer/</code>, te preguntará si deseas reabrir en el contenedor. Haz clic en <strong>Reopen in Container</strong>.</p>
+<p>Alternativamente, abre la paleta de comandos (++ctrl+shift+p++) y selecciona <strong>Dev Containers: Reopen in Container</strong>.</p>
+</li>
+<li>
+<p>Espera a que el contenedor se construya. Esto toma unos minutos la primera vez mientras descarga la imagen de desarrollo de la comunidad.</p>
+</li>
+<li>
+<p>Una vez que el contenedor esté listo, tendrás una terminal dentro de VS Code con <code>adt</code> y todas las herramientas de Ansible disponibles.</p>
+</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Qué incluye el devcontainer</p>
+<p>El devcontainer usa <code>ghcr.io/ansible/community-ansible-dev-tools:latest</code>, una imagen de contenedor mantenida por la comunidad con la suite completa de <code>adt</code> preinstalada. Incluye <code>ansible-dev-tools</code> (el paquete completo de <code>adt</code>) y <code>podman</code> (para construir Execution Environments más adelante). Internamente, <code>ansible-creator</code> es la herramienta que genera las configuraciones <code>.devcontainer/</code> para proyectos Ansible.</p>
+</div>
+</div>
+<div class="tabbed-block">
+<p>El <a href="https://developers.redhat.com/products/ansible/getting-started">Red Hat Developer Sandbox</a> proporciona un entorno de desarrollo basado en navegador con <code>adt</code> preinstalado. No se necesita configuración local.</p>
+<p><strong>Pasos:</strong></p>
+<ol>
+<li>
+<p>Ve a <a href="https://developers.redhat.com/products/ansible/getting-started">developers.redhat.com/products/ansible/getting-started</a>.</p>
+</li>
+<li>
+<p>Inicia sesión con tu cuenta de Red Hat (gratuita para crear).</p>
+</li>
+<li>
+<p>Lanza el entorno sandbox. Obtendrás un IDE basado en navegador con una terminal.</p>
+</li>
+<li>
+<p>Clona el repositorio del curso dentro del sandbox:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/leogallego/ansible-zero-to-hero.git
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nb">cd</span><span class="w"> </span>ansible-zero-to-hero
+</code></pre></div>
+</li>
+<li>
+<p>Todas las herramientas de <code>adt</code> están preinstaladas. Puedes empezar a trabajar de inmediato.</p>
+</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Sesiones del sandbox</p>
+<p>Las sesiones del sandbox pueden tener límites de tiempo. Guarda tu trabajo haciendo commit y push a tu propio fork si necesitas continuar después.</p>
+</div>
+</div>
+</div>
+</div>
+<h3 id="verificacion-del-entorno">Verificación del Entorno</h3>
+<p>Sin importar qué opción hayas elegido, verifica que todo funcione. Abre una terminal y ejecuta:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>adt<span class="w"> </span>--version
+</code></pre></div>
+<p>Deberías ver una salida listando todas las herramientas y sus versiones:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>ansible-builder                          3.1.1
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>ansible-core                             2.20.5
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>ansible-creator                          26.4.3
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>ansible-dev-environment                  26.4.0
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>ansible-dev-tools                        26.4.6
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>ansible-lint                             26.4.0
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>ansible-navigator                        26.4.0
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>ansible-sign                             0.1.5
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>molecule                                 26.4.0
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>pytest-ansible                           26.4.0
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>tox-ansible                              26.3.0
+</code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Los números de versión pueden variar</p>
+<p>Los números de versión exactos dependen de cuándo configuraste tu entorno. Lo importante es que todas las herramientas aparezcan sin errores.</p>
+</div>
+<p>Ahora verifica las herramientas principales individualmente:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>ansible<span class="w"> </span>--version
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>ansible [core 2.20.5]
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>  config file = None
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>  configured module search path = [&#39;/root/.ansible/plugins/modules&#39;, &#39;/usr/share/ansible/plugins/modules&#39;]
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>  ansible python module location = /usr/local/lib/python3.13/site-packages/ansible
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>  ansible collection location = /root/.ansible/collections:/usr/share/ansible/collections
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>  executable location = /usr/local/bin/ansible
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>  python version = 3.13.13 (main, Apr  8 2026, 00:00:00) [GCC 15.2.1 20260123 (Red Hat 15.2.1-7)] (/usr/bin/python3)
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>  jinja version = 3.1.6
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>  pyyaml version = 6.0.3 (with libyaml v0.2.5)
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>python3<span class="w"> </span>--version
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>Python 3.13.13
+</code></pre></div>
+<p>Si los tres comandos se ejecutan sin errores, tu entorno está listo.</p>
+<h2 id="tus-primeros-comandos-ad-hoc">Tus Primeros Comandos Ad-Hoc</h2>
+<p>Un <strong>comando ad-hoc</strong> es una línea única que ejecuta un solo módulo de Ansible contra uno o más hosts. Es la forma más rápida de hacer algo con Ansible (no se necesita un playbook).</p>
+<p>La sintaxis general es:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>ansible<span class="w"> </span>&lt;patrón-de-hosts&gt;<span class="w"> </span>-m<span class="w"> </span>&lt;módulo&gt;<span class="w"> </span>-a<span class="w"> </span><span class="s2">&quot;&lt;argumentos-del-módulo&gt;&quot;</span>
+</code></pre></div>
+<p>Probemos algunos comandos contra <code>localhost</code>, la máquina en la que estás trabajando.</p>
+<h3 id="ping">Ping</h3>
+<p>El módulo <code>ansible.builtin.ping</code> no es un ping ICMP. Verifica que Ansible puede conectarse al destino y que Python está disponible:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>ansible<span class="w"> </span>localhost<span class="w"> </span>-m<span class="w"> </span>ansible.builtin.ping
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>localhost | SUCCESS =&gt; {
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>    &quot;changed&quot;: false,
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>    &quot;ping&quot;: &quot;pong&quot;
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>}
+</code></pre></div>
+<p>Dos cosas a notar:</p>
+<ul>
+<li><strong><code>changed: false</code></strong>: el módulo ping no modifica nada, así que reporta cero cambios. Esto es la idempotencia en acción.</li>
+<li><strong><code>ping: pong</code></strong>: el módulo se ejecutó exitosamente y devolvió un resultado.</li>
+</ul>
+<h3 id="recopilar-facts">Recopilar Facts</h3>
+<p>El módulo <code>ansible.builtin.setup</code> recopila información detallada (llamada <strong>facts</strong>) sobre el sistema destino: SO, red, memoria, CPU y mucho más:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>ansible<span class="w"> </span>localhost<span class="w"> </span>-m<span class="w"> </span>ansible.builtin.setup
+</code></pre></div>
+<p>La salida es extensa. Aquí hay un pequeño extracto:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="err">localhos</span><span class="kc">t</span><span class="w"> </span><span class="err">|</span><span class="w"> </span><span class="err">SUCCESS</span><span class="w"> </span><span class="err">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">    </span><span class="nt">&quot;ansible_facts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">        </span><span class="nt">&quot;ansible_distribution&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Fedora&quot;</span><span class="p">,</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">        </span><span class="nt">&quot;ansible_distribution_version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;42&quot;</span><span class="p">,</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">        </span><span class="nt">&quot;ansible_hostname&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ansible-dev-container&quot;</span><span class="p">,</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">        </span><span class="nt">&quot;ansible_os_family&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;RedHat&quot;</span><span class="p">,</span>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">        </span><span class="nt">&quot;ansible_python_version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;3.13.13&quot;</span><span class="p">,</span>
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="w">        </span><span class="err">...</span>
+<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="p">}</span>
+</code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Filtrar facts</p>
+<p>Puedes filtrar la salida para mostrar solo facts específicos: <code>ansible localhost -m ansible.builtin.setup -a "filter=ansible_distribution*"</code>. Esto es útil cuando solo necesitas un dato específico.</p>
+</div>
+<h3 id="ejecutar-un-comando">Ejecutar un Comando</h3>
+<p>El módulo <code>ansible.builtin.command</code> ejecuta un comando en el destino:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>ansible<span class="w"> </span>localhost<span class="w"> </span>-m<span class="w"> </span>ansible.builtin.command<span class="w"> </span>-a<span class="w"> </span><span class="s2">&quot;uname -n&quot;</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>localhost | CHANGED =&gt; {
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>    &quot;changed&quot;: true,
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>    &quot;cmd&quot;: [&quot;uname&quot;, &quot;-n&quot;],
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>    &quot;rc&quot;: 0,
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>    &quot;stdout&quot;: &quot;ansible-dev-container&quot;,
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>    &quot;stdout_lines&quot;: [&quot;ansible-dev-container&quot;]
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>}
+</code></pre></div>
+<p>Observa que <code>changed</code> es <code>true</code> aquí. El módulo <code>command</code> siempre reporta changed porque no puede saber si el comando realmente modificó el sistema. En un playbook, agregarías una cláusula <code>changed_when:</code> para hacer esto preciso, pero ese es un tema para módulos posteriores.</p>
+<div class="admonition warning">
+<p class="admonition-title">command vs shell</p>
+<p>El módulo <code>ansible.builtin.command</code> no procesa el comando a través de un shell, por lo que pipes (<code>|</code>), redirecciones (<code>&gt;</code>) y variables de entorno no funcionan. Si necesitas funcionalidades del shell, usa <code>ansible.builtin.shell</code> en su lugar, pero prefiere <code>command</code> cuando puedas porque es más seguro.</p>
+</div>
+<h2 id="entendiendo-los-modulos">Entendiendo los Módulos</h2>
+<p>Cada comando ad-hoc y tarea de playbook en Ansible usa un <strong>módulo</strong>. Un módulo es una unidad de código que Ansible ejecuta en el host destino para realizar una acción específica: instalar un paquete, copiar un archivo, iniciar un servicio, crear un usuario.</p>
+<p>Ansible incluye cientos de módulos integrados (la colección <code>ansible.builtin</code>), y miles más están disponibles a través de colecciones de la comunidad y proveedores en <a href="https://galaxy.ansible.com/">Ansible Galaxy</a>.</p>
+<h3 id="fully-qualified-collection-names-fqcns">Fully Qualified Collection Names (FQCNs)</h3>
+<p>Cada módulo tiene un <strong>Fully Qualified Collection Name</strong> que lo identifica de forma única:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>namespace.collection.module_name
+</code></pre></div>
+<p>Por ejemplo:</p>
+<table>
+<thead>
+<tr>
+<th>FQCN</th>
+<th>Qué Hace</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ansible.builtin.copy</code></td>
+<td>Copia archivos a hosts remotos</td>
+</tr>
+<tr>
+<td><code>ansible.builtin.yum</code></td>
+<td>Gestiona paquetes con yum</td>
+</tr>
+<tr>
+<td><code>ansible.builtin.service</code></td>
+<td>Gestiona servicios del sistema</td>
+</tr>
+<tr>
+<td><code>ansible.builtin.user</code></td>
+<td>Gestiona cuentas de usuario</td>
+</tr>
+<tr>
+<td><code>ansible.builtin.file</code></td>
+<td>Gestiona archivos y directorios</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition info">
+<p class="admonition-title">Siempre usa FQCNs</p>
+<p>Puede que veas tutoriales antiguos usando nombres cortos como <code>copy</code> o <code>yum</code>. Aunque esto todavía funciona para módulos integrados, es ambiguo cuando múltiples colecciones proporcionan módulos con el mismo nombre. A lo largo de este curso, siempre usaremos el nombre completamente cualificado.</p>
+</div>
+<h3 id="encontrar-modulos">Encontrar Módulos</h3>
+<p>Puedes explorar la lista completa de módulos integrados en la <a href="https://docs.ansible.com/ansible/latest/collections/ansible/builtin/index.html">documentación de Ansible</a>. Para buscar desde la línea de comandos:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>ansible-doc<span class="w"> </span>-l<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span>file
+</code></pre></div>
+<p>Esto lista todos los módulos con "file" en su nombre o descripción. Para ver la documentación detallada de un módulo específico:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>ansible-doc<span class="w"> </span>ansible.builtin.copy
+</code></pre></div>
+<p>Esto muestra los parámetros del módulo, ejemplos y valores de retorno, todo sin salir de tu terminal.</p>
+<h2 id="resumen">Resumen</h2>
+<p>En este módulo:</p>
+<ul>
+<li>Aprendiste que Ansible es sin agentes, declarativo, idempotente y simple</li>
+<li>Configuraste tu entorno de desarrollo con la caja de herramientas completa de <code>adt</code></li>
+<li>Verificaste que todas las Ansible Development Tools están instaladas</li>
+<li>Ejecutaste comandos ad-hoc para hacer ping, recopilar facts y ejecutar comandos en localhost</li>
+<li>Exploraste los módulos y los Fully Qualified Collection Names (FQCNs)</li>
+</ul>
+<p>Lionel está enganchado. Ejecutar comandos ad-hoc es útil, pero hacer las cosas un comando a la vez no es mucho mejor que hacerlas manualmente. Lo que Lionel necesita es una forma de definir una secuencia de tareas y ejecutarlas repetidamente. Eso es exactamente para lo que sirven los playbooks.</p>
+<h2 id="proximos-pasos">Próximos Pasos</h2>
+<p>Siguiente: <a href="../2-your-first-playbook/">Módulo 2 -- Tu Primer Playbook</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

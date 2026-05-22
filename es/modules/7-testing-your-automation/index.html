@@ -1,0 +1,2307 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A progressive course teaching Ansible from first principles to production-grade automation">
+      
+      
+      
+        <link rel="canonical" href="https://leogallego.github.io/ansible-zero-to-hero/es/modules/7-testing-your-automation/">
+      
+      
+        <link rel="prev" href="../6-roles-and-collections/">
+      
+      
+        <link rel="next" href="../8-packaging-and-deployment/">
+      
+      
+        
+          <link rel="alternate" href="../../../modules/7-testing-your-automation/" hreflang="en">
+        
+          <link rel="alternate" href="./" hreflang="es">
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>7. Testing Your Automation - Ansible Zero to Hero</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#modulo-7-testing-de-tu-automatizacion" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../../" title="Ansible Zero to Hero" class="md-header__button md-logo" aria-label="Ansible Zero to Hero" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Ansible Zero to Hero
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              7. Testing Your Automation
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Seleccionar idioma">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="../../../modules/7-testing-your-automation/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="es" class="md-select__link">
+              Español
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/leogallego/ansible-zero-to-hero" title="Ir al repositorio" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    leogallego/ansible-zero-to-hero
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Pestañas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../1-introduction/" class="md-tabs__link">
+          
+  
+  
+  Modules
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../" title="Ansible Zero to Hero" class="md-nav__button md-logo" aria-label="Ansible Zero to Hero" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Ansible Zero to Hero
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/leogallego/ansible-zero-to-hero" title="Ir al repositorio" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    leogallego/ansible-zero-to-hero
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Modules
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../2-your-first-playbook/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Your First Playbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../3-managing-inventory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Managing Inventory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../4-variables-and-facts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Variables and Facts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../5-templates-and-handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Templates and Handlers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../6-roles-and-collections/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Roles and Collections
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Testing Your Automation
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Testing Your Automation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objetivos-de-aprendizaje" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos de Aprendizaje
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#la-historia-hasta-ahora" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Historia Hasta Ahora
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#la-piramide-de-testing-de-ansible" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Pirámide de Testing de Ansible
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#analisis-estatico-con-ansible-lint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Análisis Estático con ansible-lint
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Análisis Estático con ansible-lint">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuración
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejecutando-ansible-lint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejecutando ansible-lint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#auto-correccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Auto-corrección
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#categorias-de-reglas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Categorías de Reglas
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-de-integracion-con-molecule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing de Integración con Molecule
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing de Integración con Molecule">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#escenarios-de-molecule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Escenarios de Molecule
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Escenarios de Molecule">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#moleculeyml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        molecule.yml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#convergeyml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        converge.yml
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#escribiendo-aserciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Escribiendo Aserciones
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#el-ciclo-de-vida-del-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        El Ciclo de Vida del Test
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-funcional-con-pytest-ansible" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing Funcional con pytest-ansible
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing Funcional con pytest-ansible">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#estructura-de-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Estructura de Tests
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Estructura de Tests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#conftestpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        conftest.py
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tests-unitarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tests Unitarios
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejecutando-pytest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejecutando pytest
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#orquestacion-de-tests-con-tox-ansible" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Orquestación de Tests con tox-ansible
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Orquestación de Tests con tox-ansible">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuracion_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuración
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#auto-descubrimiento" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Auto-descubrimiento
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejecutando-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejecutando Tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#la-interfaz-unificada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Interfaz Unificada
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ejercicios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicios
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ejercicios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-1-ejecutar-ansible-lint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 1: Ejecutar ansible-lint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-2-escribir-una-nueva-asercion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 2: Escribir una Nueva Aserción
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-3-agregar-un-test-unitario" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 3: Agregar un Test Unitario
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-4-ejecutar-el-ciclo-de-vida-completo-del-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 4: Ejecutar el Ciclo de Vida Completo del Test
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-5-explorar-tox-ansible" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 5: Explorar tox-ansible
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resumen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proximos-pasos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Próximos Pasos
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../8-packaging-and-deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Packaging and Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../9-scaling-with-aap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Scaling with AAP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objetivos-de-aprendizaje" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos de Aprendizaje
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#la-historia-hasta-ahora" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Historia Hasta Ahora
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#la-piramide-de-testing-de-ansible" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Pirámide de Testing de Ansible
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#analisis-estatico-con-ansible-lint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Análisis Estático con ansible-lint
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Análisis Estático con ansible-lint">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuración
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejecutando-ansible-lint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejecutando ansible-lint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#auto-correccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Auto-corrección
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#categorias-de-reglas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Categorías de Reglas
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-de-integracion-con-molecule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing de Integración con Molecule
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing de Integración con Molecule">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#escenarios-de-molecule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Escenarios de Molecule
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Escenarios de Molecule">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#moleculeyml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        molecule.yml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#convergeyml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        converge.yml
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#escribiendo-aserciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Escribiendo Aserciones
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#el-ciclo-de-vida-del-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        El Ciclo de Vida del Test
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-funcional-con-pytest-ansible" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing Funcional con pytest-ansible
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing Funcional con pytest-ansible">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#estructura-de-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Estructura de Tests
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Estructura de Tests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#conftestpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        conftest.py
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tests-unitarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tests Unitarios
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejecutando-pytest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejecutando pytest
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#orquestacion-de-tests-con-tox-ansible" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Orquestación de Tests con tox-ansible
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Orquestación de Tests con tox-ansible">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuracion_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuración
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#auto-descubrimiento" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Auto-descubrimiento
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejecutando-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejecutando Tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#la-interfaz-unificada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Interfaz Unificada
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ejercicios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicios
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ejercicios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-1-ejecutar-ansible-lint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 1: Ejecutar ansible-lint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-2-escribir-una-nueva-asercion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 2: Escribir una Nueva Aserción
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-3-agregar-un-test-unitario" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 3: Agregar un Test Unitario
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-4-ejecutar-el-ciclo-de-vida-completo-del-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 4: Ejecutar el Ciclo de Vida Completo del Test
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-5-explorar-tox-ansible" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 5: Explorar tox-ansible
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resumen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proximos-pasos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Próximos Pasos
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="modulo-7-testing-de-tu-automatizacion">Módulo 7: Testing de tu Automatización</h1>
+<h2 id="objetivos-de-aprendizaje">Objetivos de Aprendizaje</h2>
+<p>Al finalizar este módulo serás capaz de:</p>
+<ul>
+<li>Ejecutar <code>ansible-lint</code> para análisis estático y configurar reglas de auto-corrección</li>
+<li>Escribir y ejecutar tests de integración con Molecule usando verificación basada en aserciones</li>
+<li>Crear tests funcionales con <code>pytest-ansible</code></li>
+<li>Orquestar matrices de tests con <code>tox-ansible</code></li>
+<li>Describir la pirámide de testing de Ansible (lint -&gt; unit -&gt; integration)</li>
+</ul>
+<h2 id="la-historia-hasta-ahora">La Historia Hasta Ahora</h2>
+<p>La CoP en Parasol Tech tiene su primera colección, <code>parasoltech.infrastructure</code>, con un rol <code>webserver</code> que instala paquetes, despliega configuración desde plantillas y gestiona el ciclo de vida del servicio. Varios equipos están empezando a adoptarla.</p>
+<p>Entonces algo se rompe. El equipo de monitoreo sobreescribe <code>webserver_port</code> con una cadena de texto en lugar de un entero, y la plantilla genera basura. Jordan lo detecta durante una revisión de código, pero ya se había desplegado a staging.</p>
+<p>"Tuvimos suerte," dice Lionel. "La próxima vez podría ser producción."</p>
+<p>La CoP convoca una reunión de emergencia. El resultado: <strong>ninguna automatización sin testear va a producción.</strong> Cada rol necesita tests automatizados. Cada pull request debe pasar linting, tests unitarios y tests de integración antes de poder fusionarse. El equipo acuerda una estrategia de testing usando cuatro herramientas de la suite <code>ansible-dev-tools</code>: <code>ansible-lint</code>, Molecule, <code>pytest-ansible</code> y <code>tox-ansible</code>.</p>
+<h2 id="la-piramide-de-testing-de-ansible">La Pirámide de Testing de Ansible</h2>
+<p>El testing no es una única cosa. Es un espectro de verificaciones a diferentes niveles de abstracción y costo. La pirámide de testing de Ansible organiza estos niveles desde los más baratos y rápidos en la base hasta los más completos y lentos en la cima:</p>
+<table>
+<thead>
+<tr>
+<th>Capa</th>
+<th>Herramienta</th>
+<th>Velocidad</th>
+<th>Alcance</th>
+<th>Qué Detecta</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Integración</strong></td>
+<td>Molecule</td>
+<td>Lento</td>
+<td>Rol completo contra hosts reales</td>
+<td>Flujos rotos, handlers faltantes, servicios fallidos</td>
+</tr>
+<tr>
+<td><strong>Unitario</strong></td>
+<td>pytest-ansible</td>
+<td>Rápido</td>
+<td>Módulos/plugins individuales</td>
+<td>Errores de lógica, valores de retorno incorrectos, tipos erróneos</td>
+</tr>
+<tr>
+<td><strong>Sanity</strong></td>
+<td>ansible-test</td>
+<td>Rápido</td>
+<td>Metadatos de la colección</td>
+<td>Docs faltantes, errores de importación, FQCNs incorrectos</td>
+</tr>
+<tr>
+<td><strong>Lint</strong></td>
+<td>ansible-lint</td>
+<td>Más rápido</td>
+<td>Todo el contenido</td>
+<td>Violaciones de estilo, sintaxis deprecada, patrones riesgosos</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>tox-ansible</strong></td>
+<td></td>
+<td><strong>Orquestador</strong></td>
+<td><strong>Ejecuta TODAS las capas anteriores en entornos aislados</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Ejecuta de abajo hacia arriba: lint primero (rápido, barato), integración al final (lento, exhaustivo).</p>
+<p>El principio es simple: detectar tanto como sea posible en los niveles inferiores, porque esos tests son rápidos, baratos y se ejecutan en cada guardado. Reserva los tests de integración para lo que solo se puede validar aplicando realmente el rol.</p>
+<h2 id="analisis-estatico-con-ansible-lint">Análisis Estático con ansible-lint</h2>
+<p><code>ansible-lint</code> verifica tu contenido Ansible contra un conjunto completo de reglas, desde formato YAML hasta uso de módulos deprecados pasando por convenciones de nomenclatura. Es la primera línea de defensa y detecta los errores más comunes antes de que siquiera ejecutes un playbook.</p>
+<h3 id="configuracion">Configuración</h3>
+<p>La colección incluye un archivo <code>.ansible-lint</code> en su raíz:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nn">---</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nt">profile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">production</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nt">strict</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="nt">exclude_paths</span><span class="p">:</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.tox</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.venv</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">collections</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.ade</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="nt">enable_list</span><span class="p">:</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fqcn</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">args</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">name</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="nt">warn_list</span><span class="p">:</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">experimental</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="nt">skip_list</span><span class="p">:</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">galaxy[version-incorrect]</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="nt">offline</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="nt">project_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.</span>
+</code></pre></div>
+<p>Configuraciones clave:</p>
+<ul>
+<li><strong><code>profile: production</code></strong>: Usa el conjunto de reglas integrado más estricto. Otras opciones son <code>min</code>, <code>basic</code>, <code>moderate</code>, <code>safety</code> y <code>shared</code>, cada una agregando más reglas.</li>
+<li><strong><code>strict: true</code></strong>: Las advertencias se tratan como errores. Si <code>ansible-lint</code> encuentra algo, el código de salida es distinto de cero.</li>
+<li><strong><code>enable_list</code></strong>: Habilita explícitamente categorías de reglas para soporte de auto-corrección.</li>
+<li><strong><code>skip_list</code></strong>: Suprime reglas específicas que no aplican (en este caso, la regla <code>galaxy[version-incorrect]</code> que marca versiones no publicadas en Galaxy).</li>
+</ul>
+<h3 id="ejecutando-ansible-lint">Ejecutando ansible-lint</h3>
+<p>Desde la raíz de la colección:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">cd</span><span class="w"> </span>ansible/collections/parasoltech/infrastructure
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>ansible-lint
+</code></pre></div>
+<p>Si no hay violaciones, la salida está limpia. Si hay problemas, <code>ansible-lint</code> muestra el archivo, número de línea, ID de regla y una descripción:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>roles/webserver/tasks/main.yml:5: fqcn[action-core]
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>  Use FQCN for builtin module actions.
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>roles/webserver/handlers/main.yml:8: name[casing]
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>  All names should start with an uppercase letter.
+</code></pre></div>
+<h3 id="auto-correccion">Auto-corrección</h3>
+<p>Muchas reglas soportan corrección automática. En lugar de editar manualmente cada archivo, ejecuta:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>ansible-lint<span class="w"> </span>--fix
+</code></pre></div>
+<p><code>ansible-lint</code> reescribe los archivos in situ, corrigiendo lo que puede. Las correcciones automáticas comunes incluyen:</p>
+<ul>
+<li>Reemplazar nombres cortos de módulos con FQCNs (<code>copy</code> se convierte en <code>ansible.builtin.copy</code>)</li>
+<li>Convertir <code>yes</code>/<code>no</code> a <code>true</code>/<code>false</code></li>
+<li>Corregir formato YAML (espacios finales, indentación)</li>
+</ul>
+<p>Después de la auto-corrección, revisa los cambios con <code>git diff</code> antes de hacer commit. No toda auto-corrección es perfecta, así que siempre verifica.</p>
+<div class="admonition tip">
+<p class="admonition-title">Integración con el IDE</p>
+<p><code>ansible-lint</code> se integra con VS Code a través de la extensión de Ansible. Las violaciones aparecen como subrayados ondulados en el editor, y la auto-corrección está disponible a través del menú de corrección rápida (Ctrl+.). Esto te da retroalimentación instantánea mientras escribes.</p>
+</div>
+<h3 id="categorias-de-reglas">Categorías de Reglas</h3>
+<p><code>ansible-lint</code> organiza las reglas en categorías:</p>
+<table>
+<thead>
+<tr>
+<th>Categoría</th>
+<th>Ejemplos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>fqcn</strong></td>
+<td>Usar FQCNs para todos los módulos</td>
+</tr>
+<tr>
+<td><strong>name</strong></td>
+<td>Los nombres de tareas deben comenzar con mayúscula, usar forma imperativa</td>
+</tr>
+<tr>
+<td><strong>args</strong></td>
+<td>Argumentos requeridos faltantes, argumentos deprecados usados</td>
+</tr>
+<tr>
+<td><strong>yaml</strong></td>
+<td>Errores de indentación, espacios finales, valores truthy</td>
+</tr>
+<tr>
+<td><strong>no-changed-when</strong></td>
+<td>Tareas <code>command</code>/<code>shell</code> sin <code>changed_when</code></td>
+</tr>
+<tr>
+<td><strong>risky-file-permissions</strong></td>
+<td>Tareas de archivos sin <code>mode</code> explícito</td>
+</tr>
+<tr>
+<td><strong>role-name</strong></td>
+<td>Nombres de roles con guiones o caracteres inválidos</td>
+</tr>
+<tr>
+<td><strong>galaxy</strong></td>
+<td>Problemas en metadatos de la colección</td>
+</tr>
+</tbody>
+</table>
+<p>Cada categoría corresponde a reglas que ya has aprendido en este curso. <code>ansible-lint</code> las aplica automáticamente en lugar de depender de la revisión de código.</p>
+<h2 id="testing-de-integracion-con-molecule">Testing de Integración con Molecule</h2>
+<p>Mientras que <code>ansible-lint</code> detecta problemas estáticos, Molecule detecta los dinámicos: problemas que solo aparecen cuando realmente aplicas un rol a un sistema. La plantilla se renderiza correctamente? El servicio arranca? El archivo de configuración termina en el lugar correcto?</p>
+<p>Molecule proporciona un framework para testing de integración de contenido Ansible. Crea entornos de prueba, aplica tus roles, ejecuta aserciones de verificación y desmonta todo.</p>
+<h3 id="escenarios-de-molecule">Escenarios de Molecule</h3>
+<p>Un <strong>escenario</strong> es una definición de test completa. Cada escenario vive en su propio directorio bajo <code>extensions/molecule/</code> y contiene como mínimo un archivo de configuración <code>molecule.yml</code>. La mayoría de los escenarios también incluyen un playbook <code>converge.yml</code> y un playbook <code>verify.yml</code>.</p>
+<p>El escenario de la colección para el rol webserver está en:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>extensions/molecule/integration_webserver/
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>  molecule.yml    # Configuracion del escenario
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>  converge.yml    # Playbook que aplica el rol
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>  verify.yml      # Verificacion basada en aserciones
+</code></pre></div>
+<h4 id="moleculeyml">molecule.yml</h4>
+<p>La configuración del escenario define el entorno de test y el ciclo de vida:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nn">---</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nt">dependency</span><span class="p">:</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">galaxy</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span><span class="nt">options</span><span class="p">:</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span><span class="nt">requirements-file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${MOLECULE_SCENARIO_DIRECTORY}/../../../requirements.yml</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span><span class="nt">force</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="nt">driver</span><span class="p">:</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">delegated</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">  </span><span class="nt">options</span><span class="p">:</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">    </span><span class="nt">managed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">    </span><span class="nt">ansible_connection_options</span><span class="p">:</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">      </span><span class="nt">ansible_connection</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">local</span>
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="nt">platforms</span><span class="p">:</span>
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localhost</span>
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="w">    </span><span class="nt">managed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="w">    </span><span class="nt">groups</span><span class="p">:</span>
+<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">webservers</span>
+<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>
+<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="nt">provisioner</span><span class="p">:</span>
+<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ansible</span>
+<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a><span class="w">  </span><span class="nt">inventory</span><span class="p">:</span>
+<a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a><span class="w">    </span><span class="nt">host_vars</span><span class="p">:</span>
+<a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a><span class="w">      </span><span class="nt">localhost</span><span class="p">:</span>
+<a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a><span class="w">        </span><span class="nt">ansible_connection</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">local</span>
+<a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a><span class="w">        </span><span class="nt">ansible_python_interpreter</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">ansible_playbook_python</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a>
+<a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a><span class="nt">verifier</span><span class="p">:</span>
+<a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ansible</span>
+<a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a>
+<a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a><span class="nt">scenario</span><span class="p">:</span>
+<a id="__codelineno-5-33" name="__codelineno-5-33" href="#__codelineno-5-33"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">integration_webserver</span>
+<a id="__codelineno-5-34" name="__codelineno-5-34" href="#__codelineno-5-34"></a><span class="w">  </span><span class="nt">test_sequence</span><span class="p">:</span>
+<a id="__codelineno-5-35" name="__codelineno-5-35" href="#__codelineno-5-35"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dependency</span>
+<a id="__codelineno-5-36" name="__codelineno-5-36" href="#__codelineno-5-36"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cleanup</span>
+<a id="__codelineno-5-37" name="__codelineno-5-37" href="#__codelineno-5-37"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">destroy</span>
+<a id="__codelineno-5-38" name="__codelineno-5-38" href="#__codelineno-5-38"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">syntax</span>
+<a id="__codelineno-5-39" name="__codelineno-5-39" href="#__codelineno-5-39"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">create</span>
+<a id="__codelineno-5-40" name="__codelineno-5-40" href="#__codelineno-5-40"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prepare</span>
+<a id="__codelineno-5-41" name="__codelineno-5-41" href="#__codelineno-5-41"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">converge</span>
+<a id="__codelineno-5-42" name="__codelineno-5-42" href="#__codelineno-5-42"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">verify</span>
+<a id="__codelineno-5-43" name="__codelineno-5-43" href="#__codelineno-5-43"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cleanup</span>
+<a id="__codelineno-5-44" name="__codelineno-5-44" href="#__codelineno-5-44"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">destroy</span>
+</code></pre></div>
+<p>Secciones clave:</p>
+<ul>
+<li><strong><code>driver: delegated</code></strong>: Usa el driver delegado en lugar de contenedores. Esto significa que Molecule ejecuta todo en localhost sin necesitar Docker o Podman. Es más simple para aprender y funciona en cualquier entorno.</li>
+<li><strong><code>platforms</code></strong>: Define los hosts de prueba. Con el driver delegado, <code>localhost</code> es la única plataforma.</li>
+<li><strong><code>provisioner</code></strong>: Configura cómo se ejecuta Ansible. La sección de inventario establece las variables de conexión para localhost.</li>
+<li><strong><code>verifier: ansible</code></strong>: Usa playbooks de Ansible para la verificación en lugar de una herramienta separada como Testinfra.</li>
+<li><strong><code>scenario.test_sequence</code></strong>: La lista ordenada de etapas que <code>molecule test</code> ejecuta.</li>
+</ul>
+<h4 id="convergeyml">converge.yml</h4>
+<p>El playbook converge aplica el rol bajo prueba:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nn">---</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Converge — aplicar el rol webserver</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">all</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span><span class="nt">gather_facts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">  </span><span class="nt">tasks</span><span class="p">:</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Include the webserver role</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">      </span><span class="nt">ansible.builtin.include_role</span><span class="p">:</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">parasoltech.infrastructure.webserver</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">      </span><span class="nt">vars</span><span class="p">:</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w">        </span><span class="nt">webserver_port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8080</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="w">        </span><span class="nt">webserver_server_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test.parasol.example</span>
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="w">        </span><span class="nt">webserver_document_root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/tmp/molecule-webserver</span>
+<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="w">        </span><span class="nt">webserver_service_enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+</code></pre></div>
+<p>Observa los valores específicos para testing:</p>
+<ul>
+<li><strong>Puerto 8080</strong> en lugar de 80 (evita necesitar privilegios de root)</li>
+<li><strong><code>/tmp/molecule-webserver</code></strong> como document root (escribible sin root)</li>
+<li><strong><code>webserver_service_enabled: false</code></strong> (no se necesita un servicio httpd real para la verificación)</li>
+</ul>
+<p>Estos valores hacen que el test sea portable. Se ejecuta en cualquier lugar sin privilegios elevados ni servicios instalados.</p>
+<h3 id="escribiendo-aserciones">Escribiendo Aserciones</h3>
+<p>El playbook <code>verify.yml</code> contiene tareas de aserción que verifican postcondiciones (cosas que deberían ser verdaderas después de que el rol se ha ejecutado):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nn">---</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Verify — verificar postcondiciones del rol webserver</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">all</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">  </span><span class="nt">gather_facts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">  </span><span class="nt">vars</span><span class="p">:</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">    </span><span class="nt">__verify_document_root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/tmp/molecule-webserver</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">    </span><span class="nt">__verify_server_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test.parasol.example</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">  </span><span class="nt">tasks</span><span class="p">:</span>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check that the document root directory exists</span>
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="w">      </span><span class="nt">ansible.builtin.stat</span><span class="p">:</span>
+<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">__verify_document_root</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="w">      </span><span class="nt">register</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__verify_docroot_stat</span>
+<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>
+<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Assert document root was created</span>
+<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a><span class="w">      </span><span class="nt">ansible.builtin.assert</span><span class="p">:</span>
+<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a><span class="w">        </span><span class="nt">that</span><span class="p">:</span>
+<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__verify_docroot_stat.stat.exists</span>
+<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__verify_docroot_stat.stat.isdir</span>
+<a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a><span class="w">        </span><span class="nt">fail_msg</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
+<a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a><span class="w">          </span><span class="no">El document root {{ __verify_document_root }} no existe</span>
+<a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a><span class="w">          </span><span class="no">o no es un directorio.</span>
+<a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a><span class="w">        </span><span class="nt">success_msg</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
+<a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a><span class="w">          </span><span class="no">El document root {{ __verify_document_root }} existe.</span>
+<a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a>
+<a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Read the index page content</span>
+<a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a><span class="w">      </span><span class="nt">ansible.builtin.slurp</span><span class="p">:</span>
+<a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a><span class="w">        </span><span class="nt">src</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">__verify_document_root</span><span class="nv"> </span><span class="s">}}/index.html&quot;</span>
+<a id="__codelineno-7-30" name="__codelineno-7-30" href="#__codelineno-7-30"></a><span class="w">      </span><span class="nt">register</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__verify_index_content</span>
+<a id="__codelineno-7-31" name="__codelineno-7-31" href="#__codelineno-7-31"></a>
+<a id="__codelineno-7-32" name="__codelineno-7-32" href="#__codelineno-7-32"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Assert index page contains the server name</span>
+<a id="__codelineno-7-33" name="__codelineno-7-33" href="#__codelineno-7-33"></a><span class="w">      </span><span class="nt">ansible.builtin.assert</span><span class="p">:</span>
+<a id="__codelineno-7-34" name="__codelineno-7-34" href="#__codelineno-7-34"></a><span class="w">        </span><span class="nt">that</span><span class="p">:</span>
+<a id="__codelineno-7-35" name="__codelineno-7-35" href="#__codelineno-7-35"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
+<a id="__codelineno-7-36" name="__codelineno-7-36" href="#__codelineno-7-36"></a><span class="w">            </span><span class="no">__verify_server_name in</span>
+<a id="__codelineno-7-37" name="__codelineno-7-37" href="#__codelineno-7-37"></a><span class="w">            </span><span class="no">(__verify_index_content.content | b64decode)</span>
+<a id="__codelineno-7-38" name="__codelineno-7-38" href="#__codelineno-7-38"></a><span class="w">        </span><span class="nt">fail_msg</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
+<a id="__codelineno-7-39" name="__codelineno-7-39" href="#__codelineno-7-39"></a><span class="w">          </span><span class="no">El index.html no contiene el server name esperado.</span>
+<a id="__codelineno-7-40" name="__codelineno-7-40" href="#__codelineno-7-40"></a><span class="w">        </span><span class="nt">success_msg</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
+<a id="__codelineno-7-41" name="__codelineno-7-41" href="#__codelineno-7-41"></a><span class="w">          </span><span class="no">index.html contiene el server name correcto.</span>
+<a id="__codelineno-7-42" name="__codelineno-7-42" href="#__codelineno-7-42"></a>
+<a id="__codelineno-7-43" name="__codelineno-7-43" href="#__codelineno-7-43"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Assert index page contains the ansible_managed header</span>
+<a id="__codelineno-7-44" name="__codelineno-7-44" href="#__codelineno-7-44"></a><span class="w">      </span><span class="nt">ansible.builtin.assert</span><span class="p">:</span>
+<a id="__codelineno-7-45" name="__codelineno-7-45" href="#__codelineno-7-45"></a><span class="w">        </span><span class="nt">that</span><span class="p">:</span>
+<a id="__codelineno-7-46" name="__codelineno-7-46" href="#__codelineno-7-46"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
+<a id="__codelineno-7-47" name="__codelineno-7-47" href="#__codelineno-7-47"></a><span class="w">            </span><span class="no">&#39;Ansible managed&#39; in</span>
+<a id="__codelineno-7-48" name="__codelineno-7-48" href="#__codelineno-7-48"></a><span class="w">            </span><span class="no">(__verify_index_content.content | b64decode)</span>
+<a id="__codelineno-7-49" name="__codelineno-7-49" href="#__codelineno-7-49"></a><span class="w">        </span><span class="nt">fail_msg</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
+<a id="__codelineno-7-50" name="__codelineno-7-50" href="#__codelineno-7-50"></a><span class="w">          </span><span class="no">Al index.html le falta la cabecera ansible_managed.</span>
+<a id="__codelineno-7-51" name="__codelineno-7-51" href="#__codelineno-7-51"></a><span class="w">        </span><span class="nt">success_msg</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
+<a id="__codelineno-7-52" name="__codelineno-7-52" href="#__codelineno-7-52"></a><span class="w">          </span><span class="no">index.html contiene la cabecera ansible_managed.</span>
+</code></pre></div>
+<p>El patrón para cada aserción es:</p>
+<ol>
+<li><strong>Recopilar un hecho</strong>: usar <code>ansible.builtin.stat</code>, <code>ansible.builtin.slurp</code> u otro módulo de solo lectura para capturar estado</li>
+<li><strong>Verificar la condición</strong>: usar <code>ansible.builtin.assert</code> con <code>that:</code>, <code>fail_msg:</code> y <code>success_msg:</code></li>
+</ol>
+<div class="admonition warning">
+<p class="admonition-title">Usa <code>ansible.builtin.slurp</code> en lugar de <code>command: cat</code></p>
+<p><code>ansible.builtin.slurp</code> es idempotente y funciona correctamente en modo check. <code>command: cat</code> reporta <code>changed</code> por defecto y falla en modo check a menos que agregues <code>changed_when: false</code> y <code>check_mode: false</code>. Para leer contenidos de archivos en tests, siempre prefiere <code>slurp</code>.</p>
+</div>
+<h3 id="el-ciclo-de-vida-del-test">El Ciclo de Vida del Test</h3>
+<p>Cuando ejecutas <code>molecule test -s integration_webserver</code>, Molecule ejecuta diez etapas en secuencia:</p>
+<table>
+<thead>
+<tr>
+<th>Etapa</th>
+<th>Qué sucede</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1. Dependency</strong></td>
+<td>Instala colecciones requeridas desde <code>requirements.yml</code></td>
+</tr>
+<tr>
+<td><strong>2. Cleanup</strong></td>
+<td>Ejecuta un playbook de limpieza (si está definido)</td>
+</tr>
+<tr>
+<td><strong>3. Destroy</strong></td>
+<td>Desmonta cualquier entorno de prueba existente</td>
+</tr>
+<tr>
+<td><strong>4. Syntax</strong></td>
+<td>Valida la sintaxis del playbook (como <code>ansible-playbook --syntax-check</code>)</td>
+</tr>
+<tr>
+<td><strong>5. Create</strong></td>
+<td>Crea el entorno de prueba (con driver delegado, esto es un no-op)</td>
+</tr>
+<tr>
+<td><strong>6. Prepare</strong></td>
+<td>Ejecuta un playbook de preparación de prerequisitos (si está definido)</td>
+</tr>
+<tr>
+<td><strong>7. Converge</strong></td>
+<td>Ejecuta el playbook converge (aplica el rol)</td>
+</tr>
+<tr>
+<td><strong>8. Verify</strong></td>
+<td>Ejecuta el playbook verify (verifica las aserciones)</td>
+</tr>
+<tr>
+<td><strong>9. Cleanup</strong></td>
+<td>Limpia recursos de prueba</td>
+</tr>
+<tr>
+<td><strong>10. Destroy</strong></td>
+<td>Desmonta el entorno de prueba</td>
+</tr>
+</tbody>
+</table>
+<p>Para desarrollo iterativo, no necesitas ejecutar el ciclo completo cada vez. Usa etapas individuales:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Ejecutar solo converge (aplicar el rol) — mantiene el entorno</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>molecule<span class="w"> </span>converge<span class="w"> </span>-s<span class="w"> </span>integration_webserver
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># Ejecutar solo verify (verificar aserciones) — reutiliza el entorno existente</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>molecule<span class="w"> </span>verify<span class="w"> </span>-s<span class="w"> </span>integration_webserver
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="c1"># Ejecutar el ciclo completo desde estado limpio</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>molecule<span class="w"> </span><span class="nb">test</span><span class="w"> </span>-s<span class="w"> </span>integration_webserver
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="c1"># Listar todos los escenarios disponibles</span>
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>molecule<span class="w"> </span>list
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>
+<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="c1"># Destruir el entorno de prueba cuando termines</span>
+<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>molecule<span class="w"> </span>destroy<span class="w"> </span>-s<span class="w"> </span>integration_webserver
+</code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Flujo de trabajo iterativo</p>
+<p>Durante el desarrollo, usa <code>molecule converge</code> y <code>molecule verify</code> por separado. Es mucho más rápido que ejecutar el ciclo completo de <code>molecule test</code>, que destruye y recrea el entorno en cada ejecución. Solo ejecuta <code>molecule test</code> cuando quieras una validación desde cero (por ejemplo, en CI/CD).</p>
+</div>
+<h2 id="testing-funcional-con-pytest-ansible">Testing Funcional con pytest-ansible</h2>
+<p>Molecule prueba el rol como un todo: aplica el rol a un sistema y verifica los resultados. Pero a veces necesitas tests más granulares que validen piezas individuales en aislamiento. Ahí es donde entra <code>pytest-ansible</code>.</p>
+<p><code>pytest-ansible</code> es un plugin de pytest que conecta el framework <code>pytest</code> de Python con Ansible. Proporciona fixtures para ejecutar módulos de Ansible directamente desde código de test en Python, haciendo posible escribir tests rápidos y aislados para módulos, plugins e internos de roles.</p>
+<h3 id="estructura-de-tests">Estructura de Tests</h3>
+<p>Los archivos de test de la colección están bajo <code>tests/</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>tests/
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>  conftest.py                      # Configuracion de pytest
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>  unit/
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    __init__.py
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    test_webserver_defaults.py     # Tests unitarios para el rol webserver
+</code></pre></div>
+<h4 id="conftestpy">conftest.py</h4>
+<p>El archivo <code>conftest.py</code> configura el entorno para que <code>pytest-ansible</code> pueda encontrar los módulos de la colección:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="n">TESTS_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="n">PROJECT_ROOT</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">TESTS_DIR</span><span class="p">)</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="c1"># Apuntar Ansible al directorio plugins/modules</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="n">MODULES_PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">PROJECT_ROOT</span><span class="p">,</span> <span class="s2">&quot;plugins&quot;</span><span class="p">,</span> <span class="s2">&quot;modules&quot;</span><span class="p">)</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;ANSIBLE_LIBRARY&quot;</span><span class="p">,</span> <span class="n">MODULES_PATH</span><span class="p">)</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="c1"># Apuntar Ansible al arbol de symlinks de instalacion editable</span>
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="n">COLLECTIONS_PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">PROJECT_ROOT</span><span class="p">,</span> <span class="s2">&quot;collections&quot;</span><span class="p">)</span>
+<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;ANSIBLE_COLLECTIONS_PATH&quot;</span><span class="p">,</span> <span class="n">COLLECTIONS_PATH</span><span class="p">)</span>
+</code></pre></div>
+<p>Esto se ejecuta antes de que se recopile cualquier test. Sin esto, Ansible no puede localizar módulos personalizados ni resolver FQCNs, resultando en errores de "module not found".</p>
+<h4 id="tests-unitarios">Tests Unitarios</h4>
+<p>Los tests unitarios validan los archivos YAML del rol sin ejecutar ningún código Ansible. Parsean el YAML y verifican propiedades estructurales:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="n">ROLE_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">COLLECTION_ROOT</span><span class="p">,</span> <span class="s2">&quot;roles&quot;</span><span class="p">,</span> <span class="s2">&quot;webserver&quot;</span><span class="p">)</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="n">DEFAULTS_FILE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ROLE_DIR</span><span class="p">,</span> <span class="s2">&quot;defaults&quot;</span><span class="p">,</span> <span class="s2">&quot;main.yml&quot;</span><span class="p">)</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="k">def</span><span class="w"> </span><span class="nf">defaults</span><span class="p">():</span>
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Carga y devuelve los defaults del rol como diccionario.&quot;&quot;&quot;</span>
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">DEFAULTS_FILE</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>        <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>
+<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a><span class="k">class</span><span class="w"> </span><span class="nc">TestWebserverDefaults</span><span class="p">:</span>
+<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">test_all_defaults_prefixed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">defaults</span><span class="p">):</span>
+<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Cada clave en defaults debe comenzar con &#39;webserver_&#39;.&quot;&quot;&quot;</span>
+<a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a>        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">defaults</span><span class="p">:</span>
+<a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a>            <span class="k">assert</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;webserver_&quot;</span><span class="p">),</span> <span class="p">(</span>
+<a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a>                <span class="sa">f</span><span class="s2">&quot;La variable &#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39; no tiene el prefijo &#39;webserver_&#39;&quot;</span>
+<a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a>            <span class="p">)</span>
+<a id="__codelineno-11-21" name="__codelineno-11-21" href="#__codelineno-11-21"></a>
+<a id="__codelineno-11-22" name="__codelineno-11-22" href="#__codelineno-11-22"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">test_port_is_integer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">defaults</span><span class="p">):</span>
+<a id="__codelineno-11-23" name="__codelineno-11-23" href="#__codelineno-11-23"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;webserver_port debe ser un entero.&quot;&quot;&quot;</span>
+<a id="__codelineno-11-24" name="__codelineno-11-24" href="#__codelineno-11-24"></a>        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">defaults</span><span class="p">[</span><span class="s2">&quot;webserver_port&quot;</span><span class="p">],</span> <span class="nb">int</span><span class="p">)</span>
+<a id="__codelineno-11-25" name="__codelineno-11-25" href="#__codelineno-11-25"></a>
+<a id="__codelineno-11-26" name="__codelineno-11-26" href="#__codelineno-11-26"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">test_service_enabled_is_boolean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">defaults</span><span class="p">):</span>
+<a id="__codelineno-11-27" name="__codelineno-11-27" href="#__codelineno-11-27"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;webserver_service_enabled debe ser un booleano.&quot;&quot;&quot;</span>
+<a id="__codelineno-11-28" name="__codelineno-11-28" href="#__codelineno-11-28"></a>        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">defaults</span><span class="p">[</span><span class="s2">&quot;webserver_service_enabled&quot;</span><span class="p">],</span> <span class="nb">bool</span><span class="p">)</span>
+<a id="__codelineno-11-29" name="__codelineno-11-29" href="#__codelineno-11-29"></a>
+<a id="__codelineno-11-30" name="__codelineno-11-30" href="#__codelineno-11-30"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">test_document_root_is_absolute_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">defaults</span><span class="p">):</span>
+<a id="__codelineno-11-31" name="__codelineno-11-31" href="#__codelineno-11-31"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;webserver_document_root debe ser una ruta absoluta.&quot;&quot;&quot;</span>
+<a id="__codelineno-11-32" name="__codelineno-11-32" href="#__codelineno-11-32"></a>        <span class="k">assert</span> <span class="n">defaults</span><span class="p">[</span><span class="s2">&quot;webserver_document_root&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p>Estos tests se ejecutan en milisegundos. Validan convenciones que es fácil violar accidentalmente: una nueva variable sin el prefijo del rol, un default que debería ser entero pero es cadena, una ruta que debería ser absoluta pero es relativa.</p>
+<p>El archivo de test completo en el código compañero también verifica:</p>
+<ul>
+<li><strong>Variables internas</strong> (<code>vars/main.yml</code>) están todas con prefijo <code>__webserver_</code></li>
+<li><strong>Argument specs</strong> (<code>meta/argument_specs.yml</code>) cubren cada variable en defaults</li>
+<li><strong>Consistencia de tipos</strong> entre defaults y argument specs</li>
+</ul>
+<h3 id="ejecutando-pytest">Ejecutando pytest</h3>
+<p>Desde la raíz de la colección:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">cd</span><span class="w"> </span>ansible/collections/parasoltech/infrastructure
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-v
+</code></pre></div>
+<p>Salida:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>tests/unit/test_webserver_defaults.py::TestWebserverDefaults::test_defaults_file_exists PASSED
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>tests/unit/test_webserver_defaults.py::TestWebserverDefaults::test_all_defaults_prefixed PASSED
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>tests/unit/test_webserver_defaults.py::TestWebserverDefaults::test_port_is_integer PASSED
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>tests/unit/test_webserver_defaults.py::TestWebserverDefaults::test_service_enabled_is_boolean PASSED
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>tests/unit/test_webserver_defaults.py::TestWebserverDefaults::test_document_root_is_absolute_path PASSED
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>tests/unit/test_webserver_defaults.py::TestWebserverDefaults::test_expected_defaults_present PASSED
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>tests/unit/test_webserver_defaults.py::TestWebserverInternalVars::test_all_internal_vars_prefixed PASSED
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>tests/unit/test_webserver_defaults.py::TestWebserverArgumentSpecs::test_defaults_covered_by_specs PASSED
+</code></pre></div>
+<p>Flags útiles de pytest:</p>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Propósito</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-v</code></td>
+<td>Verbose: muestra cada nombre de test y resultado</td>
+</tr>
+<tr>
+<td><code>-s</code></td>
+<td>Sin captura: muestra sentencias print y salida de debug</td>
+</tr>
+<tr>
+<td><code>-x</code></td>
+<td>Detener en el primer fallo</td>
+</tr>
+<tr>
+<td><code>--tb=short</code></td>
+<td>Tracebacks cortos para salida más limpia</td>
+</tr>
+<tr>
+<td><code>-k "patron"</code></td>
+<td>Ejecutar solo tests que coincidan con el patrón</td>
+</tr>
+</tbody>
+</table>
+<h2 id="orquestacion-de-tests-con-tox-ansible">Orquestación de Tests con tox-ansible</h2>
+<p>Ahora tienes tres herramientas de testing: <code>ansible-lint</code> para análisis estático, <code>pytest</code> para tests unitarios y Molecule para tests de integración. Ejecutarlos por separado funciona, pero es tedioso, especialmente cuando necesitas probar contra múltiples versiones de Python y Ansible.</p>
+<p><code>tox-ansible</code> resuelve esto. Es un plugin de tox (incluido en <code>ansible-dev-tools</code>) que escanea la estructura de tu colección y <strong>genera automáticamente entornos de test</strong> para linting, tests unitarios, tests de sanity y tests de integración. No se necesitan definiciones manuales de entornos.</p>
+<h3 id="configuracion_1">Configuración</h3>
+<p>El archivo de configuración es <code>tox-ansible.ini</code> (no <code>tox.ini</code>, lo que mantiene tox-ansible separado de cualquier configuración estándar de tox):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="k">[ansible]</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="na">skip</span><span class="w"> </span><span class="o">=</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">    </span><span class="na">py3.7</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">    </span><span class="na">py3.8</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">    </span><span class="na">py3.9</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">    </span><span class="na">py3.10</span>
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">    </span><span class="na">py3.11</span>
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="w">    </span><span class="na">2.9</span>
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="w">    </span><span class="na">2.10</span>
+<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="w">    </span><span class="na">2.11</span>
+<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="w">    </span><span class="na">2.12</span>
+<a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a><span class="w">    </span><span class="na">2.13</span>
+<a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a><span class="w">    </span><span class="na">2.14</span>
+<a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a><span class="w">    </span><span class="na">2.15</span>
+<a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a><span class="w">    </span><span class="na">2.16</span>
+<a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a><span class="w">    </span><span class="na">2.17</span>
+<a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a><span class="w">    </span><span class="na">devel</span>
+<a id="__codelineno-14-18" name="__codelineno-14-18" href="#__codelineno-14-18"></a><span class="w">    </span><span class="na">milestone</span>
+</code></pre></div>
+<p>Esa es toda la configuración. La lista <code>skip</code> excluye versiones de Python y Ansible que no están disponibles en tu entorno. Todo lo demás es convención sobre configuración: el plugin descubre qué testear escaneando la estructura de la colección.</p>
+<h3 id="auto-descubrimiento">Auto-descubrimiento</h3>
+<p>El plugin escanea la colección y genera entornos de test basado en lo que encuentra:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nb">cd</span><span class="w"> </span>ansible/collections/parasoltech/infrastructure
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>tox<span class="w"> </span>--ansible<span class="w"> </span>-c<span class="w"> </span>tox-ansible.ini<span class="w"> </span>list
+</code></pre></div>
+<p>Salida:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>default environments:
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>galaxy                       -&gt; Build and validate collection artifact
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>integration-py3.12-2.19      -&gt; Integration tests (Molecule scenarios)
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>sanity-py3.12-2.19           -&gt; Sanity tests (ansible-test sanity)
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>unit-py3.12-2.19             -&gt; Unit tests (pytest)
+</code></pre></div>
+<p>Cada nombre de entorno codifica tres piezas de información:</p>
+<ul>
+<li><strong>Tipo de test</strong>: <code>sanity</code>, <code>unit</code>, <code>integration</code> o <code>galaxy</code></li>
+<li><strong>Versión de Python</strong>: <code>py3.12</code>, <code>py3.13</code>, etc.</li>
+<li><strong>Versión de Ansible</strong>: <code>2.19</code>, <code>2.20</code>, etc.</li>
+</ul>
+<p>El plugin los encuentra buscando:</p>
+<table>
+<thead>
+<tr>
+<th>Tipo de test</th>
+<th>El plugin busca</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>sanity</strong></td>
+<td>Cualquier estructura de colección (<code>galaxy.yml</code>)</td>
+</tr>
+<tr>
+<td><strong>unit</strong></td>
+<td>Directorio <code>tests/unit/</code> con archivos de test Python</td>
+</tr>
+<tr>
+<td><strong>integration</strong></td>
+<td>Directorio <code>extensions/molecule/</code> con escenarios</td>
+</tr>
+<tr>
+<td><strong>galaxy</strong></td>
+<td><code>galaxy.yml</code> en la raíz de la colección</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ejecutando-tests">Ejecutando Tests</h3>
+<p>Ejecutar todos los tests:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>tox<span class="w"> </span>--ansible<span class="w"> </span>-c<span class="w"> </span>tox-ansible.ini
+</code></pre></div>
+<p>Ejecutar tipos de test específicos:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1"># Solo tests de sanity</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>tox<span class="w"> </span>--ansible<span class="w"> </span>-c<span class="w"> </span>tox-ansible.ini<span class="w"> </span>-e<span class="w"> </span>sanity-py3.12-2.19
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="c1"># Solo tests unitarios</span>
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>tox<span class="w"> </span>--ansible<span class="w"> </span>-c<span class="w"> </span>tox-ansible.ini<span class="w"> </span>-e<span class="w"> </span>unit-py3.12-2.19
+<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>
+<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="c1"># Solo tests de integracion</span>
+<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>tox<span class="w"> </span>--ansible<span class="w"> </span>-c<span class="w"> </span>tox-ansible.ini<span class="w"> </span>-e<span class="w"> </span>integration-py3.12-2.19
+<a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>
+<a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="c1"># Construir y validar el artefacto de la coleccion</span>
+<a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a>tox<span class="w"> </span>--ansible<span class="w"> </span>-c<span class="w"> </span>tox-ansible.ini<span class="w"> </span>-e<span class="w"> </span>galaxy
+</code></pre></div>
+<p>Para cada entorno, tox:</p>
+<ol>
+<li>Crea un entorno virtual limpio</li>
+<li>Instala las versiones requeridas de Python y Ansible</li>
+<li>Instala dependencias de test</li>
+<li>Ejecuta el comando de test apropiado</li>
+<li>Reporta resultados</li>
+</ol>
+<p>Este es el mismo flujo de trabajo que se ejecuta en pipelines CI/CD. Si pasa localmente, pasará en CI.</p>
+<div class="admonition note">
+<p class="admonition-title">Siempre pasa <code>--ansible</code> y <code>-c tox-ansible.ini</code></p>
+<p>Sin <code>--ansible</code>, el plugin no se activa y ninguno de los entornos auto-generados aparecerá. Sin <code>-c tox-ansible.ini</code>, tox busca <code>tox.ini</code> y no encontrará la lista de skip.</p>
+</div>
+<h3 id="la-interfaz-unificada">La Interfaz Unificada</h3>
+<p>El poder de <code>tox-ansible</code> es la interfaz unificada. En lugar de recordar:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>ansible-lint<span class="w">                                    </span><span class="c1"># Lint</span>
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>pytest<span class="w"> </span>tests/<span class="w">                                   </span><span class="c1"># Tests unitarios</span>
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>molecule<span class="w"> </span><span class="nb">test</span><span class="w"> </span>-s<span class="w"> </span>integration_webserver<span class="w">          </span><span class="c1"># Tests de integracion</span>
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>ansible-galaxy<span class="w"> </span>collection<span class="w"> </span>build<span class="w">                 </span><span class="c1"># Construir artefacto</span>
+</code></pre></div>
+<p>Ejecutas:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>tox<span class="w"> </span>--ansible<span class="w"> </span>-c<span class="w"> </span>tox-ansible.ini
+</code></pre></div>
+<p>Un comando. Todos los tipos de test. Entornos consistentes. Esto es lo que la CoP configura como el chequeo requerido de CI/CD para cada pull request.</p>
+<h2 id="ejercicios">Ejercicios</h2>
+<h3 id="ejercicio-1-ejecutar-ansible-lint">Ejercicio 1: Ejecutar ansible-lint</h3>
+<p>Navega a la colección y ejecuta el linter:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nb">cd</span><span class="w"> </span>ansible/collections/parasoltech/infrastructure
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>ansible-lint
+</code></pre></div>
+<p>Si hay violaciones, examina la salida cuidadosamente. Cada violación incluye el archivo, número de línea, ID de regla y descripción. Intenta corregir los problemas manualmente, luego ejecuta <code>ansible-lint --fix</code> para ver qué puede manejar la auto-corrección.</p>
+<h3 id="ejercicio-2-escribir-una-nueva-asercion">Ejercicio 2: Escribir una Nueva Aserción</h3>
+<p>Abre <code>extensions/molecule/integration_webserver/verify.yml</code> y agrega una nueva aserción que verifique que el directorio document root tiene los permisos correctos (modo <code>0755</code>). Usa la variable <code>__verify_docroot_stat</code> que ya está registrada.</p>
+<details class="example">
+<summary>Solución</summary>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Assert document root has correct permissions</span>
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="w">  </span><span class="nt">ansible.builtin.assert</span><span class="p">:</span>
+<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="w">    </span><span class="nt">that</span><span class="p">:</span>
+<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__verify_docroot_stat.stat.mode == &#39;0755&#39;</span>
+<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="w">    </span><span class="nt">fail_msg</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
+<a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a><span class="w">      </span><span class="no">Los permisos del document root son</span>
+<a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a><span class="w">      </span><span class="no">{{ __verify_docroot_stat.stat.mode }}, se esperaba 0755.</span>
+<a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a><span class="w">    </span><span class="nt">success_msg</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
+<a id="__codelineno-22-9" name="__codelineno-22-9" href="#__codelineno-22-9"></a><span class="w">      </span><span class="no">El document root tiene los permisos correctos (0755).</span>
+</code></pre></div>
+</details>
+<h3 id="ejercicio-3-agregar-un-test-unitario">Ejercicio 3: Agregar un Test Unitario</h3>
+<p>Abre <code>tests/unit/test_webserver_defaults.py</code> y agrega un test que verifique que <code>webserver_port</code> tiene un valor por defecto dentro de un rango de puertos válido (1-65535).</p>
+<details class="example">
+<summary>Solución</summary>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">test_port_in_valid_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">defaults</span><span class="p">):</span>
+<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;webserver_port debe estar entre 1 y 65535.&quot;&quot;&quot;</span>
+<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>    <span class="n">port</span> <span class="o">=</span> <span class="n">defaults</span><span class="p">[</span><span class="s2">&quot;webserver_port&quot;</span><span class="p">]</span>
+<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>    <span class="k">assert</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">port</span> <span class="o">&lt;=</span> <span class="mi">65535</span><span class="p">,</span> <span class="p">(</span>
+<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>        <span class="sa">f</span><span class="s2">&quot;webserver_port (</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">) esta fuera del rango valido 1-65535&quot;</span>
+<a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a>    <span class="p">)</span>
+</code></pre></div>
+</details>
+<h3 id="ejercicio-4-ejecutar-el-ciclo-de-vida-completo-del-test">Ejercicio 4: Ejecutar el Ciclo de Vida Completo del Test</h3>
+<p>Ejecuta el ciclo de vida completo de Molecule para el rol webserver:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="nb">cd</span><span class="w"> </span>ansible/collections/parasoltech/infrastructure/extensions
+<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>molecule<span class="w"> </span><span class="nb">test</span><span class="w"> </span>-s<span class="w"> </span>integration_webserver
+</code></pre></div>
+<p>Observa la salida e identifica cada etapa del ciclo de vida. Si alguna etapa falla, lee el mensaje de error y corrige el problema.</p>
+<h3 id="ejercicio-5-explorar-tox-ansible">Ejercicio 5: Explorar tox-ansible</h3>
+<p>Lista los entornos de test auto-descubiertos:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="nb">cd</span><span class="w"> </span>ansible/collections/parasoltech/infrastructure
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>tox<span class="w"> </span>--ansible<span class="w"> </span>-c<span class="w"> </span>tox-ansible.ini<span class="w"> </span>list
+</code></pre></div>
+<p>Ejecuta los tests unitarios a través de tox y compara la salida con ejecutar <code>pytest</code> directamente. Observa cómo tox crea un entorno virtual aislado para la ejecución del test.</p>
+<h2 id="resumen">Resumen</h2>
+<p>En este módulo:</p>
+<ul>
+<li>Aprendiste la pirámide de testing de Ansible: lint, unit, sanity e integración forman capas de comprobación creciente y costo</li>
+<li>Configuraste <code>ansible-lint</code> con un perfil de producción, aprendiste a leer su salida y usaste auto-corrección para resolver violaciones automáticamente</li>
+<li>Creaste un escenario de Molecule para el rol webserver con un driver delegado, un playbook converge que aplica el rol y un playbook verify con verificaciones basadas en aserciones</li>
+<li>Entendiste el ciclo de vida de diez etapas de Molecule y cuándo usar etapas individuales (<code>converge</code>, <code>verify</code>) versus el ciclo de vida completo (<code>test</code>)</li>
+<li>Escribiste tests unitarios <code>pytest-ansible</code> que validan defaults del rol, variables internas y consistencia de argument specs sin ejecutar ningún código Ansible</li>
+<li>Configuraste <code>tox-ansible</code> para auto-descubrir y orquestar todos los tipos de test a través de un único comando con convención sobre configuración</li>
+</ul>
+<p>La CoP en Parasol Tech ahora tiene controles de calidad: <code>ansible-lint</code> detecta violaciones de estilo, los tests unitarios detectan problemas estructurales y los tests de integración de Molecule detectan fallos en tiempo de ejecución. Cada pull request a la colección <code>parasoltech.infrastructure</code> pasa por <code>tox --ansible</code> antes de poder fusionarse.</p>
+<h2 id="proximos-pasos">Próximos Pasos</h2>
+<p>Siguiente: <a href="../8-packaging-and-deployment/">Módulo 8: Empaquetado y Despliegue</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

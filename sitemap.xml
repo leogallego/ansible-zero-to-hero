@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <url>
+        <loc>https://leogallego.github.io/ansible-zero-to-hero/</loc>
+        <lastmod>2026-05-22</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://leogallego.github.io/ansible-zero-to-hero/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://leogallego.github.io/ansible-zero-to-hero/es/"/>
+    </url>
+    <url>
+        <loc>https://leogallego.github.io/ansible-zero-to-hero/modules/1-introduction/</loc>
+        <lastmod>2026-05-22</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://leogallego.github.io/ansible-zero-to-hero/modules/1-introduction/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://leogallego.github.io/ansible-zero-to-hero/es/modules/1-introduction/"/>
+    </url>
+    <url>
+        <loc>https://leogallego.github.io/ansible-zero-to-hero/modules/2-your-first-playbook/</loc>
+        <lastmod>2026-05-22</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://leogallego.github.io/ansible-zero-to-hero/modules/2-your-first-playbook/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://leogallego.github.io/ansible-zero-to-hero/es/modules/2-your-first-playbook/"/>
+    </url>
+    <url>
+        <loc>https://leogallego.github.io/ansible-zero-to-hero/modules/3-managing-inventory/</loc>
+        <lastmod>2026-05-22</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://leogallego.github.io/ansible-zero-to-hero/modules/3-managing-inventory/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://leogallego.github.io/ansible-zero-to-hero/es/modules/3-managing-inventory/"/>
+    </url>
+    <url>
+        <loc>https://leogallego.github.io/ansible-zero-to-hero/modules/4-variables-and-facts/</loc>
+        <lastmod>2026-05-22</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://leogallego.github.io/ansible-zero-to-hero/modules/4-variables-and-facts/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://leogallego.github.io/ansible-zero-to-hero/es/modules/4-variables-and-facts/"/>
+    </url>
+    <url>
+        <loc>https://leogallego.github.io/ansible-zero-to-hero/modules/5-templates-and-handlers/</loc>
+        <lastmod>2026-05-22</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://leogallego.github.io/ansible-zero-to-hero/modules/5-templates-and-handlers/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://leogallego.github.io/ansible-zero-to-hero/es/modules/5-templates-and-handlers/"/>
+    </url>
+    <url>
+        <loc>https://leogallego.github.io/ansible-zero-to-hero/modules/6-roles-and-collections/</loc>
+        <lastmod>2026-05-22</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://leogallego.github.io/ansible-zero-to-hero/modules/6-roles-and-collections/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://leogallego.github.io/ansible-zero-to-hero/es/modules/6-roles-and-collections/"/>
+    </url>
+    <url>
+        <loc>https://leogallego.github.io/ansible-zero-to-hero/modules/7-testing-your-automation/</loc>
+        <lastmod>2026-05-22</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://leogallego.github.io/ansible-zero-to-hero/modules/7-testing-your-automation/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://leogallego.github.io/ansible-zero-to-hero/es/modules/7-testing-your-automation/"/>
+    </url>
+    <url>
+        <loc>https://leogallego.github.io/ansible-zero-to-hero/modules/8-packaging-and-deployment/</loc>
+        <lastmod>2026-05-22</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://leogallego.github.io/ansible-zero-to-hero/modules/8-packaging-and-deployment/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://leogallego.github.io/ansible-zero-to-hero/es/modules/8-packaging-and-deployment/"/>
+    </url>
+    <url>
+        <loc>https://leogallego.github.io/ansible-zero-to-hero/modules/9-scaling-with-aap/</loc>
+        <lastmod>2026-05-22</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://leogallego.github.io/ansible-zero-to-hero/modules/9-scaling-with-aap/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://leogallego.github.io/ansible-zero-to-hero/es/modules/9-scaling-with-aap/"/>
+    </url>
+    <url>
+        <loc>https://leogallego.github.io/ansible-zero-to-hero/superpowers/specs/2026-05-06-ansible-zero-to-hero-design/</loc>
+        <lastmod>2026-05-22</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://leogallego.github.io/ansible-zero-to-hero/superpowers/specs/2026-05-06-ansible-zero-to-hero-design/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://leogallego.github.io/ansible-zero-to-hero/es/superpowers/specs/2026-05-06-ansible-zero-to-hero-design/"/>
+    </url>
+    <url>
+        <loc>https://leogallego.github.io/ansible-zero-to-hero/es/</loc>
+        <lastmod>2026-05-22</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="https://leogallego.github.io/ansible-zero-to-hero/es/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://leogallego.github.io/ansible-zero-to-hero/"/>
+    </url>
+    <url>
+        <loc>https://leogallego.github.io/ansible-zero-to-hero/es/modules/1-introduction/</loc>
+        <lastmod>2026-05-22</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="https://leogallego.github.io/ansible-zero-to-hero/es/modules/1-introduction/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://leogallego.github.io/ansible-zero-to-hero/modules/1-introduction/"/>
+    </url>
+    <url>
+        <loc>https://leogallego.github.io/ansible-zero-to-hero/es/modules/2-your-first-playbook/</loc>
+        <lastmod>2026-05-22</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="https://leogallego.github.io/ansible-zero-to-hero/es/modules/2-your-first-playbook/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://leogallego.github.io/ansible-zero-to-hero/modules/2-your-first-playbook/"/>
+    </url>
+    <url>
+        <loc>https://leogallego.github.io/ansible-zero-to-hero/es/modules/3-managing-inventory/</loc>
+        <lastmod>2026-05-22</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="https://leogallego.github.io/ansible-zero-to-hero/es/modules/3-managing-inventory/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://leogallego.github.io/ansible-zero-to-hero/modules/3-managing-inventory/"/>
+    </url>
+    <url>
+        <loc>https://leogallego.github.io/ansible-zero-to-hero/es/modules/4-variables-and-facts/</loc>
+        <lastmod>2026-05-22</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="https://leogallego.github.io/ansible-zero-to-hero/es/modules/4-variables-and-facts/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://leogallego.github.io/ansible-zero-to-hero/modules/4-variables-and-facts/"/>
+    </url>
+    <url>
+        <loc>https://leogallego.github.io/ansible-zero-to-hero/es/modules/5-templates-and-handlers/</loc>
+        <lastmod>2026-05-22</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="https://leogallego.github.io/ansible-zero-to-hero/es/modules/5-templates-and-handlers/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://leogallego.github.io/ansible-zero-to-hero/modules/5-templates-and-handlers/"/>
+    </url>
+    <url>
+        <loc>https://leogallego.github.io/ansible-zero-to-hero/es/modules/6-roles-and-collections/</loc>
+        <lastmod>2026-05-22</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="https://leogallego.github.io/ansible-zero-to-hero/es/modules/6-roles-and-collections/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://leogallego.github.io/ansible-zero-to-hero/modules/6-roles-and-collections/"/>
+    </url>
+    <url>
+        <loc>https://leogallego.github.io/ansible-zero-to-hero/es/modules/7-testing-your-automation/</loc>
+        <lastmod>2026-05-22</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="https://leogallego.github.io/ansible-zero-to-hero/es/modules/7-testing-your-automation/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://leogallego.github.io/ansible-zero-to-hero/modules/7-testing-your-automation/"/>
+    </url>
+    <url>
+        <loc>https://leogallego.github.io/ansible-zero-to-hero/es/modules/8-packaging-and-deployment/</loc>
+        <lastmod>2026-05-22</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="https://leogallego.github.io/ansible-zero-to-hero/es/modules/8-packaging-and-deployment/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://leogallego.github.io/ansible-zero-to-hero/modules/8-packaging-and-deployment/"/>
+    </url>
+    <url>
+        <loc>https://leogallego.github.io/ansible-zero-to-hero/es/modules/9-scaling-with-aap/</loc>
+        <lastmod>2026-05-22</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="https://leogallego.github.io/ansible-zero-to-hero/es/modules/9-scaling-with-aap/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://leogallego.github.io/ansible-zero-to-hero/modules/9-scaling-with-aap/"/>
+    </url>
+    <url>
+        <loc>https://leogallego.github.io/ansible-zero-to-hero/es/superpowers/specs/2026-05-06-ansible-zero-to-hero-design/</loc>
+        <lastmod>2026-05-22</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="https://leogallego.github.io/ansible-zero-to-hero/es/superpowers/specs/2026-05-06-ansible-zero-to-hero-design/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://leogallego.github.io/ansible-zero-to-hero/superpowers/specs/2026-05-06-ansible-zero-to-hero-design/"/>
+    </url>
+</urlset>
