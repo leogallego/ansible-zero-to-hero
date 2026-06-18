@@ -1,0 +1,2531 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A progressive course teaching Ansible from first principles to production-grade automation">
+      
+      
+      
+        <link rel="canonical" href="https://hero.ansible.ar/es/modules/9-scaling-with-aap/">
+      
+      
+        <link rel="prev" href="../8-packaging-and-deployment/">
+      
+      
+      
+        
+          <link rel="alternate" href="../../../modules/9-scaling-with-aap/" hreflang="en">
+        
+          <link rel="alternate" href="./" hreflang="es">
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>9. Scaling with AAP - Ansible Zero to Hero</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#modulo-9-escalando-con-aap" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../../" title="Ansible Zero to Hero" class="md-header__button md-logo" aria-label="Ansible Zero to Hero" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Ansible Zero to Hero
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              9. Scaling with AAP
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Seleccionar idioma">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="../../../modules/9-scaling-with-aap/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="es" class="md-select__link">
+              Español
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/leogallego/ansible-zero-to-hero" title="Ir al repositorio" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    leogallego/ansible-zero-to-hero
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Pestañas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../1-introduction/" class="md-tabs__link">
+          
+  
+  
+  Modules
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../" title="Ansible Zero to Hero" class="md-nav__button md-logo" aria-label="Ansible Zero to Hero" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Ansible Zero to Hero
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/leogallego/ansible-zero-to-hero" title="Ir al repositorio" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    leogallego/ansible-zero-to-hero
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Modules
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../2-your-first-playbook/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Your First Playbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../3-managing-inventory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Managing Inventory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../4-variables-and-facts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Variables and Facts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../5-templates-and-handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Templates and Handlers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../6-roles-and-collections/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Roles and Collections
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../7-testing-your-automation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Testing Your Automation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../8-packaging-and-deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Packaging and Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Scaling with AAP
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Scaling with AAP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objetivos-de-aprendizaje" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos de Aprendizaje
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#la-historia-hasta-ahora" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Historia Hasta Ahora
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#vision-general-de-aap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visión General de AAP
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Visión General de AAP">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Controller
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automation-hub" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automation Hub
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#event-driven-ansible" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Event-Driven Ansible
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#entorno-de-laboratorio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entorno de Laboratorio
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Entorno de Laboratorio">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#acceso-al-sandbox-de-aap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Acceso al Sandbox de AAP
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#de-cli-a-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        De CLI a Controller
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="De CLI a Controller">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#proyectos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proyectos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#job-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Job Templates
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Job Templates">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creando-un-job-template" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creando un Job Template
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#surveys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Surveys
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lanzamiento-y-monitoreo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lanzamiento y Monitoreo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#workflows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflows
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Workflows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ejemplo-workflow-de-despliegue-de-parasol-tech" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejemplo: Workflow de Despliegue de Parasol Tech
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#convergencia-y-ramificacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Convergencia y Ramificación
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inventarios-y-credenciales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inventarios y Credenciales
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Inventarios y Credenciales">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#inventarios-en-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inventarios en Controller
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variables-en-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Variables en Controller
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#credenciales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Credenciales
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rbac" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RBAC
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RBAC">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#organizaciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Organizaciones
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#equipos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Equipos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#roles-y-permisos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Roles y Permisos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#diseno-de-rbac-para-la-cop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diseño de RBAC para la CoP
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integracion-de-ee" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integración de EE
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Integración de EE">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#agregando-ees-a-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Agregando EEs a Controller
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#asignando-ees-a-job-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Asignando EEs a Job Templates
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ciclo-de-vida-del-ee" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ciclo de Vida del EE
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sincronizacion-de-proyectos-y-verificacion-de-contenido" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sincronización de Proyectos y Verificación de Contenido
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Sincronización de Proyectos y Verificación de Contenido">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sincronizacion-de-proyectos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sincronización de Proyectos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verificacion-de-contenido-con-gpg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verificación de Contenido con GPG
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ejercicios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicios
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ejercicios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-1-explorar-la-interfaz-de-aap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 1: Explorar la Interfaz de AAP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-2-crear-un-proyecto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 2: Crear un Proyecto
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-3-crear-un-inventario" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 3: Crear un Inventario
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-4-crear-y-lanzar-un-job-template" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 4: Crear y Lanzar un Job Template
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-5-construir-un-workflow-simple" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 5: Construir un Workflow Simple
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-6-configurar-rbac" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 6: Configurar RBAC
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resumen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion-del-curso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conclusión del Curso
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Conclusión del Curso">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#que-viene-despues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qué Viene Después
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objetivos-de-aprendizaje" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos de Aprendizaje
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#la-historia-hasta-ahora" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Historia Hasta Ahora
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#vision-general-de-aap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visión General de AAP
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Visión General de AAP">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Controller
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automation-hub" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automation Hub
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#event-driven-ansible" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Event-Driven Ansible
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#entorno-de-laboratorio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entorno de Laboratorio
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Entorno de Laboratorio">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#acceso-al-sandbox-de-aap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Acceso al Sandbox de AAP
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#de-cli-a-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        De CLI a Controller
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="De CLI a Controller">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#proyectos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proyectos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#job-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Job Templates
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Job Templates">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creando-un-job-template" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creando un Job Template
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#surveys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Surveys
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lanzamiento-y-monitoreo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lanzamiento y Monitoreo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#workflows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflows
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Workflows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ejemplo-workflow-de-despliegue-de-parasol-tech" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejemplo: Workflow de Despliegue de Parasol Tech
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#convergencia-y-ramificacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Convergencia y Ramificación
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inventarios-y-credenciales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inventarios y Credenciales
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Inventarios y Credenciales">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#inventarios-en-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inventarios en Controller
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variables-en-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Variables en Controller
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#credenciales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Credenciales
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rbac" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RBAC
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RBAC">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#organizaciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Organizaciones
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#equipos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Equipos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#roles-y-permisos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Roles y Permisos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#diseno-de-rbac-para-la-cop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diseño de RBAC para la CoP
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integracion-de-ee" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integración de EE
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Integración de EE">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#agregando-ees-a-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Agregando EEs a Controller
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#asignando-ees-a-job-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Asignando EEs a Job Templates
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ciclo-de-vida-del-ee" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ciclo de Vida del EE
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sincronizacion-de-proyectos-y-verificacion-de-contenido" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sincronización de Proyectos y Verificación de Contenido
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Sincronización de Proyectos y Verificación de Contenido">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sincronizacion-de-proyectos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sincronización de Proyectos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verificacion-de-contenido-con-gpg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verificación de Contenido con GPG
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ejercicios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicios
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ejercicios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-1-explorar-la-interfaz-de-aap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 1: Explorar la Interfaz de AAP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-2-crear-un-proyecto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 2: Crear un Proyecto
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-3-crear-un-inventario" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 3: Crear un Inventario
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-4-crear-y-lanzar-un-job-template" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 4: Crear y Lanzar un Job Template
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-5-construir-un-workflow-simple" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 5: Construir un Workflow Simple
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-6-configurar-rbac" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 6: Configurar RBAC
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resumen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion-del-curso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conclusión del Curso
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Conclusión del Curso">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#que-viene-despues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qué Viene Después
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="modulo-9-escalando-con-aap">Módulo 9: Escalando con AAP</h1>
+<h2 id="objetivos-de-aprendizaje">Objetivos de Aprendizaje</h2>
+<p>Al finalizar este módulo serás capaz de:</p>
+<ul>
+<li>Describir los componentes de Ansible Automation Platform (Controller, Hub, EDA)</li>
+<li>Crear job templates y workflows en Controller</li>
+<li>Configurar inventarios y credenciales en Controller</li>
+<li>Establecer RBAC con equipos, roles y permisos</li>
+<li>Integrar Execution Environments con Controller</li>
+<li>Configurar la sincronización de proyectos con verificación de contenido</li>
+</ul>
+<h2 id="la-historia-hasta-ahora">La Historia Hasta Ahora</h2>
+<p>La CoP en Parasol Tech ha recorrido un largo camino. El equipo tiene una colección probada, verificada y firmada: <code>parasoltech.infrastructure</code>. Se distribuye dentro de un Execution Environment personalizado construido con <code>ansible-builder</code>. Cada cambio pasa por <code>ansible-lint</code>, Molecule, pytest y tox-ansible antes de fusionarse. El contenido está firmado con <code>ansible-sign</code> para que nadie pueda manipular los playbooks entre la revisión y la ejecución.</p>
+<p>Pero un nuevo problema está surgiendo. Lionel ejecuta el despliegue del servidor web desde un portátil. Jordan ejecuta el playbook de parcheado desde otro portátil. Un tercer miembro del equipo ejecuta comandos ad-hoc desde un jump host. Nadie tiene visibilidad sobre qué se ejecutó, cuándo, quién lo ejecutó, ni si tuvo éxito. No hay registro de auditoría, no hay control de acceso, y no hay forma de programar trabajos recurrentes.</p>
+<p>"Ejecuté el playbook de respaldo de la base de datos ayer," dice Jordan. "Pero usé <code>--limit staging</code> en lugar de <code>--limit production</code>. Nadie lo notó hasta esta mañana."</p>
+<p>Lionel frunce el ceño. "Y no tengo forma de saber quién ejecutó qué en los servidores de producción la semana pasada. Necesitamos un plano de control."</p>
+<p>La CoP coincide: la ejecución por CLI no escala. Necesitan orquestación centralizada con gobernanza, registro de auditoría, control de acceso basado en roles, y la capacidad de encadenar automatización en flujos de trabajo de múltiples pasos. Necesitan <strong>Ansible Automation Platform</strong>.</p>
+<h2 id="vision-general-de-aap">Visión General de AAP</h2>
+<p>Ansible Automation Platform (AAP) es la plataforma empresarial de Red Hat para gestionar la automatización de Ansible a escala. Toma las herramientas de CLI que has usado a lo largo de este curso y agrega un plano de control centralizado con interfaz web, API REST, RBAC, registro de auditoría, gestión de credenciales y orquestación de flujos de trabajo.</p>
+<p>AAP tiene tres componentes principales:</p>
+<h3 id="controller">Controller</h3>
+<p><strong>Automation Controller</strong> (anteriormente Ansible Tower) es la capa de gestión central. Proporciona:</p>
+<ul>
+<li><strong>Job Templates</strong>: definiciones reutilizables para ejecutar playbooks con inventarios, credenciales y variables específicas</li>
+<li><strong>Workflows</strong>: pipelines de automatización de múltiples pasos que encadenan job templates con lógica condicional</li>
+<li><strong>Inventarios</strong>: gestión centralizada de hosts con fuentes estáticas, proveedores dinámicos e inventario sincronizado desde sistemas externos</li>
+<li><strong>Credenciales</strong>: almacenamiento seguro para claves SSH, tokens API, credenciales de nube y contraseñas de vault. Se acabaron los secretos en portátiles individuales</li>
+<li><strong>RBAC</strong>: equipos, roles y permisos granulares que controlan quién puede ejecutar qué en cuáles hosts</li>
+<li><strong>Registro de auditoría</strong>: cada ejecución de trabajo se registra con quién la inició, qué se ejecutó, cuándo comenzó, cuánto tardó y cuál fue el resultado</li>
+<li><strong>Programación</strong>: ejecutar trabajos en un horario recurrente sin intervención humana</li>
+<li><strong>API REST</strong>: todo lo disponible en la interfaz también está disponible vía API, permitiendo integración con pipelines de CI/CD, sistemas de tickets y herramientas personalizadas</li>
+</ul>
+<p>Controller es donde la CoP realizará la mayor parte de su trabajo. Reemplaza el patrón de "conectarse por SSH a un servidor y ejecutar <code>ansible-playbook</code>" con un flujo de trabajo gobernado y auditable.</p>
+<h3 id="automation-hub">Automation Hub</h3>
+<p><strong>Private Automation Hub</strong> es el repositorio interno de contenido de la organización. Cumple dos propósitos:</p>
+<ol>
+<li>
+<p><strong>Registro de colecciones</strong>: Los equipos publican colecciones en Hub en lugar de compartir tarballs o apuntar a repositorios Git. Otros equipos instalan colecciones desde Hub usando <code>ansible-galaxy</code>. Hub puede alojar colecciones certificadas (de Red Hat y socios), colecciones comunitarias validadas y las colecciones privadas de la organización como <code>parasoltech.infrastructure</code>.</p>
+</li>
+<li>
+<p><strong>Registro de contenedores EE</strong>: Hub almacena imágenes de Execution Environments. Controller obtiene las imágenes EE de Hub cuando ejecuta trabajos, asegurando que cada ejecución use la imagen aprobada y probada. Aquí es donde se publicaría el EE construido en el Módulo 8 para uso en producción.</p>
+</li>
+</ol>
+<p>Hub resuelve el problema de distribución de contenido. En lugar de que cada equipo mantenga su propia copia de colecciones e imágenes EE, hay una única fuente de verdad gobernada.</p>
+<h3 id="event-driven-ansible">Event-Driven Ansible</h3>
+<p><strong>Event-Driven Ansible (EDA)</strong> extiende la automatización de "un humano dispara un trabajo" a "los eventos disparan trabajos automáticamente." EDA introduce:</p>
+<ul>
+<li><strong>Fuentes de eventos</strong>: integraciones que escuchan eventos de sistemas de monitoreo (Prometheus, Datadog), sistemas de tickets (ServiceNow), proveedores de nube (AWS CloudWatch), sistemas de mensajería (Kafka), webhooks y más</li>
+<li><strong>Rulebooks</strong>: archivos YAML que definen condiciones y acciones: "cuando ocurra este evento, ejecutar este job template"</li>
+<li><strong>Decision Environments</strong>: imágenes de contenedor (similares a los EEs) que empaquetan las dependencias de Python necesarias para los plugins de fuentes de eventos</li>
+</ul>
+<p>Un rulebook simple se ve así:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nn">---</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Respond to web server alerts</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">all</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="nt">sources</span><span class="p">:</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">ansible.eda.webhook</span><span class="p">:</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">        </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.0.0.0</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">        </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5000</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">  </span><span class="nt">rules</span><span class="p">:</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Restart web server on health check failure</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">      </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">event.payload.alert == &quot;webserver_down&quot;</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">      </span><span class="nt">action</span><span class="p">:</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">        </span><span class="nt">run_job_template</span><span class="p">:</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Restart</span><span class="nv"> </span><span class="s">Web</span><span class="nv"> </span><span class="s">Server&quot;</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">          </span><span class="nt">organization</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Parasol</span><span class="nv"> </span><span class="s">Tech&quot;</span>
+</code></pre></div>
+<p>EDA es poderoso pero es un tema avanzado. Este módulo se centra en Controller y Hub, los componentes que la CoP necesita primero. EDA se vuelve relevante una vez que el equipo tiene job templates y workflows estables que pueden ser disparados programáticamente.</p>
+<div class="admonition note">
+<p class="admonition-title">Alcance de EDA</p>
+<p>Event-Driven Ansible es un tema completo por sí mismo. Este módulo introduce el concepto para que entiendas dónde encaja en la plataforma. Para trabajo práctico con EDA, consulta la <a href="https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/">documentación de EDA</a>.</p>
+</div>
+<h2 id="entorno-de-laboratorio">Entorno de Laboratorio</h2>
+<h3 id="acceso-al-sandbox-de-aap">Acceso al Sandbox de AAP</h3>
+<p>Para seguir los ejercicios de este módulo, necesitas acceso a una instancia de AAP. Hay dos opciones:</p>
+<p><strong>Opción 1: Sandbox de AAP de Red Hat (recomendado)</strong></p>
+<p>Red Hat proporciona un entorno sandbox de AAP gratuito y de tiempo limitado para aprendizaje:</p>
+<ol>
+<li>Visita la <a href="https://www.redhat.com/en/technologies/management/ansible/trial">página de prueba de AAP</a></li>
+<li>Inicia sesión con tu cuenta de Red Hat (gratuita para crear)</li>
+<li>Sigue las instrucciones de configuración para aprovisionar tu sandbox</li>
+<li>Recibirás una URL de Controller y credenciales</li>
+</ol>
+<p>El sandbox incluye Controller, un Automation Hub privado y recursos preconfigurados para explorar.</p>
+<p><strong>Opción 2: Sandbox de Desarrollador de Red Hat</strong></p>
+<p>El <a href="https://developers.redhat.com/products/ansible/getting-started">Sandbox de Desarrollador de Red Hat</a> proporciona acceso a AAP como parte de un entorno de desarrollador más amplio. Esta opción incluye herramientas y servicios adicionales de desarrollo.</p>
+<div class="admonition tip">
+<p class="admonition-title">Sin acceso a AAP?</p>
+<p>Si no puedes acceder a una instancia de AAP en este momento, este módulo sigue siendo válido. Los conceptos, la arquitectura y el mapeo de CLI a Controller aplican a cualquier versión de AAP. Lee el material, estudia los diagramas y vuelve a los ejercicios cuando tengas acceso.</p>
+</div>
+<h2 id="de-cli-a-controller">De CLI a Controller</h2>
+<p>Todo lo que has hecho en la línea de comandos se mapea directamente a un concepto de Controller. La transición no se trata de aprender nueva automatización; se trata de gestionar la misma automatización a través de una plataforma gobernada.</p>
+<table>
+<thead>
+<tr>
+<th>Concepto CLI</th>
+<th>Equivalente en Controller</th>
+<th>Qué Cambia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ansible-playbook deploy.yml</code></td>
+<td><strong>Job Template</strong></td>
+<td>Playbook, inventario, credenciales y variables se agrupan en una definición reutilizable y parametrizada</td>
+</tr>
+<tr>
+<td>Archivos de inventario (<code>hosts.yml</code>, <code>group_vars/</code>)</td>
+<td><strong>Inventory</strong> + <strong>Inventory Source</strong></td>
+<td>Los inventarios se almacenan en Controller. Las fuentes pueden sincronizar desde Git, proveedores de nube o scripts personalizados</td>
+</tr>
+<tr>
+<td>Claves <code>~/.ssh/</code>, contraseñas de vault</td>
+<td><strong>Credentials</strong></td>
+<td>Los secretos se almacenan cifrados en Controller. Los usuarios pueden <em>usar</em> credenciales sin <em>verlas</em></td>
+</tr>
+<tr>
+<td><code>ansible.cfg</code></td>
+<td><strong>Project</strong> + <strong>Configuración de Organization</strong></td>
+<td>La configuración se gestiona por proyecto y por organización a través de la UI/API</td>
+</tr>
+<tr>
+<td><code>--limit webservers</code></td>
+<td>Campo <strong>Limit</strong> en el Job Template</td>
+<td>El mismo concepto, expuesto como un campo de la interfaz que puede bloquearse o parametrizarse</td>
+</tr>
+<tr>
+<td><code>--extra-vars "env=prod"</code></td>
+<td><strong>Extra Variables</strong> / <strong>Survey</strong></td>
+<td>Las variables pueden solicitarse al momento de lanzar con validación usando surveys</td>
+</tr>
+<tr>
+<td>Ejecutar desde cron</td>
+<td><strong>Schedule</strong> en el Job Template</td>
+<td>Programador integrado con reglas de recurrencia, sin necesidad de gestionar cron</td>
+</tr>
+<tr>
+<td>Revisar la salida del terminal</td>
+<td><strong>Log de salida del job</strong> + <strong>Notificaciones</strong></td>
+<td>Captura completa de stdout, retención de logs y notificaciones a Slack, email, webhook, etc.</td>
+</tr>
+</tbody>
+</table>
+<p>La idea clave: Controller no cambia <em>qué</em> hace Ansible. Cambia <em>cómo gestionas</em> lo que Ansible hace. Tus playbooks, roles, colecciones y EEs funcionan exactamente igual. Controller agrega gobernanza, auditoría y colaboración encima.</p>
+<h3 id="proyectos">Proyectos</h3>
+<p>Un <strong>Proyecto</strong> en Controller es una referencia a un repositorio de control de versiones que contiene contenido de Ansible. Cuando creas un Proyecto, le dices a Controller:</p>
+<ul>
+<li>Dónde vive el repositorio Git (URL)</li>
+<li>Qué rama o etiqueta usar</li>
+<li>Qué credencial usar para la autenticación (clave SSH o token)</li>
+<li>Si verificar las firmas de contenido (usando la credencial GPG del Módulo 8)</li>
+</ul>
+<p>Controller clona el repositorio y pone su contenido disponible para los Job Templates. Cuando el repositorio cambia, sincronizas el Proyecto para obtener el contenido más reciente.</p>
+<p>Así es como el contenido firmado del Módulo 8 llega a Controller. El flujo de seguridad de la cadena de suministro se completa aquí:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Desarrollador firma contenido → Push a Git → Controller sincroniza Proyecto → Verifica firma GPG
+</code></pre></div>
+<h2 id="job-templates">Job Templates</h2>
+<p>Un <strong>Job Template</strong> es la unidad de trabajo más fundamental en Controller. Agrupa todo lo necesario para ejecutar un playbook:</p>
+<ul>
+<li><strong>Project</strong>: qué repositorio Git contiene el playbook</li>
+<li><strong>Playbook</strong>: qué archivo de playbook ejecutar (seleccionado del Proyecto)</li>
+<li><strong>Inventory</strong>: qué hosts apuntar</li>
+<li><strong>Credentials</strong>: qué claves/tokens usar para la autenticación</li>
+<li><strong>Execution Environment</strong>: qué imagen EE usar para el runtime</li>
+<li><strong>Extra Variables</strong>: variables predeterminadas para pasar al playbook</li>
+<li><strong>Limit</strong>: patrón de hosts opcional para restringir la ejecución</li>
+<li><strong>Verbosity</strong>: el nivel <code>-v</code> (0-5)</li>
+</ul>
+<h3 id="creando-un-job-template">Creando un Job Template</h3>
+<p>Para crear un Job Template para el despliegue del servidor web del Módulo 6:</p>
+<ol>
+<li><strong>Crear un Proyecto</strong> apuntando al repositorio Git que contiene la colección <code>parasoltech.infrastructure</code> y sus playbooks</li>
+<li><strong>Crear o seleccionar un Inventario</strong> con los hosts destino</li>
+<li><strong>Crear o seleccionar una Credencial</strong> con la clave SSH para los hosts destino</li>
+<li><strong>Crear el Job Template</strong> con:<ul>
+<li>Nombre: <code>Deploy Web Server</code></li>
+<li>Proyecto: el proyecto creado en el paso 1</li>
+<li>Playbook: <code>playbooks/deploy-webserver.yml</code></li>
+<li>Inventario: el inventario del paso 2</li>
+<li>Credenciales: la credencial SSH del paso 3</li>
+<li>Execution Environment: <code>parasoltech-ee</code></li>
+</ul>
+</li>
+</ol>
+<p>Una vez creado, cualquier persona con los permisos adecuados puede lanzar el job template desde la interfaz o la API. Cada ejecución se registra con el usuario que la lanzó, los parámetros usados y la salida completa.</p>
+<h3 id="surveys">Surveys</h3>
+<p>Los <strong>Surveys</strong> te permiten solicitar información al usuario al momento de lanzar. En lugar de confiar en que los usuarios escriban <code>--extra-vars</code> correctamente, defines un formulario con campos tipados, valores predeterminados y reglas de validación.</p>
+<p>Por ejemplo, un survey para el despliegue del servidor web podría incluir:</p>
+<ul>
+<li><strong>Entorno</strong> (desplegable): <code>dev</code>, <code>staging</code>, <code>production</code></li>
+<li><strong>Puerto del servidor web</strong> (entero): predeterminado <code>8080</code>, mínimo <code>1024</code>, máximo <code>65535</code></li>
+<li><strong>Habilitar TLS</strong> (booleano): predeterminado <code>true</code></li>
+</ul>
+<p>Los surveys convierten un job template genérico en una interfaz de autoservicio. Un miembro del equipo que no conoce Ansible puede desplegar un servidor web llenando un formulario. El survey mapea sus respuestas a extra variables que el playbook consume.</p>
+<div class="admonition tip">
+<p class="admonition-title">Las variables del survey se mapean a extra vars</p>
+<p>Las respuestas del survey se inyectan como extra variables. Si tu playbook usa <code>webserver_port</code>, crea una pregunta del survey con el nombre de variable <code>webserver_port</code>. El código del playbook no cambia en absoluto.</p>
+</div>
+<h3 id="lanzamiento-y-monitoreo">Lanzamiento y Monitoreo</h3>
+<p>Después de crear un job template, puedes:</p>
+<ul>
+<li><strong>Lanzarlo</strong> inmediatamente desde la interfaz o vía la API</li>
+<li><strong>Programarlo</strong> para ejecutarse en horarios específicos (diario, semanal, con una expresión cron)</li>
+<li><strong>Monitorear</strong> trabajos en ejecución en tiempo real; la salida se transmite en vivo, igual que ver un terminal</li>
+<li><strong>Revisar</strong> trabajos completados: cada ejecución se almacena con su salida completa, hora de inicio/fin y estado</li>
+</ul>
+<p>La vista de detalle del trabajo muestra la misma salida que verías de <code>ansible-playbook</code> en la línea de comandos, más metadatos sobre el execution environment, las credenciales usadas y qué usuario disparó la ejecución.</p>
+<h2 id="workflows">Workflows</h2>
+<p>Un <strong>Workflow</strong> encadena múltiples job templates en un pipeline de automatización de múltiples pasos. Cada nodo en un workflow puede:</p>
+<ul>
+<li>Ejecutar un <strong>Job Template</strong></li>
+<li>Ejecutar otro <strong>Workflow</strong> (workflows anidados)</li>
+<li>Ejecutar una <strong>Sincronización de Proyecto</strong></li>
+<li>Ejecutar una <strong>Sincronización de Inventory Source</strong></li>
+<li>Ejecutar un nodo de <strong>Aprobación</strong> (pausar y esperar a que un humano apruebe antes de continuar)</li>
+</ul>
+<p>Los nodos se conectan con tres tipos de aristas:</p>
+<table>
+<thead>
+<tr>
+<th>Tipo de Arista</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>On Success</strong> (verde)</td>
+<td>Ejecutar el siguiente nodo solo si este tuvo éxito</td>
+</tr>
+<tr>
+<td><strong>On Failure</strong> (rojo)</td>
+<td>Ejecutar el siguiente nodo solo si este falló</td>
+</tr>
+<tr>
+<td><strong>Always</strong> (azul)</td>
+<td>Ejecutar el siguiente nodo sin importar el resultado de este</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ejemplo-workflow-de-despliegue-de-parasol-tech">Ejemplo: Workflow de Despliegue de Parasol Tech</h3>
+<p>La CoP diseña un workflow de despliegue que encadena la automatización de módulos anteriores:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>┌─────────────────┐   exito     ┌────────────────┐   exito     ┌──────────────────┐
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>│  Sincronizar    │────────────▶│  Desplegar     │────────────▶│  Verificar Salud │
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>│  Proyecto       │             │  Servidor Web  │             │  del Servicio    │
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>│  (verificar GPG)│             │                │             │                  │
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>└─────────────────┘             └────────────────┘             └──────────────────┘
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>        │                              │                              │
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>      fallo                          fallo                          fallo
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>        ▼                              ▼                              ▼
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>┌─────────────────┐             ┌────────────────┐             ┌──────────────────┐
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>│  Notificar:     │             │  Notificar:    │             │  Rollback        │
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>│  Contenido      │             │  Despliegue    │             │  Servidor Web    │
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>│  Manipulado     │             │  Fallido       │             │                  │
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>└─────────────────┘             └────────────────┘             └──────────────────┘
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>                                                                      │
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>                                                                   siempre
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>                                                                      ▼
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>                                                               ┌──────────────────┐
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>                                                               │  Notificar:      │
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>                                                               │  Rollback        │
+<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>                                                               │  Ejecutado       │
+<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>                                                               └──────────────────┘
+</code></pre></div>
+<p>Este workflow:</p>
+<ol>
+<li><strong>Sincroniza el Proyecto</strong> y verifica la firma GPG (Módulo 8). Si el contenido ha sido manipulado, el workflow se detiene y envía una notificación.</li>
+<li><strong>Despliega el servidor web</strong> usando el job template. Si el despliegue falla, se envía una notificación.</li>
+<li><strong>Verifica que el servicio</strong> esté saludable. Si la verificación de salud falla, dispara un rollback y luego notifica sin importar el resultado del rollback.</li>
+</ol>
+<p>Cada nodo en este workflow es un job template separado. El workflow los orquesta, maneja los fallos y asegura que las personas correctas sean notificadas. Esto es mucho más robusto que un script de shell que ejecuta tres comandos <code>ansible-playbook</code> en secuencia.</p>
+<h3 id="convergencia-y-ramificacion">Convergencia y Ramificación</h3>
+<p>Los workflows soportan más que cadenas lineales. Los nodos pueden ramificarse (un nodo dispara múltiples nodos en paralelo) y converger (múltiples nodos deben completarse antes de que el siguiente comience). Esto habilita patrones como:</p>
+<ul>
+<li>Ejecutar migración de base de datos y calentamiento de caché en paralelo, luego desplegar la aplicación después de que ambos tengan éxito</li>
+<li>Ejecutar el mismo playbook contra múltiples entornos en paralelo</li>
+<li>Agregar una puerta de aprobación antes del despliegue a producción</li>
+</ul>
+<h2 id="inventarios-y-credenciales">Inventarios y Credenciales</h2>
+<h3 id="inventarios-en-controller">Inventarios en Controller</h3>
+<p>Los inventarios de Controller cumplen el mismo propósito que los archivos de inventario del Módulo 3, pero con capacidades adicionales:</p>
+<ul>
+<li><strong>Hosts estáticos</strong>: agregar hosts y grupos directamente en la interfaz, equivalente a editar <code>hosts.yml</code></li>
+<li><strong>Inventory Sources</strong>: sincronizar hosts de sistemas externos automáticamente:<ul>
+<li><strong>SCM (Git)</strong>: obtener archivos de inventario de un repositorio (tu directorio estructurado <code>inventory/</code> funciona directamente)</li>
+<li><strong>Proveedores de nube</strong>: descubrir hosts de AWS, Azure, GCP, VMware, OpenStack</li>
+<li><strong>Scripts personalizados</strong>: ejecutar un script de inventario dinámico que retorna JSON</li>
+</ul>
+</li>
+<li><strong>Smart Inventories</strong>: crear grupos dinámicos basados en facts de hosts y filtros</li>
+</ul>
+<p>Para la CoP, el punto de partida más natural es un inventory source SCM que apunte al mismo repositorio Git que el Proyecto. Esto mantiene los archivos de inventario que el equipo ya escribió (en el Módulo 3) como la fuente de verdad, mientras los pone disponibles en Controller.</p>
+<h3 id="variables-en-controller">Variables en Controller</h3>
+<p>Las variables de inventario en Controller siguen las mismas reglas de precedencia que Ansible por CLI. Puedes definir variables a nivel de host, grupo o inventario. Estas se mapean directamente a lo que pondrías en <code>host_vars/</code> y <code>group_vars/</code> en tu directorio de inventario estructurado.</p>
+<div class="admonition warning">
+<p class="admonition-title">Una sola fuente de verdad</p>
+<p>Evita definir la misma variable tanto en tus archivos de inventario rastreados por Git como en la interfaz de Controller. Elige una ubicación y sé consistente. El enfoque recomendado es mantener las variables en Git (gestionadas por la CoP) y sincronizarlas a Controller vía el inventory source SCM.</p>
+</div>
+<h3 id="credenciales">Credenciales</h3>
+<p>Las credenciales son una de las funcionalidades más importantes de Controller. Almacenan secretos (claves SSH, contraseñas, tokens API, contraseñas de vault, credenciales de proveedores de nube) cifrados en la base de datos.</p>
+<p>Tipos de credenciales clave:</p>
+<table>
+<thead>
+<tr>
+<th>Tipo</th>
+<th>Propósito</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Machine</strong></td>
+<td>Claves SSH y contraseñas para conectarse a los hosts gestionados</td>
+</tr>
+<tr>
+<td><strong>Source Control</strong></td>
+<td>Credenciales Git para sincronizar Proyectos</td>
+</tr>
+<tr>
+<td><strong>Vault</strong></td>
+<td>Contraseñas de Ansible Vault para descifrar archivos cifrados</td>
+</tr>
+<tr>
+<td><strong>Container Registry</strong></td>
+<td>Credenciales para obtener imágenes EE de registros privados</td>
+</tr>
+<tr>
+<td><strong>GPG Public Key</strong></td>
+<td>Clave pública para verificación de firmas de contenido</td>
+</tr>
+<tr>
+<td><strong>Cloud</strong></td>
+<td>Credenciales de AWS, Azure, GCP, VMware para módulos de nube e inventario dinámico</td>
+</tr>
+</tbody>
+</table>
+<p>El beneficio crítico de seguridad: los usuarios pueden <em>usar</em> una credencial para ejecutar un trabajo sin ver nunca el valor del secreto. Un miembro junior del equipo puede desplegar en servidores de producción usando una clave SSH que no puede descargar, copiar ni ver. La credencial es inyectada en el EE en tiempo de ejecución por Controller.</p>
+<p>Este es un cambio fundamental respecto a Ansible por CLI, donde todos los que ejecutan playbooks necesitan acceso directo a claves SSH y contraseñas de vault en su máquina local.</p>
+<h2 id="rbac">RBAC</h2>
+<p>El Control de Acceso Basado en Roles (RBAC) en Controller determina quién puede hacer qué. Se construye sobre tres conceptos:</p>
+<h3 id="organizaciones">Organizaciones</h3>
+<p>Una <strong>Organización</strong> es la agrupación de nivel superior. Contiene usuarios, equipos, proyectos, inventarios y credenciales. Una sola instalación de AAP puede alojar múltiples organizaciones.</p>
+<p>Para Parasol Tech, podría haber una organización por cada división:</p>
+<ul>
+<li><code>Parasol Tech - Plataforma</code> (la organización de la CoP)</li>
+<li><code>Parasol Tech - Base de Datos</code> (el equipo de base de datos)</li>
+<li><code>Parasol Tech - Redes</code> (el equipo de redes)</li>
+</ul>
+<h3 id="equipos">Equipos</h3>
+<p>Un <strong>Equipo</strong> es un grupo de usuarios dentro de una organización. Los equipos son la forma de asignar permisos a escala: en lugar de dar permisos a cada usuario individualmente, asignas permisos a un equipo y agregas usuarios a ese equipo.</p>
+<p>La CoP podría crear equipos como:</p>
+<ul>
+<li><code>Admins de Plataforma</code>: acceso completo a todos los recursos</li>
+<li><code>Desarrolladores de Plataforma</code>: pueden crear y editar job templates, pero no pueden modificar credenciales ni inventarios</li>
+<li><code>Operadores de Plataforma</code>: pueden lanzar job templates y ver resultados, pero no pueden editarlos</li>
+</ul>
+<h3 id="roles-y-permisos">Roles y Permisos</h3>
+<p>Controller tiene un modelo de permisos granular. Para cada tipo de recurso (Job Template, Inventory, Credential, Project, etc.), existen varios niveles de permiso:</p>
+<table>
+<thead>
+<tr>
+<th>Rol</th>
+<th>Capacidades</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Admin</strong></td>
+<td>Control total: crear, editar, eliminar, ejecutar y otorgar permisos a otros</td>
+</tr>
+<tr>
+<td><strong>Use</strong></td>
+<td>Puede usar el recurso (ej., adjuntar una credencial a un job template) pero no puede editarlo</td>
+</tr>
+<tr>
+<td><strong>Execute</strong></td>
+<td>Puede lanzar un job template o workflow pero no puede editar su configuración</td>
+</tr>
+<tr>
+<td><strong>Read</strong></td>
+<td>Puede ver el recurso pero no puede modificarlo ni ejecutarlo</td>
+</tr>
+<tr>
+<td><strong>Approval</strong></td>
+<td>Puede aprobar o denegar nodos de aprobación de workflows</td>
+</tr>
+</tbody>
+</table>
+<p>Estos roles se asignan por recurso. Esto significa que puedes dar a un equipo permiso <code>Execute</code> en el job template <code>Deploy Web Server</code>, permiso <code>Read</code> en el inventario de producción, y ningún acceso a las credenciales usadas por ese job template. El equipo puede lanzar el despliegue pero no puede ver las claves SSH, editar el inventario ni modificar la configuración del job template.</p>
+<h3 id="diseno-de-rbac-para-la-cop">Diseño de RBAC para la CoP</h3>
+<p>Una configuración práctica de RBAC para Parasol Tech:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Organizacion: Parasol Tech - Plataforma
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>│
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>├── Equipo: Admins de Plataforma
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>│   ├── Admin en todos los Proyectos
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>│   ├── Admin en todos los Inventarios
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>│   ├── Admin en todas las Credenciales
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>│   └── Admin en todos los Job Templates
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>│
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>├── Equipo: Desarrolladores de Plataforma
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>│   ├── Admin en Job Templates (pueden crear/editar)
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>│   ├── Use en Credenciales (pueden adjuntar a JTs)
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>│   ├── Use en Inventarios (pueden adjuntar a JTs)
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>│   └── Read en Proyectos
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>│
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>└── Equipo: Operadores de Plataforma
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>    ├── Execute en Job Templates especificos
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>    ├── Read en Inventarios
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>    └── Approval en Workflow de Despliegue
+</code></pre></div>
+<p>Con esta configuración:</p>
+<ul>
+<li><strong>Admins</strong> gestionan la infraestructura: credenciales, inventarios, proyectos y configuraciones de EE</li>
+<li><strong>Desarrolladores</strong> crean y prueban job templates usando credenciales e inventarios existentes</li>
+<li><strong>Operadores</strong> ejecutan job templates aprobados y aprueban workflows de despliegue sin ninguna capacidad de modificar la automatización o acceder a secretos</li>
+</ul>
+<p>Esta es la gobernanza que la CoP necesitaba cuando todos ejecutaban <code>ansible-playbook</code> desde su propio portátil.</p>
+<h2 id="integracion-de-ee">Integración de EE</h2>
+<p>El Execution Environment construido en el Módulo 8 se integra directamente con Controller. En lugar de ejecutar playbooks con el Python que esté instalado en un servidor, Controller ejecuta cada trabajo dentro de un contenedor EE.</p>
+<h3 id="agregando-ees-a-controller">Agregando EEs a Controller</h3>
+<p>Controller necesita saber de dónde obtener las imágenes EE. Hay dos enfoques:</p>
+<p><strong>Desde un registro de contenedores (recomendado para producción):</strong></p>
+<ol>
+<li>Sube la imagen EE a un registro de contenedores (Private Automation Hub, Quay.io, o cualquier registro OCI), como se mostró en el Módulo 8</li>
+<li>En Controller, crea un recurso de <strong>Execution Environment</strong> apuntando a la URL de la imagen (ej., <code>hub.parasol.example/ee-images/parasoltech-ee:1.0.0</code>)</li>
+<li>Si el registro requiere autenticación, crea una credencial de <strong>Container Registry</strong> y adjúntala al EE</li>
+</ol>
+<p><strong>Desde una imagen local (para desarrollo/pruebas):</strong></p>
+<ol>
+<li>Construye la imagen en el host de Controller con <code>ansible-builder</code></li>
+<li>Referencia el nombre de la imagen local en la configuración de EE de Controller</li>
+</ol>
+<h3 id="asignando-ees-a-job-templates">Asignando EEs a Job Templates</h3>
+<p>Cada job template puede especificar qué EE usar. Cuando el trabajo se lanza, Controller obtiene la imagen EE (si no está en caché) y ejecuta el playbook dentro de ella.</p>
+<p>Esto completa la historia de portabilidad del Módulo 8:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>Modulo 8:  Construir EE → Probar localmente con ansible-navigator
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>Modulo 9:  Subir EE al registro → Controller lo obtiene y usa para cada trabajo
+</code></pre></div>
+<p>Cada ejecución, ya sea disparada por un usuario, un horario, un workflow o una llamada API, usa la misma imagen EE con las mismas dependencias. El problema de "funciona en mi máquina" se elimina a nivel de plataforma, no solo a nivel de desarrollador individual.</p>
+<h3 id="ciclo-de-vida-del-ee">Ciclo de Vida del EE</h3>
+<p>A medida que la CoP actualiza su colección y dependencias, el ciclo de vida del EE se ve así:</p>
+<ol>
+<li>El desarrollador actualiza <code>execution-environment.yml</code> (agregar una nueva colección, actualizar una dependencia de Python)</li>
+<li>CI construye una nueva imagen EE con una nueva etiqueta de versión (ej., <code>parasoltech-ee:1.1.0</code>)</li>
+<li>La imagen se sube al registro de contenedores</li>
+<li>Un admin actualiza el recurso EE de Controller para apuntar a la nueva etiqueta</li>
+<li>Todos los job templates que usan ese EE ahora se ejecutan con las dependencias actualizadas</li>
+</ol>
+<p>Este es un proceso controlado y versionado. El EE en producción no cambia hasta que un admin deliberadamente lo actualiza. El rollback es tan simple como apuntar de vuelta a la etiqueta anterior.</p>
+<h2 id="sincronizacion-de-proyectos-y-verificacion-de-contenido">Sincronización de Proyectos y Verificación de Contenido</h2>
+<h3 id="sincronizacion-de-proyectos">Sincronización de Proyectos</h3>
+<p>Cuando Controller sincroniza un Proyecto, clona (u obtiene) el repositorio Git y pone su contenido disponible. Puedes disparar una sincronización manualmente, programarla o configurar webhooks para que un push a Git dispare automáticamente una sincronización.</p>
+<p>El proceso de sincronización:</p>
+<ol>
+<li>Controller se conecta al repositorio Git usando la credencial de Source Control</li>
+<li>Clona el repositorio (u obtiene actualizaciones de un clon existente)</li>
+<li>Escanea el repositorio en busca de archivos de playbook y los pone disponibles para Job Templates</li>
+<li>Si la verificación de contenido está configurada, ejecuta la verificación de firma</li>
+</ol>
+<h3 id="verificacion-de-contenido-con-gpg">Verificación de Contenido con GPG</h3>
+<p>Aquí es donde la firma de contenido del Módulo 8 cierra el ciclo. Cuando un Proyecto tiene habilitada la verificación de contenido GPG:</p>
+<ol>
+<li>Sube la clave pública GPG a Controller como una credencial de <strong>GPG Public Key</strong></li>
+<li>Configura el Proyecto para usar esta credencial para la verificación de contenido</li>
+<li>En cada sincronización, Controller ejecuta el equivalente de <code>ansible-sign project gpg-verify .</code> sobre el contenido del repositorio</li>
+</ol>
+<p>Si la verificación tiene éxito, el Proyecto se sincroniza normalmente y su contenido está disponible. Si la verificación falla (porque un archivo fue modificado, agregado o eliminado después de la firma), la sincronización falla. Ningún job template puede ejecutar el contenido no verificado.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>Cadena de suministro completa:
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>Desarrollador → Revisa codigo → Firma con ansible-sign → Push a Git
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>                                                              │
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>Controller ← Sincroniza Proyecto ← Verifica firma GPG ───────┘
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>     │
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>     └── Ejecuta playbook en EE ← Obtiene EE de Hub
+</code></pre></div>
+<p>Cada eslabón en esta cadena está verificado:</p>
+<ul>
+<li>El <strong>contenido</strong> está firmado y verificado (ansible-sign + GPG)</li>
+<li>El <strong>runtime</strong> está empaquetado y versionado (EE + registro de contenedores)</li>
+<li>El <strong>acceso</strong> está gobernado (RBAC + credenciales)</li>
+<li>La <strong>ejecución</strong> está auditada (logs de trabajos + notificaciones)</li>
+</ul>
+<p>Esta es la práctica madura de automatización que la CoP se propuso construir.</p>
+<h2 id="ejercicios">Ejercicios</h2>
+<h3 id="ejercicio-1-explorar-la-interfaz-de-aap">Ejercicio 1: Explorar la Interfaz de AAP</h3>
+<p>Inicia sesión en tu sandbox de AAP y explora las áreas principales de navegación. Identifica dónde vive cada concepto de este módulo en la interfaz:</p>
+<ul>
+<li>Organizaciones</li>
+<li>Proyectos</li>
+<li>Inventarios</li>
+<li>Credenciales</li>
+<li>Job Templates</li>
+<li>Workflows</li>
+<li>Execution Environments</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Usa la documentación</p>
+<p>La interfaz de AAP puede variar ligeramente entre versiones. Consulta la <a href="https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/">documentación de AAP</a> para instrucciones de navegación específicas de cada versión.</p>
+</div>
+<h3 id="ejercicio-2-crear-un-proyecto">Ejercicio 2: Crear un Proyecto</h3>
+<p>Crea un Proyecto en Controller:</p>
+<ol>
+<li>Navega a la sección de Proyectos</li>
+<li>
+<p>Crea un nuevo Proyecto con:</p>
+<ul>
+<li><strong>Nombre</strong>: <code>Parasol Infrastructure</code></li>
+<li><strong>Organización</strong>: tu organización del sandbox</li>
+<li><strong>Tipo de Control de Versiones</strong>: Git</li>
+<li><strong>URL de Control de Versiones</strong>: la URL de tu repositorio del curso</li>
+</ul>
+</li>
+<li>
+<p>Sincroniza el Proyecto y verifica que tenga éxito</p>
+</li>
+</ol>
+<p>Si configuraste la firma de contenido en el Módulo 8 y tienes una clave pública GPG, configura el Proyecto para verificar firmas durante la sincronización.</p>
+<h3 id="ejercicio-3-crear-un-inventario">Ejercicio 3: Crear un Inventario</h3>
+<p>Crea un Inventario en Controller:</p>
+<ol>
+<li>Navega a la sección de Inventarios</li>
+<li>Crea un nuevo Inventario:<ul>
+<li><strong>Nombre</strong>: <code>Parasol Dev Environment</code></li>
+<li><strong>Organización</strong>: tu organización del sandbox</li>
+</ul>
+</li>
+<li>Agrega un host manualmente (usa <code>localhost</code> con <code>ansible_connection: local</code> para pruebas en el sandbox)</li>
+<li>Crea un grupo llamado <code>webservers</code> y agrega el host a él</li>
+</ol>
+<h3 id="ejercicio-4-crear-y-lanzar-un-job-template">Ejercicio 4: Crear y Lanzar un Job Template</h3>
+<p>Crea un Job Template que una el Proyecto y el Inventario:</p>
+<ol>
+<li>Navega a Job Templates</li>
+<li>
+<p>Crea un nuevo Job Template:</p>
+<ul>
+<li><strong>Nombre</strong>: <code>Deploy Web Server</code></li>
+<li><strong>Proyecto</strong>: <code>Parasol Infrastructure</code></li>
+<li><strong>Playbook</strong>: selecciona un playbook del Proyecto sincronizado</li>
+<li><strong>Inventario</strong>: <code>Parasol Dev Environment</code></li>
+<li><strong>Credenciales</strong>: selecciona o crea una credencial apropiada</li>
+</ul>
+</li>
+<li>
+<p>Lanza el job template</p>
+</li>
+<li>Observa la salida en tiempo real</li>
+<li>Después de completarse, revisa los detalles del trabajo: observa la hora de inicio, hora de fin, usuario y estado</li>
+</ol>
+<h3 id="ejercicio-5-construir-un-workflow-simple">Ejercicio 5: Construir un Workflow Simple</h3>
+<p>Crea un Workflow que encadene dos job templates:</p>
+<ol>
+<li>Navega a Workflow Templates</li>
+<li>Crea un nuevo Workflow Template:<ul>
+<li><strong>Nombre</strong>: <code>Deploy and Verify</code></li>
+<li><strong>Organización</strong>: tu organización del sandbox</li>
+</ul>
+</li>
+<li>Abre el visualizador de workflows</li>
+<li>Agrega el job template <code>Deploy Web Server</code> como el primer nodo</li>
+<li>Agrega un segundo nodo (un playbook de verificación simple) conectado con una arista "On Success"</li>
+<li>Guarda y lanza el workflow</li>
+<li>Observa ambos nodos ejecutarse en secuencia</li>
+</ol>
+<h3 id="ejercicio-6-configurar-rbac">Ejercicio 6: Configurar RBAC</h3>
+<p>Explora el modelo de RBAC:</p>
+<ol>
+<li>Navega a Equipos y crea un equipo llamado <code>Operators</code></li>
+<li>Navega a Usuarios y crea un usuario de prueba o toma nota de uno existente</li>
+<li>Agrega el usuario al equipo <code>Operators</code></li>
+<li>En el job template <code>Deploy Web Server</code>, otorga al equipo <code>Operators</code> permiso <strong>Execute</strong></li>
+<li>Verifica que el equipo puede lanzar el job template pero no puede editarlo</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Limitaciones del sandbox</p>
+<p>Algunos entornos sandbox pueden no soportar todas las operaciones de RBAC. Si encuentras restricciones de permisos, estudia los conceptos de RBAC y el modelo de permisos en la documentación.</p>
+</div>
+<h2 id="resumen">Resumen</h2>
+<p>En este módulo:</p>
+<ul>
+<li>Aprendiste que Ansible Automation Platform proporciona un plano de control centralizado con tres componentes: <strong>Controller</strong> para orquestación y gobernanza, <strong>Automation Hub</strong> para distribución de contenido, y <strong>Event-Driven Ansible</strong> para automatización basada en eventos</li>
+<li>Mapeaste cada concepto de CLI a su equivalente en Controller: los playbooks se convierten en Job Templates, los archivos de inventario en Inventarios con Sources, las claves SSH en Credenciales, y los scripts en Schedules</li>
+<li>Creaste Job Templates que agrupan un playbook, inventario, credenciales, EE y variables en una unidad de trabajo reutilizable y lanzable</li>
+<li>Construiste Workflows que encadenan job templates con aristas de éxito, fallo y siempre para crear pipelines de automatización robustos de múltiples pasos con puertas de aprobación</li>
+<li>Configuraste Inventarios desde hosts estáticos y fuentes SCM, y usaste Credenciales para almacenar e inyectar secretos de forma segura sin exponerlos a los usuarios</li>
+<li>Estableciste RBAC con Organizaciones, Equipos y roles granulares por recurso (Admin, Use, Execute, Read) para gobernar quién puede hacer qué</li>
+<li>Integraste el Execution Environment del Módulo 8 con Controller, asegurando que cada trabajo use el mismo runtime versionado y probado</li>
+<li>Completaste el flujo de seguridad de la cadena de suministro: los desarrolladores firman contenido con <code>ansible-sign</code>, hacen push a Git, y Controller verifica la firma GPG en cada sincronización de Proyecto antes de permitir la ejecución</li>
+</ul>
+<p>La CoP en Parasol Tech ahora tiene una práctica de automatización completa. El contenido se desarrolla colaborativamente (Módulo 6), se prueba rigurosamente (Módulo 7), se empaqueta reproduciblemente (Módulo 8) y se gestiona a través de una plataforma gobernada con RBAC, registro de auditoría y orquestación de workflows (Módulo 9). El viaje desde Lionel ejecutando comandos ad-hoc en un portátil hasta una práctica empresarial de automatización completamente gobernada está completo.</p>
+<h2 id="conclusion-del-curso">Conclusión del Curso</h2>
+<p>Lionel se reclina y mira el dashboard. El workflow de despliegue se ejecutó durante la noche. Proyecto sincronizado, firmas GPG verificadas, servidores web desplegados en tres entornos, verificaciones de salud pasadas, notificaciones enviadas al canal del equipo. Nadie tuvo que conectarse por SSH a nada. Nadie escribió <code>ansible-playbook</code> a las 2 AM.</p>
+<p>Es difícil creer que esto comenzó con un solo comando ad-hoc en un portátil.</p>
+<p><strong>El viaje:</strong></p>
+<ul>
+<li><strong>Módulo 1</strong> -- Lionel descubrió Ansible y ejecutó el primer comando ad-hoc. Un ingeniero, una máquina, un problema.</li>
+<li><strong>Módulo 2</strong> -- Los comandos ad-hoc se convirtieron en playbooks. La automatización se volvió repetible.</li>
+<li><strong>Módulo 3</strong> -- Los playbooks crecieron más allá de localhost. Los inventarios estructurados organizaron hosts a través de los entornos.</li>
+<li><strong>Módulo 4</strong> -- Las variables y los facts hicieron los playbooks flexibles. La misma automatización se adaptó a diferentes entornos.</li>
+<li><strong>Módulo 5</strong> -- Las plantillas y los handlers convirtieron los playbooks en herramientas de gestión de configuración. Los servicios se reiniciaban cuando las configuraciones cambiaban.</li>
+<li><strong>Módulo 6</strong> -- La CoP se formó. Los roles y las colecciones convirtieron playbooks individuales en componentes reutilizables y compartibles. <code>ansible-creator</code> generó la colección. <code>ade</code> gestionó el entorno de desarrollo.</li>
+<li><strong>Módulo 7</strong> -- Las puertas de calidad se levantaron. <code>ansible-lint</code> detectó problemas de estilo, Molecule probó los roles de extremo a extremo, pytest validó la lógica, y tox-ansible orquestó la matriz. Ningún código no probado llegó a producción.</li>
+<li><strong>Módulo 8</strong> -- Los Execution Environments eliminaron "funciona en mi máquina." La firma de contenido con <code>ansible-sign</code> demostró que lo que se ejecuta en producción es lo que la CoP revisó. La cadena de suministro quedó asegurada.</li>
+<li><strong>Módulo 9</strong> -- Controller trajo gobernanza. Job templates, workflows, RBAC, registro de auditoría y gestión centralizada de credenciales reemplazaron el caos de todos ejecutando playbooks desde su propio portátil.</li>
+</ul>
+<p>Lo que comenzó como una persona resolviendo un problema es ahora una práctica empresarial de automatización con pruebas, empaquetado, firma y gobernanza.</p>
+<h3 id="que-viene-despues">Qué Viene Después</h3>
+<p>El viaje principal está completo, pero hay más por explorar:</p>
+<p><strong>Tracks de dominio (Módulos 10-11)</strong></p>
+<ul>
+<li><a href="10-linux-systems.md">Módulo 10 -- Sistemas Linux</a>: Aplica todo lo que has aprendido a la administración de sistemas Linux: gestión de usuarios, hardening, parcheado y cumplimiento a escala</li>
+<li><a href="11-network-automation.md">Módulo 11 -- Automatización de Redes</a>: Extiende Ansible a dispositivos de red con <code>network_cli</code>, módulos de recursos e integración con NetBox como fuente de verdad</li>
+</ul>
+<p>Estos tracks son opcionales y autocontenidos. No introducen nuevos conceptos fundamentales; aplican las habilidades de los módulos 1-9 a dominios específicos.</p>
+<p><strong>Comunidad y certificación</strong></p>
+<ul>
+<li><strong>Contribuir a Ansible</strong>: La comunidad de Ansible prospera con las contribuciones. Comienza mejorando la documentación, enviando reportes de errores o compartiendo roles en <a href="https://galaxy.ansible.com/">Ansible Galaxy</a>. Únete a la comunidad en <a href="https://forum.ansible.com/">forum.ansible.com</a>.</li>
+<li><strong>Certificación de Red Hat</strong>: Valida tus habilidades con el examen <a href="https://www.redhat.com/en/services/certification/rhce">Red Hat Certified Engineer (RHCE)</a>, que incluye automatización con Ansible, o el examen <a href="https://www.redhat.com/en/services/certification/red-hat-certified-specialist-developing-automation-ansible-automation-platform">Red Hat Certified Specialist in Developing Automation with Ansible Automation Platform</a>.</li>
+<li><strong>Ansible Development Tools</strong>: Continúa explorando <code>adt</code> y sus componentes. Las herramientas evolucionan rápidamente; consulta la <a href="https://ansible.readthedocs.io/projects/dev-tools/">documentación de Ansible Development Tools</a> para las últimas funcionalidades.</li>
+</ul>
+<p><strong>Sigue practicando</strong></p>
+<p>La mejor forma de aprender automatización es automatizar. Encuentra un proceso manual en tu organización, descompónlo en la jerarquía de arquitectura (landscape, tipo, función, componente), escribe un rol, pruébalo con Molecule, empaquétalo como una colección y despliégalo a través de Controller. Luego hazlo de nuevo con el siguiente proceso.</p>
+<p>El Zen de Ansible lo dice bien: <em>"Ansible no es solo una herramienta -- es una práctica."</em> Este curso te dio las herramientas y los patrones. La práctica es tuya para construir.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

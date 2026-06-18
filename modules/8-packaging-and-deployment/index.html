@@ -1,0 +1,2283 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A progressive course teaching Ansible from first principles to production-grade automation">
+      
+      
+      
+        <link rel="canonical" href="https://hero.ansible.ar/modules/8-packaging-and-deployment/">
+      
+      
+        <link rel="prev" href="../7-testing-your-automation/">
+      
+      
+        <link rel="next" href="../9-scaling-with-aap/">
+      
+      
+        
+          <link rel="alternate" href="./" hreflang="en">
+        
+          <link rel="alternate" href="../../es/modules/8-packaging-and-deployment/" hreflang="es">
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>8. Packaging and Deployment - Ansible Zero to Hero</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#module-8-packaging-and-deployment" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Ansible Zero to Hero" class="md-header__button md-logo" aria-label="Ansible Zero to Hero" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Ansible Zero to Hero
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              8. Packaging and Deployment
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Select language">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="../../es/modules/8-packaging-and-deployment/" hreflang="es" class="md-select__link">
+              Español
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/leogallego/ansible-zero-to-hero" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    leogallego/ansible-zero-to-hero
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../1-introduction/" class="md-tabs__link">
+          
+  
+  
+  Modules
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Ansible Zero to Hero" class="md-nav__button md-logo" aria-label="Ansible Zero to Hero" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Ansible Zero to Hero
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/leogallego/ansible-zero-to-hero" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    leogallego/ansible-zero-to-hero
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Modules
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../2-your-first-playbook/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Your First Playbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../3-managing-inventory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Managing Inventory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../4-variables-and-facts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Variables and Facts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../5-templates-and-handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Templates and Handlers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../6-roles-and-collections/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Roles and Collections
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../7-testing-your-automation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Testing Your Automation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Packaging and Deployment
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Packaging and Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning Objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-story-so-far" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Story So Far
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#execution-environments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Execution Environments
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Execution Environments">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-ees-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How EEs Work
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-ee-ecosystem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The EE Ecosystem
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#defining-an-ee" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Defining an EE
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Defining an EE">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-version-3-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Version 3 Schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#schema-sections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Schema Sections
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Schema Sections">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#images" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        images
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dependencies
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optional-sections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optional Sections
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-with-ansible-builder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building with ansible-builder
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Building with ansible-builder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-preview-the-containerfile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Preview the Containerfile
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-build-the-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Build the Image
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#working-with-local-collections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Working with Local Collections
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-your-ee" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing Your EE
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing Your EE">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verify-with-podman" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verify with podman
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-with-ansible-navigator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test with ansible-navigator
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#content-signing-with-ansible-sign" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Content Signing with ansible-sign
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Content Signing with ansible-sign">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gpg-key-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GPG Key Setup
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-manifestin-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The MANIFEST.in File
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#signing-and-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Signing and Verification
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#supply-chain-security-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supply Chain Security Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#publishing-to-automation-hub" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Publishing to Automation Hub
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Publishing to Automation Hub">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#push-to-a-registry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Push to a Registry
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#publish-the-collection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Publish the Collection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-complete-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Complete Lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exercises">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercise-1-build-an-execution-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 1: Build an Execution Environment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-2-test-the-ee" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 2: Test the EE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-3-add-a-python-dependency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 3: Add a Python Dependency
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-4-sign-a-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 4: Sign a Project
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-5-run-a-playbook-in-the-ee" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 5: Run a Playbook in the EE
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next Steps
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../9-scaling-with-aap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Scaling with AAP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning Objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-story-so-far" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Story So Far
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#execution-environments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Execution Environments
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Execution Environments">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-ees-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How EEs Work
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-ee-ecosystem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The EE Ecosystem
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#defining-an-ee" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Defining an EE
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Defining an EE">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-version-3-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Version 3 Schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#schema-sections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Schema Sections
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Schema Sections">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#images" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        images
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dependencies
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optional-sections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optional Sections
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-with-ansible-builder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building with ansible-builder
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Building with ansible-builder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-preview-the-containerfile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Preview the Containerfile
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-build-the-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Build the Image
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#working-with-local-collections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Working with Local Collections
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-your-ee" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing Your EE
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing Your EE">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#verify-with-podman" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verify with podman
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-with-ansible-navigator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test with ansible-navigator
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#content-signing-with-ansible-sign" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Content Signing with ansible-sign
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Content Signing with ansible-sign">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gpg-key-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GPG Key Setup
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-manifestin-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The MANIFEST.in File
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#signing-and-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Signing and Verification
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#supply-chain-security-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supply Chain Security Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#publishing-to-automation-hub" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Publishing to Automation Hub
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Publishing to Automation Hub">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#push-to-a-registry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Push to a Registry
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#publish-the-collection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Publish the Collection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-complete-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Complete Lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exercises">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercise-1-build-an-execution-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 1: Build an Execution Environment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-2-test-the-ee" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 2: Test the EE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-3-add-a-python-dependency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 3: Add a Python Dependency
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-4-sign-a-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 4: Sign a Project
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-5-run-a-playbook-in-the-ee" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 5: Run a Playbook in the EE
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next Steps
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="module-8-packaging-and-deployment">Module 8: Packaging and Deployment</h1>
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>By the end of this module you will be able to:</p>
+<ul>
+<li>Explain what Execution Environments are and why they matter</li>
+<li>Define an EE using <code>execution-environment.yml</code> (version 3)</li>
+<li>Build an EE with <code>ansible-builder</code> and test it with <code>ansible-navigator</code></li>
+<li>Sign content with <code>ansible-sign</code> using GPG keys</li>
+<li>Describe the supply chain security workflow (sign → push → verify)</li>
+</ul>
+<h2 id="the-story-so-far">The Story So Far</h2>
+<p>The CoP at Parasol Tech has built a tested, linted collection, <code>parasoltech.infrastructure</code>, with a <code>webserver</code> role, Molecule integration tests, pytest unit tests, and tox-ansible orchestration. Every pull request passes quality gates before it can be merged.</p>
+<p>But then the trouble starts. A new team member runs the webserver playbook on their laptop and gets a different result. Their local Python environment is missing a dependency. Another team member works on a different OS and gets a version conflict in <code>ansible.posix</code>. The staging server has an older version of <code>ansible-core</code> than what the team tested with.</p>
+<p>"We tested this," Lionel says. "It passed everything."</p>
+<p>Jordan sighs. "It passed on <em>our</em> machines. The staging server has a completely different Python environment."</p>
+<p>The CoP identifies two problems:</p>
+<ol>
+<li><strong>Portability</strong>: the automation works only when the execution environment matches the one the developer tested against. Every machine has different Python packages, system libraries, and Ansible versions.</li>
+<li><strong>Integrity</strong>: anyone with push access to the Git repository can modify playbooks. There is no way to prove that the content running in production is the same content the CoP reviewed and approved.</li>
+</ol>
+<p>The solutions: <strong>Execution Environments</strong> for portability, and <strong>content signing</strong> for integrity.</p>
+<h2 id="execution-environments">Execution Environments</h2>
+<p>An Execution Environment (EE) is a container image that bundles everything Ansible needs to run: <code>ansible-core</code>, Python dependencies, system packages, and collections. When you run a playbook inside an EE, the execution uses the container's environment, not whatever happens to be installed on the host machine.</p>
+<p>This solves the "works on my machine" problem. The container image is immutable and versioned. If it works in development, it works in staging. If it works in staging, it works in production. Every execution uses the exact same dependencies.</p>
+<h3 id="how-ees-work">How EEs Work</h3>
+<p>Without an EE, Ansible runs on the control node using whatever Python interpreter and packages are installed locally:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Control node (your laptop)
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├── ansible-core 2.17
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├── Python 3.11
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>├── ansible.posix 1.5.4
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>├── Missing: some-python-lib  ← breaks at runtime
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>└── playbook.yml
+</code></pre></div>
+<p>With an EE, Ansible runs inside a container that has everything pre-installed:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Container image (EE)
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>├── ansible-core 2.19
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>├── Python 3.12
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>├── ansible.posix 2.1.0
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>├── some-python-lib 3.0
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>└── (all dependencies locked)
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>Control node
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>├── podman (or docker)
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>├── ansible-navigator
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>└── playbook.yml  ← runs INSIDE the container
+</code></pre></div>
+<p>The playbook file stays on the control node. <code>ansible-navigator</code> mounts it into the container at runtime. The execution happens inside the container, using the container's Python, modules, and libraries.</p>
+<h3 id="the-ee-ecosystem">The EE Ecosystem</h3>
+<p>Three tools work together:</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>ansible-builder</code></strong></td>
+<td>Builds EE container images from a definition file</td>
+</tr>
+<tr>
+<td><strong><code>ansible-navigator</code></strong></td>
+<td>Runs playbooks inside EE containers</td>
+</tr>
+<tr>
+<td><strong><code>podman</code></strong> (or <code>docker</code>)</td>
+<td>The container runtime that executes the image</td>
+</tr>
+</tbody>
+</table>
+<p>You already used <code>ansible-navigator</code> in Module 2. Now you will learn to build the images it runs inside.</p>
+<h2 id="defining-an-ee">Defining an EE</h2>
+<p>The EE definition lives in <code>execution-environment.yml</code>. This file tells <code>ansible-builder</code> what to put inside the container image.</p>
+<p>The <code>parasoltech-ee</code> definition for the CoP's collection lives at <code>ansible/execution-environments/parasoltech-ee/execution-environment.yml</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nn">---</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="nt">images</span><span class="p">:</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span><span class="nt">base_image</span><span class="p">:</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ghcr.io/ansible/community-ee-base:latest</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="nt">dependencies</span><span class="p">:</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">  </span><span class="nt">galaxy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">requirements.yml</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">  </span><span class="nt">python</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">  </span><span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+</code></pre></div>
+<p>And the companion <code>requirements.yml</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nn">---</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nt">collections</span><span class="p">:</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">parasoltech.infrastructure</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ansible.posix</span>
+</code></pre></div>
+<h3 id="the-version-3-schema">The Version 3 Schema</h3>
+<p>The <code>version: 3</code> schema is the current standard for EE definitions. It replaced version 1 and version 2, which had a different structure. Always use version 3 for new EE projects.</p>
+<h3 id="schema-sections">Schema Sections</h3>
+<h4 id="images"><code>images</code></h4>
+<p>The <code>base_image</code> specifies the starting container image. <code>ansible-builder</code> adds your dependencies on top of this base.</p>
+<p>Common base images:</p>
+<table>
+<thead>
+<tr>
+<th>Image</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ghcr.io/ansible/community-ee-base:latest</code></td>
+<td><code>ansible-core</code>, Python, and common dependencies for building custom EEs</td>
+</tr>
+<tr>
+<td><code>ghcr.io/ansible/community-ee-minimal:latest</code></td>
+<td>Minimal runtime with <code>ansible-core</code> only, for lightweight production EEs</td>
+</tr>
+<tr>
+<td><code>registry.redhat.io/ansible-automation-platform/ee-minimal-rhel9</code></td>
+<td>Red Hat supported minimal EE for production</td>
+</tr>
+<tr>
+<td><code>registry.redhat.io/ansible-automation-platform/ee-supported-rhel9</code></td>
+<td>Red Hat supported EE with certified collections</td>
+</tr>
+</tbody>
+</table>
+<p>For development, <code>community-ee-base</code> is a good starting point because it includes common dependencies. For production, use a minimal base image to reduce attack surface and image size.</p>
+<h4 id="dependencies"><code>dependencies</code></h4>
+<p>Three types of dependencies can be declared:</p>
+<ul>
+<li><strong><code>galaxy</code></strong>: Points to a <code>requirements.yml</code> file listing Ansible collections. These are installed with <code>ansible-galaxy collection install</code> during the build.</li>
+<li><strong><code>python</code></strong>: A list of Python packages (or a path to a <code>requirements.txt</code> file). These are installed with <code>pip</code> during the build.</li>
+<li><strong><code>system</code></strong>: A list of system packages (or a path to a <code>bindep.txt</code> file). These are installed with the system package manager (<code>dnf</code>, <code>apt</code>, etc.) during the build.</li>
+</ul>
+<p>The separation is important. Collections go in <code>galaxy</code>, their Python dependencies go in <code>python</code>, and their system library dependencies go in <code>system</code>. This mirrors how you would install dependencies manually, but <code>ansible-builder</code> automates it inside the container build.</p>
+<h4 id="optional-sections">Optional Sections</h4>
+<p>The version 3 schema supports additional sections for advanced use cases:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nn">---</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="nt">images</span><span class="p">:</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span><span class="nt">base_image</span><span class="p">:</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ghcr.io/ansible/community-ee-base:latest</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="nt">dependencies</span><span class="p">:</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">  </span><span class="nt">galaxy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">requirements.yml</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">  </span><span class="nt">python</span><span class="p">:</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">jmespath</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">netaddr</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">  </span><span class="nt">system</span><span class="p">:</span>
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">iputils</span>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="nt">additional_build_files</span><span class="p">:</span>
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">src</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">custom-ansible.cfg</span>
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">    </span><span class="nt">dest</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configs</span>
+<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>
+<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="nt">additional_build_steps</span><span class="p">:</span>
+<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="w">  </span><span class="nt">prepend_final</span><span class="p">:</span>
+<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">COPY _build/configs/custom-ansible.cfg /etc/ansible/ansible.cfg</span>
+<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="w">  </span><span class="nt">append_final</span><span class="p">:</span>
+<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">RUN echo &quot;Build complete&quot;</span>
+<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a>
+<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a><span class="nt">options</span><span class="p">:</span>
+<a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a><span class="w">  </span><span class="nt">tags</span><span class="p">:</span>
+<a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">parasoltech-ee:1.0.0</span>
+<a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">parasoltech-ee:latest</span>
+<a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a><span class="w">  </span><span class="nt">package_manager_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/usr/bin/dnf</span>
+</code></pre></div>
+<ul>
+<li><strong><code>additional_build_files</code></strong>: Copies extra files into the build context. Useful for custom configuration files, scripts, or local collection tarballs.</li>
+<li><strong><code>additional_build_steps</code></strong>: Injects custom Containerfile instructions at specific points in the build (<code>prepend_base</code>, <code>append_base</code>, <code>prepend_galaxy</code>, <code>append_galaxy</code>, <code>prepend_builder</code>, <code>append_builder</code>, <code>prepend_final</code>, <code>append_final</code>).</li>
+<li><strong><code>options</code></strong>: Build options like image tags and the package manager path.</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Keep it simple</p>
+<p>For most use cases, you only need <code>images</code>, <code>dependencies</code>, and maybe <code>options.tags</code>. The advanced sections exist for edge cases, so do not add complexity until you need it.</p>
+</div>
+<h2 id="building-with-ansible-builder">Building with ansible-builder</h2>
+<p><code>ansible-builder</code> takes the EE definition and produces a container image. It works in two steps: first it generates a Containerfile, then it builds the image.</p>
+<h3 id="step-1-preview-the-containerfile">Step 1: Preview the Containerfile</h3>
+<p>Before building, you can inspect what <code>ansible-builder</code> will do:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">cd</span><span class="w"> </span>ansible/execution-environments/parasoltech-ee
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>ansible-builder<span class="w"> </span>create
+</code></pre></div>
+<p>This generates a <code>context/</code> directory containing a <code>Containerfile</code> and all the files needed for the build. Open <code>context/Containerfile</code> to see the four stages:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>context/
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>  Containerfile    # The multi-stage build definition
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>  _build/
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    requirements.yml    # Galaxy dependencies
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    ...
+</code></pre></div>
+<p>The generated Containerfile has four stages:</p>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Base</strong></td>
+<td>Starts from the base image, installs system packages</td>
+</tr>
+<tr>
+<td><strong>Galaxy</strong></td>
+<td>Installs Ansible collections from <code>requirements.yml</code></td>
+</tr>
+<tr>
+<td><strong>Builder</strong></td>
+<td>Installs Python packages, compiles any native extensions</td>
+</tr>
+<tr>
+<td><strong>Final</strong></td>
+<td>Assembles the final image from the previous stages</td>
+</tr>
+</tbody>
+</table>
+<p>This multi-stage approach keeps the final image small. Build tools and compilation artifacts are discarded; only the runtime dependencies make it into the final image.</p>
+<div class="admonition note">
+<p class="admonition-title">Inspect before you build</p>
+<p>Running <code>ansible-builder create</code> is a dry run. It generates the Containerfile without building anything. Use it to verify your EE definition is correct before committing to a full build, which can take several minutes.</p>
+</div>
+<h3 id="step-2-build-the-image">Step 2: Build the Image</h3>
+<p>Build the image with a tag:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>ansible-builder<span class="w"> </span>build<span class="w"> </span>--tag<span class="w"> </span>parasoltech-ee:1.0.0
+</code></pre></div>
+<p>For detailed output during the build:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>ansible-builder<span class="w"> </span>build<span class="w"> </span>--tag<span class="w"> </span>parasoltech-ee:1.0.0<span class="w"> </span>-v<span class="w"> </span><span class="m">3</span>
+</code></pre></div>
+<p>The <code>-v 3</code> flag sets maximum verbosity so you can see every step of the container build. This is useful for debugging dependency installation failures.</p>
+<p>When the build completes:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>[4/4] STEP 22/22: CMD [&quot;bash&quot;]
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>[4/4] COMMIT parasoltech-ee:1.0.0
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>--&gt; a1b2c3d4e5f6
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>Successfully tagged localhost/parasoltech-ee:1.0.0
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>Complete! The build context can be found at:
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>  /path/to/parasoltech-ee/context
+</code></pre></div>
+<h3 id="working-with-local-collections">Working with Local Collections</h3>
+<p>If your collection is not published to Galaxy or Automation Hub yet, you need to package it as a tarball and reference it locally in the EE definition.</p>
+<p>First, build the collection tarball:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">cd</span><span class="w"> </span>ansible/collections/parasoltech/infrastructure
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>ansible-galaxy<span class="w"> </span>collection<span class="w"> </span>build<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span>--output-path<span class="w"> </span>../../execution-environments/parasoltech-ee/
+</code></pre></div>
+<p>Then modify the EE definition to use the local tarball:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nn">---</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="nt">images</span><span class="p">:</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">  </span><span class="nt">base_image</span><span class="p">:</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ghcr.io/ansible/community-ee-base:latest</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="nt">dependencies</span><span class="p">:</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="w">  </span><span class="nt">python_interpreter</span><span class="p">:</span>
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="w">    </span><span class="nt">python_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/usr/bin/python3</span>
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>
+<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="w">  </span><span class="nt">galaxy</span><span class="p">:</span>
+<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a><span class="w">    </span><span class="nt">collections</span><span class="p">:</span>
+<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">collection_tarballs/parasoltech-infrastructure-1.0.0.tar.gz</span>
+<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a><span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">file</span>
+<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a><span class="w">  </span><span class="nt">python</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+<a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a><span class="w">  </span><span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+<a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a>
+<a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a><span class="nt">additional_build_files</span><span class="p">:</span>
+<a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">src</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">parasoltech-infrastructure-1.0.0.tar.gz</span>
+<a id="__codelineno-11-21" name="__codelineno-11-21" href="#__codelineno-11-21"></a><span class="w">    </span><span class="nt">dest</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">collection_tarballs</span>
+</code></pre></div>
+<p>The <code>type: file</code> tells <code>ansible-galaxy</code> to install from the local path instead of downloading from Galaxy. The <code>additional_build_files</code> section copies the tarball into the build context where the Galaxy stage can find it.</p>
+<h2 id="testing-your-ee">Testing Your EE</h2>
+<p>After building, verify the image before deploying it anywhere.</p>
+<h3 id="verify-with-podman">Verify with podman</h3>
+<p>Check that the image exists and the collections are installed:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># List local images</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>podman<span class="w"> </span>images<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>parasoltech
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="c1"># Check ansible-core version inside the EE</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>podman<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>parasoltech-ee:1.0.0<span class="w"> </span>ansible<span class="w"> </span>--version
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="c1"># List installed collections</span>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>podman<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>parasoltech-ee:1.0.0<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="w">  </span>ansible-galaxy<span class="w"> </span>collection<span class="w"> </span>list
+</code></pre></div>
+<p>Expected output from the collection list:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a># /usr/share/ansible/collections/ansible_collections
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>Collection                   Version
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>---------------------------- -------
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>ansible.posix                2.1.0
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>parasoltech.infrastructure   1.0.0
+</code></pre></div>
+<h3 id="test-with-ansible-navigator">Test with ansible-navigator</h3>
+<p>Run the webserver playbook using the custom EE:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">  </span>ansible/playbooks/module-05/deploy-webserver.yml<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">  </span>--execution-environment-image<span class="w"> </span>parasoltech-ee:1.0.0<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">  </span>--pull-policy<span class="w"> </span>never
+</code></pre></div>
+<p>The <code>--pull-policy never</code> flag tells <code>ansible-navigator</code> to use the local image instead of trying to pull it from a registry. This is important during development when the image only exists locally.</p>
+<p>If the playbook runs successfully inside the EE, the environment is correctly packaged. Every machine that uses this image will get the same result.</p>
+<div class="admonition tip">
+<p class="admonition-title">Iterative development</p>
+<p>During EE development, use the <code>create</code> → <code>build</code> → <code>test</code> cycle:</p>
+<ol>
+<li>Edit <code>execution-environment.yml</code></li>
+<li>Run <code>ansible-builder create</code> to preview the Containerfile</li>
+<li>Run <code>ansible-builder build --tag parasoltech-ee:dev</code> to build</li>
+<li>Run <code>podman run --rm parasoltech-ee:dev ansible-galaxy collection list</code> to verify</li>
+<li>Run a playbook with <code>ansible-navigator</code> to test end-to-end</li>
+</ol>
+<p>Only tag with a version number (like <code>1.0.0</code>) when the EE is validated and ready for promotion.</p>
+</div>
+<h2 id="content-signing-with-ansible-sign">Content Signing with ansible-sign</h2>
+<p>Execution Environments solve the portability problem. Content signing solves the integrity problem.</p>
+<p><code>ansible-sign</code> is a utility that signs and verifies Ansible project directories. It works by:</p>
+<ol>
+<li>Computing SHA-256 checksums of every file you want to protect</li>
+<li>Writing those checksums to a manifest file</li>
+<li>Signing the manifest with a GPG key</li>
+</ol>
+<p>Anyone with the matching public key can then verify that the content has not been tampered with: no files modified, no files added, no files removed.</p>
+<h3 id="gpg-key-setup">GPG Key Setup</h3>
+<p><code>ansible-sign</code> uses GNU Privacy Guard (GPG) keys. If you do not have a GPG key, create one using a batch file for non-interactive generation:</p>
+<p>Create a file called <code>gpg-batch.txt</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>%echo Generating a GPG key for ansible-sign
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>Key-Type: default
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>Key-Length: 4096
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>Subkey-Type: default
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>Subkey-Length: default
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>Name-Real: Parasol Tech Automation
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>Name-Comment: content signing key
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>Name-Email: automation@parasol.example
+<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>Expire-Date: 1y
+<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>%no-ask-passphrase
+<a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a>%no-protection
+<a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a>%commit
+<a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a>%echo done
+</code></pre></div>
+<p>Generate the key:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>gpg<span class="w"> </span>--batch<span class="w"> </span>--gen-key<span class="w"> </span>gpg-batch.txt
+</code></pre></div>
+<p>Verify it was created:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>gpg<span class="w"> </span>--list-secret-keys
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>sec   rsa4096 2026-05-21 [SC] [expires: 2027-05-21]
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>      ABCDEF1234567890ABCDEF1234567890ABCDEF12
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>uid           [ultimate] Parasol Tech Automation (content signing key) &lt;automation@parasol.example&gt;
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>ssb   rsa3072 2026-05-21 [E]
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Production key management</p>
+<p>The example above creates a key without a passphrase for simplicity. In production, always use a passphrase-protected key and store it in a secure key management system. Never commit private keys to version control.</p>
+</div>
+<h3 id="the-manifestin-file">The MANIFEST.in File</h3>
+<p>Before signing, you need a <code>MANIFEST.in</code> file that tells <code>ansible-sign</code> which files to include in the checksum manifest. This file uses Python's <code>distlib.manifest</code> syntax, the same format used by Python packaging tools.</p>
+<p>The signing example at <code>ansible/execution-environments/signing-example/MANIFEST.in</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a># Exclude version control and development artifacts
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>global-exclude .git
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>global-exclude .git/*
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>prune .git
+<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>
+<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a># Include all playbooks
+<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a>recursive-include . *.yml
+<a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a>recursive-include . *.yaml
+<a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a>
+<a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a># Include documentation
+<a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a>include README.md
+<a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a>
+<a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a># Exclude test and temporary files
+<a id="__codelineno-19-14" name="__codelineno-19-14" href="#__codelineno-19-14"></a>prune .tox
+<a id="__codelineno-19-15" name="__codelineno-19-15" href="#__codelineno-19-15"></a>prune .venv
+<a id="__codelineno-19-16" name="__codelineno-19-16" href="#__codelineno-19-16"></a>prune tmp
+<a id="__codelineno-19-17" name="__codelineno-19-17" href="#__codelineno-19-17"></a>global-exclude *.pyc
+<a id="__codelineno-19-18" name="__codelineno-19-18" href="#__codelineno-19-18"></a>global-exclude __pycache__
+</code></pre></div>
+<p>Key directives:</p>
+<table>
+<thead>
+<tr>
+<th>Directive</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>include &lt;file&gt;</code></td>
+<td>Include a specific file</td>
+</tr>
+<tr>
+<td><code>recursive-include &lt;dir&gt; &lt;pattern&gt;</code></td>
+<td>Include all files matching pattern in dir and subdirs</td>
+</tr>
+<tr>
+<td><code>global-exclude &lt;pattern&gt;</code></td>
+<td>Exclude files matching pattern everywhere</td>
+</tr>
+<tr>
+<td><code>prune &lt;dir&gt;</code></td>
+<td>Exclude an entire directory tree</td>
+</tr>
+</tbody>
+</table>
+<p>The principle: include everything that affects execution (playbooks, roles, inventory, configuration), exclude everything that does not (version control, test artifacts, caches).</p>
+<h3 id="signing-and-verification">Signing and Verification</h3>
+<p>With the GPG key and <code>MANIFEST.in</code> in place, signing is a single command.</p>
+<p><strong>Sign the project:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="nb">cd</span><span class="w"> </span>ansible/execution-environments/signing-example
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>ansible-sign<span class="w"> </span>project<span class="w"> </span>gpg-sign<span class="w"> </span>.
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>[OK   ] GPG signing successful!
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>[NOTE ] Checksum manifest: ./.ansible-sign/sha256sum.txt
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>[NOTE ] GPG summary: signature created
+</code></pre></div>
+<p>This creates two files inside <code>.ansible-sign/</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>.ansible-sign/
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>  sha256sum.txt       # Checksum manifest (one hash per file)
+<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>  sha256sum.txt.sig   # GPG signature of the manifest
+</code></pre></div>
+<p>The <code>sha256sum.txt</code> file contains one line per protected file:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>a1b2c3d4...  ./playbook.yml
+<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>e5f6a7b8...  ./README.md
+</code></pre></div>
+<p><strong>Verify the project:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>ansible-sign<span class="w"> </span>project<span class="w"> </span>gpg-verify<span class="w"> </span>.
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>[OK   ] GPG signature verification succeeded.
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>[NOTE ] Checksum manifest: ./.ansible-sign/sha256sum.txt
+<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>[NOTE ] GPG summary: valid signature
+</code></pre></div>
+<p>If any file has been modified, added, or removed since signing, verification fails:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>[FAIL ] GPG signature verification FAILED.
+<a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>[NOTE ] Modified: ./playbook.yml
+</code></pre></div>
+<h3 id="supply-chain-security-workflow">Supply Chain Security Workflow</h3>
+<p>Content signing becomes powerful when integrated into the deployment pipeline. The workflow is:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>Developer workstation          Git repository          AAP Controller
+<a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>┌──────────────────┐     ┌──────────────────┐     ┌──────────────────┐
+<a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>│ 1. Write content │     │                  │     │                  │
+<a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a>│ 2. Run tests     │────▶│ 3. Push signed   │────▶│ 4. Project Sync  │
+<a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a>│ 3. Sign project  │     │    content       │     │ 5. Verify GPG    │
+<a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a>│    (gpg-sign)    │     │                  │     │    signature     │
+<a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a>└──────────────────┘     └──────────────────┘     │ 6. Run if valid  │
+<a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a>                                                  └──────────────────┘
+</code></pre></div>
+<ol>
+<li><strong>Developer signs</strong>: After the CoP reviews and approves changes, a trusted signer runs <code>ansible-sign project gpg-sign .</code> on the project directory.</li>
+<li><strong>Push to Git</strong>: The signed content (including <code>.ansible-sign/</code>) is committed and pushed to the repository.</li>
+<li><strong>AAP Project Sync</strong>: Ansible Automation Platform's Controller pulls the repository.</li>
+<li><strong>AAP verifies</strong>: Controller is configured with the public GPG key as a credential. During Project Sync, it runs the equivalent of <code>ansible-sign project gpg-verify .</code> on the pulled content.</li>
+<li><strong>Execute or reject</strong>: If verification succeeds, the content is trusted and can run. If it fails, the sync fails and no job templates can execute. The content is blocked.</li>
+</ol>
+<p>This means that even if an attacker compromises the Git repository and modifies a playbook, the content will not execute. The checksums will not match, the GPG signature will be invalid, and AAP will reject the content.</p>
+<div class="admonition note">
+<p class="admonition-title">Two layers of trust</p>
+<p>Content signing protects the <strong>content</strong> (playbooks, roles, inventory). Execution Environments protect the <strong>runtime</strong> (Python, collections, system packages). Together, they form a complete supply chain security model: you know exactly what code will run and exactly what environment it will run in.</p>
+</div>
+<h2 id="publishing-to-automation-hub">Publishing to Automation Hub</h2>
+<p>Once the EE image is built and tested, the next step is publishing it to a container registry where AAP Controller can pull it. The typical destinations are:</p>
+<ul>
+<li><strong>Private Automation Hub</strong>: The organization's internal registry, part of AAP. This is the recommended destination for production EE images.</li>
+<li><strong>Quay.io</strong>: Red Hat's public/private container registry.</li>
+<li><strong>Any OCI-compatible registry</strong>: Harbor, Docker Hub, GitLab Container Registry, etc.</li>
+</ul>
+<h3 id="push-to-a-registry">Push to a Registry</h3>
+<p>Tag and push using <code>podman</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="c1"># Tag for the target registry</span>
+<a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>podman<span class="w"> </span>tag<span class="w"> </span>parasoltech-ee:1.0.0<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="w">  </span>hub.parasol.example/ee-images/parasoltech-ee:1.0.0
+<a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a>
+<a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a><span class="c1"># Log in to the registry</span>
+<a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a>podman<span class="w"> </span>login<span class="w"> </span>hub.parasol.example
+<a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a>
+<a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a><span class="c1"># Push the image</span>
+<a id="__codelineno-28-9" name="__codelineno-28-9" href="#__codelineno-28-9"></a>podman<span class="w"> </span>push<span class="w"> </span>hub.parasol.example/ee-images/parasoltech-ee:1.0.0
+</code></pre></div>
+<h3 id="publish-the-collection">Publish the Collection</h3>
+<p>The collection itself can be published to Automation Hub or Galaxy:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="nb">cd</span><span class="w"> </span>ansible/collections/parasoltech/infrastructure
+<a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>
+<a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a><span class="c1"># Build the collection tarball</span>
+<a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a>ansible-galaxy<span class="w"> </span>collection<span class="w"> </span>build
+<a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a>
+<a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a><span class="c1"># Publish to Private Automation Hub</span>
+<a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a>ansible-galaxy<span class="w"> </span>collection<span class="w"> </span>publish<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-29-8" name="__codelineno-29-8" href="#__codelineno-29-8"></a><span class="w">  </span>parasoltech-infrastructure-1.0.0.tar.gz<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-29-9" name="__codelineno-29-9" href="#__codelineno-29-9"></a><span class="w">  </span>--server<span class="w"> </span>https://hub.parasol.example/api/galaxy/content/published/<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-29-10" name="__codelineno-29-10" href="#__codelineno-29-10"></a><span class="w">  </span>--token<span class="w"> </span>&lt;your-api-token&gt;
+</code></pre></div>
+<p>Once published, other teams can install the collection from Automation Hub instead of copying files, and EE definitions can reference the published collection instead of using local tarballs.</p>
+<h3 id="the-complete-lifecycle">The Complete Lifecycle</h3>
+<p>The full packaging and deployment lifecycle for the CoP looks like this:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>1. Develop     ──▶  Write roles and playbooks
+<a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>2. Test        ──▶  ansible-lint + pytest + molecule + tox-ansible
+<a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>3. Package EE  ──▶  ansible-builder build --tag parasoltech-ee:1.0.0
+<a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a>4. Test EE     ──▶  ansible-navigator run ... --eei parasoltech-ee:1.0.0
+<a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a>5. Sign        ──▶  ansible-sign project gpg-sign .
+<a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a>6. Publish     ──▶  Push EE to registry, collection to Hub
+<a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a>7. Deploy      ──▶  AAP pulls, verifies, executes
+</code></pre></div>
+<p>Each step builds on the previous one. Nothing reaches production without passing through every gate.</p>
+<h2 id="exercises">Exercises</h2>
+<h3 id="exercise-1-build-an-execution-environment">Exercise 1: Build an Execution Environment</h3>
+<p>Navigate to the EE directory and preview the build:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="nb">cd</span><span class="w"> </span>ansible/execution-environments/parasoltech-ee
+<a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>ansible-builder<span class="w"> </span>create
+</code></pre></div>
+<p>Examine the generated <code>context/Containerfile</code>. Identify the four build stages and understand what each one does. Then build the image:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>ansible-builder<span class="w"> </span>build<span class="w"> </span>--tag<span class="w"> </span>parasoltech-ee:latest
+</code></pre></div>
+<p>Verify the image exists:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>podman<span class="w"> </span>images<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>parasoltech
+</code></pre></div>
+<h3 id="exercise-2-test-the-ee">Exercise 2: Test the EE</h3>
+<p>Run a command inside the EE to verify the collections are installed:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>podman<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>parasoltech-ee:latest<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a><span class="w">  </span>ansible-galaxy<span class="w"> </span>collection<span class="w"> </span>list
+</code></pre></div>
+<p>Confirm that <code>parasoltech.infrastructure</code> and <code>ansible.posix</code> appear in the output.</p>
+<h3 id="exercise-3-add-a-python-dependency">Exercise 3: Add a Python Dependency</h3>
+<p>Modify <code>execution-environment.yml</code> to add <code>jmespath</code> as a Python dependency:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a><span class="nt">dependencies</span><span class="p">:</span>
+<a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a><span class="w">  </span><span class="nt">galaxy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">requirements.yml</span>
+<a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a><span class="w">  </span><span class="nt">python</span><span class="p">:</span>
+<a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">jmespath</span>
+<a id="__codelineno-35-5" name="__codelineno-35-5" href="#__codelineno-35-5"></a><span class="w">  </span><span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+</code></pre></div>
+<p>Rebuild the EE and verify <code>jmespath</code> is installed:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>ansible-builder<span class="w"> </span>build<span class="w"> </span>--tag<span class="w"> </span>parasoltech-ee:latest
+<a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a>podman<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>parasoltech-ee:latest<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-36-3" name="__codelineno-36-3" href="#__codelineno-36-3"></a><span class="w">  </span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import jmespath; print(jmespath.__version__)&quot;</span>
+</code></pre></div>
+<h3 id="exercise-4-sign-a-project">Exercise 4: Sign a Project</h3>
+<p>Navigate to the signing example and create a GPG key:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="nb">cd</span><span class="w"> </span>ansible/execution-environments/signing-example
+<a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a>gpg<span class="w"> </span>--batch<span class="w"> </span>--gen-key<span class="w"> </span>gpg-batch.txt
+</code></pre></div>
+<p>Sign the project:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a>ansible-sign<span class="w"> </span>project<span class="w"> </span>gpg-sign<span class="w"> </span>.
+</code></pre></div>
+<p>Verify the signature:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a>ansible-sign<span class="w"> </span>project<span class="w"> </span>gpg-verify<span class="w"> </span>.
+</code></pre></div>
+<p>Now modify a file and verify again. The verification should fail.</p>
+<details class="example">
+<summary>Solution</summary>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a><span class="c1"># Modify a signed file</span>
+<a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;# tampered&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>MANIFEST.in
+<a id="__codelineno-40-3" name="__codelineno-40-3" href="#__codelineno-40-3"></a>
+<a id="__codelineno-40-4" name="__codelineno-40-4" href="#__codelineno-40-4"></a><span class="c1"># Verification should fail</span>
+<a id="__codelineno-40-5" name="__codelineno-40-5" href="#__codelineno-40-5"></a>ansible-sign<span class="w"> </span>project<span class="w"> </span>gpg-verify<span class="w"> </span>.
+<a id="__codelineno-40-6" name="__codelineno-40-6" href="#__codelineno-40-6"></a><span class="c1"># [FAIL] GPG signature verification FAILED.</span>
+<a id="__codelineno-40-7" name="__codelineno-40-7" href="#__codelineno-40-7"></a>
+<a id="__codelineno-40-8" name="__codelineno-40-8" href="#__codelineno-40-8"></a><span class="c1"># Restore the original file</span>
+<a id="__codelineno-40-9" name="__codelineno-40-9" href="#__codelineno-40-9"></a>git<span class="w"> </span>checkout<span class="w"> </span>MANIFEST.in
+<a id="__codelineno-40-10" name="__codelineno-40-10" href="#__codelineno-40-10"></a>
+<a id="__codelineno-40-11" name="__codelineno-40-11" href="#__codelineno-40-11"></a><span class="c1"># Re-verify — should pass again</span>
+<a id="__codelineno-40-12" name="__codelineno-40-12" href="#__codelineno-40-12"></a>ansible-sign<span class="w"> </span>project<span class="w"> </span>gpg-verify<span class="w"> </span>.
+<a id="__codelineno-40-13" name="__codelineno-40-13" href="#__codelineno-40-13"></a><span class="c1"># [OK] GPG signature verification succeeded.</span>
+</code></pre></div>
+</details>
+<h3 id="exercise-5-run-a-playbook-in-the-ee">Exercise 5: Run a Playbook in the EE</h3>
+<p>Use <code>ansible-navigator</code> to run a playbook inside the custom EE:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-41-2" name="__codelineno-41-2" href="#__codelineno-41-2"></a><span class="w">  </span>ansible/playbooks/module-05/deploy-webserver.yml<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-41-3" name="__codelineno-41-3" href="#__codelineno-41-3"></a><span class="w">  </span>--execution-environment-image<span class="w"> </span>parasoltech-ee:latest<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-41-4" name="__codelineno-41-4" href="#__codelineno-41-4"></a><span class="w">  </span>--pull-policy<span class="w"> </span>never<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-41-5" name="__codelineno-41-5" href="#__codelineno-41-5"></a><span class="w">  </span>--mode<span class="w"> </span>stdout
+</code></pre></div>
+<p>Compare the output to running the same playbook without an EE. The results should be identical, but the execution environment is now portable and reproducible.</p>
+<h2 id="summary">Summary</h2>
+<p>In this module you:</p>
+<ul>
+<li>Learned that Execution Environments are container images that bundle <code>ansible-core</code>, collections, Python packages, and system dependencies into an immutable, portable runtime</li>
+<li>Defined an EE using the <code>execution-environment.yml</code> version 3 schema, specifying a base image and dependencies across three categories (galaxy, python, system)</li>
+<li>Used <code>ansible-builder create</code> to preview the generated multi-stage Containerfile, and <code>ansible-builder build</code> to produce the container image</li>
+<li>Tested the EE with <code>podman</code> for quick checks and <code>ansible-navigator</code> for end-to-end playbook execution</li>
+<li>Set up GPG keys and a <code>MANIFEST.in</code> file to sign Ansible projects with <code>ansible-sign</code>, creating checksum manifests protected by cryptographic signatures</li>
+<li>Understood the supply chain security workflow where developers sign content, push to Git, and AAP Controller verifies the GPG signature before allowing execution</li>
+<li>Published EE images to container registries and collections to Automation Hub, completing the packaging lifecycle</li>
+</ul>
+<p>The CoP at Parasol Tech now has a complete pipeline: code is tested (Module 7), packaged into Execution Environments, signed for integrity, and published for consumption. No more dependency conflicts, no more "works on my machine," and no more unverified content running in production.</p>
+<h2 id="next-steps">Next Steps</h2>
+<p>Next: <a href="../9-scaling-with-aap/">Module 9: Scaling with AAP</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

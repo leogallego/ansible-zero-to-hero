@@ -1,0 +1,2118 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A progressive course teaching Ansible from first principles to production-grade automation">
+      
+      
+      
+        <link rel="canonical" href="https://hero.ansible.ar/es/modules/3-managing-inventory/">
+      
+      
+        <link rel="prev" href="../2-your-first-playbook/">
+      
+      
+        <link rel="next" href="../4-variables-and-facts/">
+      
+      
+        
+          <link rel="alternate" href="../../../modules/3-managing-inventory/" hreflang="en">
+        
+          <link rel="alternate" href="./" hreflang="es">
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>3. Managing Inventory - Ansible Zero to Hero</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#modulo-3-gestion-del-inventario" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../../" title="Ansible Zero to Hero" class="md-header__button md-logo" aria-label="Ansible Zero to Hero" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Ansible Zero to Hero
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              3. Managing Inventory
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Seleccionar idioma">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="../../../modules/3-managing-inventory/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="es" class="md-select__link">
+              Español
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/leogallego/ansible-zero-to-hero" title="Ir al repositorio" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    leogallego/ansible-zero-to-hero
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Pestañas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../1-introduction/" class="md-tabs__link">
+          
+  
+  
+  Modules
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../" title="Ansible Zero to Hero" class="md-nav__button md-logo" aria-label="Ansible Zero to Hero" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Ansible Zero to Hero
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/leogallego/ansible-zero-to-hero" title="Ir al repositorio" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    leogallego/ansible-zero-to-hero
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Modules
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../2-your-first-playbook/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Your First Playbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Managing Inventory
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Managing Inventory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objetivos-de-aprendizaje" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos de Aprendizaje
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#la-historia-hasta-ahora" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Historia Hasta Ahora
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#que-es-un-inventario" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qué es un Inventario?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#formatos-de-inventario-estatico" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Formatos de Inventario Estático
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Formatos de Inventario Estático">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#el-grupo-all" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        El Grupo all
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#grupos-y-grupos-anidados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Grupos y Grupos Anidados
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Grupos y Grupos Anidados">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#grupos-simples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Grupos Simples
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#grupos-anidados-grupos-de-grupos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Grupos Anidados (Grupos de Grupos)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#convencion-de-nombres-de-grupos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Convención de Nombres de Grupos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#variables-de-host-y-de-grupo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Variables de Host y de Grupo
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Variables de Host y de Grupo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#la-regla-sin-variables-en-el-archivo-de-hosts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Regla: Sin Variables en el Archivo de Hosts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variables-de-grupo-group_vars" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Variables de Grupo (group_vars/)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variables-de-host-host_vars" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Variables de Host (host_vars/)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#precedencia-de-variables-adelanto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Precedencia de Variables (Adelanto)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#directorios-de-inventario-estructurados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Directorios de Inventario Estructurados
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Directorios de Inventario Estructurados">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#por-que-no-un-solo-archivo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ¿Por Qué No un Solo Archivo?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apuntando-ansible-al-inventario" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Apuntando Ansible al Inventario
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#seleccion-de-hosts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Selección de Hosts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Selección de Hosts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#patrones-de-host-en-playbooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Patrones de Host en Playbooks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#el-flag-limit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        El Flag --limit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#listar-hosts-sin-ejecutar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Listar Hosts Sin Ejecutar
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conceptos-de-inventario-dinamico" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conceptos de Inventario Dinámico
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Conceptos de Inventario Dinámico">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#como-funciona-el-inventario-dinamico" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cómo Funciona el Inventario Dinámico
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#estatico-dinamico-juntos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Estático + Dinámico Juntos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ejercicios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicios
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ejercicios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-1-explorar-el-inventario" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 1: Explorar el Inventario
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-2-ver-el-grafo-del-inventario" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 2: Ver el Grafo del Inventario
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-3-practicar-con-limit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 3: Practicar con --limit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-4-agregar-un-archivo-de-variables-de-grupo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 4: Agregar un Archivo de Variables de Grupo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-5-inspeccionar-variables-de-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 5: Inspeccionar Variables de Host
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resumen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proximos-pasos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Próximos Pasos
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../4-variables-and-facts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Variables and Facts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../5-templates-and-handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Templates and Handlers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../6-roles-and-collections/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Roles and Collections
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../7-testing-your-automation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Testing Your Automation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../8-packaging-and-deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Packaging and Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../9-scaling-with-aap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Scaling with AAP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objetivos-de-aprendizaje" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos de Aprendizaje
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#la-historia-hasta-ahora" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Historia Hasta Ahora
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#que-es-un-inventario" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qué es un Inventario?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#formatos-de-inventario-estatico" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Formatos de Inventario Estático
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Formatos de Inventario Estático">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#el-grupo-all" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        El Grupo all
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#grupos-y-grupos-anidados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Grupos y Grupos Anidados
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Grupos y Grupos Anidados">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#grupos-simples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Grupos Simples
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#grupos-anidados-grupos-de-grupos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Grupos Anidados (Grupos de Grupos)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#convencion-de-nombres-de-grupos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Convención de Nombres de Grupos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#variables-de-host-y-de-grupo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Variables de Host y de Grupo
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Variables de Host y de Grupo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#la-regla-sin-variables-en-el-archivo-de-hosts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Regla: Sin Variables en el Archivo de Hosts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variables-de-grupo-group_vars" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Variables de Grupo (group_vars/)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variables-de-host-host_vars" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Variables de Host (host_vars/)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#precedencia-de-variables-adelanto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Precedencia de Variables (Adelanto)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#directorios-de-inventario-estructurados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Directorios de Inventario Estructurados
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Directorios de Inventario Estructurados">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#por-que-no-un-solo-archivo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ¿Por Qué No un Solo Archivo?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apuntando-ansible-al-inventario" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Apuntando Ansible al Inventario
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#seleccion-de-hosts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Selección de Hosts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Selección de Hosts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#patrones-de-host-en-playbooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Patrones de Host en Playbooks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#el-flag-limit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        El Flag --limit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#listar-hosts-sin-ejecutar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Listar Hosts Sin Ejecutar
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conceptos-de-inventario-dinamico" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conceptos de Inventario Dinámico
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Conceptos de Inventario Dinámico">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#como-funciona-el-inventario-dinamico" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cómo Funciona el Inventario Dinámico
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#estatico-dinamico-juntos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Estático + Dinámico Juntos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ejercicios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicios
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ejercicios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-1-explorar-el-inventario" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 1: Explorar el Inventario
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-2-ver-el-grafo-del-inventario" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 2: Ver el Grafo del Inventario
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-3-practicar-con-limit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 3: Practicar con --limit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-4-agregar-un-archivo-de-variables-de-grupo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 4: Agregar un Archivo de Variables de Grupo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-5-inspeccionar-variables-de-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 5: Inspeccionar Variables de Host
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resumen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proximos-pasos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Próximos Pasos
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="modulo-3-gestion-del-inventario">Módulo 3: Gestión del Inventario</h1>
+<h2 id="objetivos-de-aprendizaje">Objetivos de Aprendizaje</h2>
+<p>Al finalizar este módulo serás capaz de:</p>
+<ul>
+<li>Crear directorios de inventario estructurados con grupos y grupos anidados</li>
+<li>Definir variables de host y de grupo en archivos dedicados</li>
+<li>Seleccionar hosts específicos usando patrones y <code>--limit</code></li>
+<li>Explicar la diferencia entre inventario estático y dinámico</li>
+</ul>
+<h2 id="la-historia-hasta-ahora">La Historia Hasta Ahora</h2>
+<p>Lionel tiene tres playbooks funcionando, pero todos apuntan a <code>localhost</code>. En el mundo real, Parasol Tech tiene docenas de servidores distribuidos en tres entornos (desarrollo, staging y producción) ejecutando diferentes servicios. Servidores web, servidores de base de datos, servidores de aplicaciones: cada entorno tiene su propio conjunto.</p>
+<p>Lionel necesita una forma de decirle a Ansible sobre todos estos hosts, organizarlos lógicamente y asignar diferentes valores de configuración según el entorno y el rol del servidor. Esto es lo que hace el <strong>inventario</strong>.</p>
+<h2 id="que-es-un-inventario">Qué es un Inventario?</h2>
+<p>Un inventario es la lista de hosts que Ansible gestiona, junto con metadatos sobre esos hosts (a qué grupos pertenecen, qué variables se les aplican). Sin un inventario, Ansible no tiene idea de qué máquinas existen ni cómo conectarse a ellas.</p>
+<p>En el Módulo 1, usamos un inventario mínimo con una sola entrada:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nn">---</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nt">all</span><span class="p">:</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">localhost</span><span class="p">:</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">      </span><span class="nt">ansible_connection</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">local</span>
+</code></pre></div>
+<p>Eso fue suficiente para empezar, pero la infraestructura de Parasol Tech se parece más a esto:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Infraestructura de Parasol Tech
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>├── Desarrollo
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>│   ├── web01.dev.parasol.example
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>│   ├── web02.dev.parasol.example
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>│   └── db01.dev.parasol.example
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>├── Staging
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>│   ├── web01.staging.parasol.example
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>│   ├── web02.staging.parasol.example
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>│   └── db01.staging.parasol.example
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>└── Producción
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    ├── web01.prod.parasol.example
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    ├── web02.prod.parasol.example
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    ├── web03.prod.parasol.example
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>    ├── db01.prod.parasol.example
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>    └── db02.prod.parasol.example
+</code></pre></div>
+<p>Aprendamos cómo representar esto en Ansible.</p>
+<h2 id="formatos-de-inventario-estatico">Formatos de Inventario Estático</h2>
+<p>Un <strong>inventario estático</strong> es un archivo que escribes y mantienes a mano. Ansible soporta dos formatos: INI y YAML. Ambos logran el mismo resultado; la elección es cuestión de preferencia.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Formato YAML (recomendado)</label><label for="__tabbed_1_2">Formato INI</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nn">---</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nt">all</span><span class="p">:</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nt">localhost</span><span class="p">:</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">      </span><span class="nt">ansible_connection</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">local</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">  </span><span class="nt">children</span><span class="p">:</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="nt">webservers</span><span class="p">:</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">      </span><span class="nt">hosts</span><span class="p">:</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">        </span><span class="nt">web01.dev.parasol.example</span><span class="p">:</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">        </span><span class="nt">web02.dev.parasol.example</span><span class="p">:</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">    </span><span class="nt">dbservers</span><span class="p">:</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">      </span><span class="nt">hosts</span><span class="p">:</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">        </span><span class="nt">db01.dev.parasol.example</span><span class="p">:</span>
+</code></pre></div>
+<p>Los inventarios YAML usan la misma sintaxis que los playbooks. Los grupos se anidan bajo <code>children:</code> y los hosts se listan bajo <code>hosts:</code>. Los dos puntos al final de cada nombre de host son obligatorios: marcan el host como una clave sin valores en línea.</p>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="na">localhost ansible_connection</span><span class="o">=</span><span class="s">local</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">[webservers]</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="na">web01.dev.parasol.example</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="na">web02.dev.parasol.example</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="k">[dbservers]</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="na">db01.dev.parasol.example</span>
+</code></pre></div>
+<p>Los inventarios INI usan encabezados de sección entre corchetes para los grupos y listan los hosts uno por línea. Las variables se agregan en línea después del nombre del host.</p>
+</div>
+</div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">¿Qué formato deberías usar?</p>
+<p>Este curso usa YAML para todos los inventarios. YAML es más explícito, soporta anidamiento profundo de forma natural y usa la misma sintaxis que ya conoces de los playbooks. El formato INI es más simple para inventarios muy pequeños pero se vuelve difícil de leer a medida que crece la complejidad.</p>
+</div>
+<h3 id="el-grupo-all">El Grupo <code>all</code></h3>
+<p>Cada host en un inventario de Ansible pertenece automáticamente al grupo <code>all</code>. No necesitas agregarlo explícitamente; cualquier host definido en cualquier parte del inventario es miembro de <code>all</code>. Esto hace que <code>all</code> sea útil para variables que deben aplicarse a todos los hosts (lo veremos en breve con <code>group_vars/all.yml</code>).</p>
+<p>También existe un grupo <code>ungrouped</code> que contiene hosts que no son miembros de ningún otro grupo (además de <code>all</code>).</p>
+<h2 id="grupos-y-grupos-anidados">Grupos y Grupos Anidados</h2>
+<p>Los grupos te permiten organizar hosts para poder seleccionarlos de forma selectiva. En lugar de ejecutar un playbook contra todos los hosts, puedes apuntar solo a <code>webservers</code> o solo a <code>production</code>.</p>
+<h3 id="grupos-simples">Grupos Simples</h3>
+<p>La agrupación más básica coloca hosts en categorías por función:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nn">---</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nt">all</span><span class="p">:</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span><span class="nt">children</span><span class="p">:</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="nt">webservers</span><span class="p">:</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">      </span><span class="nt">hosts</span><span class="p">:</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">        </span><span class="nt">web01.dev.parasol.example</span><span class="p">:</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">        </span><span class="nt">web02.dev.parasol.example</span><span class="p">:</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">    </span><span class="nt">dbservers</span><span class="p">:</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">      </span><span class="nt">hosts</span><span class="p">:</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">        </span><span class="nt">db01.dev.parasol.example</span><span class="p">:</span>
+</code></pre></div>
+<p>Ahora puedes ejecutar un playbook con <code>hosts: webservers</code> y solo se ejecutará en los servidores web, o con <code>hosts: dbservers</code> solo en los servidores de base de datos.</p>
+<h3 id="grupos-anidados-grupos-de-grupos">Grupos Anidados (Grupos de Grupos)</h3>
+<p>La infraestructura real necesita organizarse en múltiples dimensiones. Los servidores de Parasol Tech pertenecen tanto a un <strong>entorno</strong> (dev, staging, producción) como a una <strong>función</strong> (webservers, dbservers). Los grupos anidados manejan esto permitiendo que un grupo contenga otros grupos como hijos.</p>
+<p>Así está estructurado el inventario del curso (<code>ansible/inventory/hosts.yml</code>):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nn">---</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nt">all</span><span class="p">:</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span><span class="nt">localhost</span><span class="p">:</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">      </span><span class="nt">ansible_connection</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">local</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">  </span><span class="nt">children</span><span class="p">:</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">    </span><span class="c1"># Grupos de entorno</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">    </span><span class="nt">dev</span><span class="p">:</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">      </span><span class="nt">children</span><span class="p">:</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">        </span><span class="nt">dev_webservers</span><span class="p">:</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">          </span><span class="nt">hosts</span><span class="p">:</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">            </span><span class="nt">web01.dev.parasol.example</span><span class="p">:</span>
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">            </span><span class="nt">web02.dev.parasol.example</span><span class="p">:</span>
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="w">        </span><span class="nt">dev_dbservers</span><span class="p">:</span>
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="w">          </span><span class="nt">hosts</span><span class="p">:</span>
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="w">            </span><span class="nt">db01.dev.parasol.example</span><span class="p">:</span>
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>
+<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="w">    </span><span class="nt">staging</span><span class="p">:</span>
+<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a><span class="w">      </span><span class="nt">children</span><span class="p">:</span>
+<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="w">        </span><span class="nt">staging_webservers</span><span class="p">:</span>
+<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="w">          </span><span class="nt">hosts</span><span class="p">:</span>
+<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a><span class="w">            </span><span class="nt">web01.staging.parasol.example</span><span class="p">:</span>
+<a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a><span class="w">            </span><span class="nt">web02.staging.parasol.example</span><span class="p">:</span>
+<a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a><span class="w">        </span><span class="nt">staging_dbservers</span><span class="p">:</span>
+<a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a><span class="w">          </span><span class="nt">hosts</span><span class="p">:</span>
+<a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a><span class="w">            </span><span class="nt">db01.staging.parasol.example</span><span class="p">:</span>
+<a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a>
+<a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a><span class="w">    </span><span class="nt">production</span><span class="p">:</span>
+<a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a><span class="w">      </span><span class="nt">children</span><span class="p">:</span>
+<a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a><span class="w">        </span><span class="nt">prod_webservers</span><span class="p">:</span>
+<a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a><span class="w">          </span><span class="nt">hosts</span><span class="p">:</span>
+<a id="__codelineno-5-33" name="__codelineno-5-33" href="#__codelineno-5-33"></a><span class="w">            </span><span class="nt">web01.prod.parasol.example</span><span class="p">:</span>
+<a id="__codelineno-5-34" name="__codelineno-5-34" href="#__codelineno-5-34"></a><span class="w">            </span><span class="nt">web02.prod.parasol.example</span><span class="p">:</span>
+<a id="__codelineno-5-35" name="__codelineno-5-35" href="#__codelineno-5-35"></a><span class="w">            </span><span class="nt">web03.prod.parasol.example</span><span class="p">:</span>
+<a id="__codelineno-5-36" name="__codelineno-5-36" href="#__codelineno-5-36"></a><span class="w">        </span><span class="nt">prod_dbservers</span><span class="p">:</span>
+<a id="__codelineno-5-37" name="__codelineno-5-37" href="#__codelineno-5-37"></a><span class="w">          </span><span class="nt">hosts</span><span class="p">:</span>
+<a id="__codelineno-5-38" name="__codelineno-5-38" href="#__codelineno-5-38"></a><span class="w">            </span><span class="nt">db01.prod.parasol.example</span><span class="p">:</span>
+<a id="__codelineno-5-39" name="__codelineno-5-39" href="#__codelineno-5-39"></a><span class="w">            </span><span class="nt">db02.prod.parasol.example</span><span class="p">:</span>
+<a id="__codelineno-5-40" name="__codelineno-5-40" href="#__codelineno-5-40"></a>
+<a id="__codelineno-5-41" name="__codelineno-5-41" href="#__codelineno-5-41"></a><span class="w">    </span><span class="c1"># Grupos funcionales (abarcan todos los entornos)</span>
+<a id="__codelineno-5-42" name="__codelineno-5-42" href="#__codelineno-5-42"></a><span class="w">    </span><span class="nt">webservers</span><span class="p">:</span>
+<a id="__codelineno-5-43" name="__codelineno-5-43" href="#__codelineno-5-43"></a><span class="w">      </span><span class="nt">children</span><span class="p">:</span>
+<a id="__codelineno-5-44" name="__codelineno-5-44" href="#__codelineno-5-44"></a><span class="w">        </span><span class="nt">dev_webservers</span><span class="p">:</span>
+<a id="__codelineno-5-45" name="__codelineno-5-45" href="#__codelineno-5-45"></a><span class="w">        </span><span class="nt">staging_webservers</span><span class="p">:</span>
+<a id="__codelineno-5-46" name="__codelineno-5-46" href="#__codelineno-5-46"></a><span class="w">        </span><span class="nt">prod_webservers</span><span class="p">:</span>
+<a id="__codelineno-5-47" name="__codelineno-5-47" href="#__codelineno-5-47"></a>
+<a id="__codelineno-5-48" name="__codelineno-5-48" href="#__codelineno-5-48"></a><span class="w">    </span><span class="nt">dbservers</span><span class="p">:</span>
+<a id="__codelineno-5-49" name="__codelineno-5-49" href="#__codelineno-5-49"></a><span class="w">      </span><span class="nt">children</span><span class="p">:</span>
+<a id="__codelineno-5-50" name="__codelineno-5-50" href="#__codelineno-5-50"></a><span class="w">        </span><span class="nt">dev_dbservers</span><span class="p">:</span>
+<a id="__codelineno-5-51" name="__codelineno-5-51" href="#__codelineno-5-51"></a><span class="w">        </span><span class="nt">staging_dbservers</span><span class="p">:</span>
+<a id="__codelineno-5-52" name="__codelineno-5-52" href="#__codelineno-5-52"></a><span class="w">        </span><span class="nt">prod_dbservers</span><span class="p">:</span>
+</code></pre></div>
+<p>Esta estructura le da a Lionel la máxima flexibilidad:</p>
+<table>
+<thead>
+<tr>
+<th>Objetivo</th>
+<th>Hosts alcanzados</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>hosts: all</code></td>
+<td>Todos los hosts</td>
+</tr>
+<tr>
+<td><code>hosts: production</code></td>
+<td>Todos los hosts de producción (web + db)</td>
+</tr>
+<tr>
+<td><code>hosts: webservers</code></td>
+<td>Todos los servidores web en todos los entornos</td>
+</tr>
+<tr>
+<td><code>hosts: prod_webservers</code></td>
+<td>Solo servidores web de producción</td>
+</tr>
+<tr>
+<td><code>hosts: dev</code></td>
+<td>Todos los hosts de desarrollo</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition info">
+<p class="admonition-title">Un host puede pertenecer a múltiples grupos</p>
+<p><code>web01.dev.parasol.example</code> es miembro de <code>dev_webservers</code>, <code>dev</code>, <code>webservers</code> y <code>all</code>, todo al mismo tiempo. Esto es por diseño. La jerarquía de grupos crea conjuntos superpuestos que te permiten seleccionar hosts desde diferentes ángulos.</p>
+</div>
+<h3 id="convencion-de-nombres-de-grupos">Convención de Nombres de Grupos</h3>
+<p>Observa el patrón de nombres: <code>dev_webservers</code>, <code>staging_dbservers</code>, <code>prod_webservers</code>. Usar guiones bajos y prefijos consistentes mantiene los nombres de grupos predecibles y facilita la construcción de patrones. Nunca uses guiones en nombres de grupos; pueden causar problemas con la resolución de variables.</p>
+<h2 id="variables-de-host-y-de-grupo">Variables de Host y de Grupo</h2>
+<p>Las variables te permiten asignar diferentes valores de configuración a diferentes hosts o grupos de hosts. Ansible proporciona una separación limpia a través de dos mecanismos: <strong>variables de host</strong> y <strong>variables de grupo</strong>.</p>
+<h3 id="la-regla-sin-variables-en-el-archivo-de-hosts">La Regla: Sin Variables en el Archivo de Hosts</h3>
+<p>Una buena práctica fundamental: <strong>nunca pongas definiciones de variables en el archivo de hosts del inventario</strong>. El archivo de hosts debe contener solo hosts y grupos. Las variables van en archivos separados.</p>
+<p>Esta separación tiene beneficios prácticos:</p>
+<ul>
+<li>Las variables son más fáciles de encontrar, leer y revisar</li>
+<li>Puedes cambiar variables sin tocar la lista de hosts</li>
+<li>Fomenta organizar las variables por alcance (todos los hosts vs. un grupo vs. un host)</li>
+<li>Los diffs en control de versiones son más limpios: puedes ver que una variable cambió sin navegar por la lista de hosts</li>
+</ul>
+<h3 id="variables-de-grupo-group_vars">Variables de Grupo (<code>group_vars/</code>)</h3>
+<p>Las variables de grupo se aplican a cada host en un grupo. Se definen en archivos dentro del directorio <code>group_vars/</code>, con un archivo por grupo.</p>
+<p>Para el inventario de Parasol Tech, el directorio <code>group_vars/</code> se ve así:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>ansible/inventory/
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>├── hosts.yml
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>├── group_vars/
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>│   ├── all.yml          # Se aplica a todos los hosts
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>│   ├── dev.yml          # Se aplica al grupo dev
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>│   ├── staging.yml      # Se aplica al grupo staging
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>│   └── production.yml   # Se aplica al grupo production
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>└── host_vars/
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>    ├── db01.prod.parasol.example.yml
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>    └── db02.prod.parasol.example.yml
+</code></pre></div>
+<p><strong><code>group_vars/all.yml</code></strong>: variables para todos los hosts:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nn">---</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nt">parasol_organization</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Parasol</span><span class="nv"> </span><span class="s">Tech&quot;</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="nt">parasol_ntp_server</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ntp.parasol.example&quot;</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="nt">parasol_dns_servers</span><span class="p">:</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;10.0.0.10&quot;</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;10.0.0.11&quot;</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="nt">parasol_admin_email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;platform-team@parasol.example&quot;</span>
+</code></pre></div>
+<p><strong><code>group_vars/dev.yml</code></strong>: variables solo para el entorno de desarrollo:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nn">---</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nt">parasol_environment</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;dev&quot;</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="nt">parasol_log_level</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;debug&quot;</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="nt">parasol_monitoring_enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="nt">parasol_backup_schedule</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;weekly&quot;</span>
+</code></pre></div>
+<p><strong><code>group_vars/production.yml</code></strong>: variables para el entorno de producción:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nn">---</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="nt">parasol_environment</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;production&quot;</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="nt">parasol_log_level</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;warning&quot;</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="nt">parasol_monitoring_enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="nt">parasol_backup_schedule</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;hourly&quot;</span>
+</code></pre></div>
+<p>Cuando Ansible se ejecuta contra <code>web01.dev.parasol.example</code>, fusiona las variables de <code>all.yml</code> y <code>dev.yml</code>. El host recibe tanto <code>parasol_organization</code> (de <code>all</code>) como <code>parasol_log_level: debug</code> (de <code>dev</code>). Un host de producción recibe <code>parasol_log_level: warning</code> en su lugar.</p>
+<h3 id="variables-de-host-host_vars">Variables de Host (<code>host_vars/</code>)</h3>
+<p>Las variables de host se aplican a un solo host. Se definen en archivos nombrados según el host dentro del directorio <code>host_vars/</code>.</p>
+<p><strong><code>host_vars/db01.prod.parasol.example.yml</code></strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nn">---</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="nt">parasol_db_role</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;primary&quot;</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="nt">parasol_db_max_connections</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">500</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="nt">parasol_db_backup_retention_days</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span>
+</code></pre></div>
+<p><strong><code>host_vars/db02.prod.parasol.example.yml</code></strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nn">---</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="nt">parasol_db_role</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;replica&quot;</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="nt">parasol_db_max_connections</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">200</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="nt">parasol_db_backup_retention_days</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">7</span>
+</code></pre></div>
+<p>Aunque ambos servidores de base de datos están en el grupo <code>production</code> y comparten las mismas variables de grupo, tienen diferentes roles (primario vs. réplica) y diferentes límites de conexión. Las variables de host manejan estas diferencias por host.</p>
+<h3 id="precedencia-de-variables-adelanto">Precedencia de Variables (Adelanto)</h3>
+<p>Cuando la misma variable se define en múltiples niveles, Ansible sigue un orden de precedencia. Para variables de inventario, la regla es simple:</p>
+<p><strong>Las variables de host sobreescriben las variables de grupo, y las variables de grupo sobreescriben las variables de <code>all</code>.</strong></p>
+<p>Por ejemplo, si <code>group_vars/all.yml</code> establece <code>parasol_log_level: info</code> y <code>group_vars/dev.yml</code> establece <code>parasol_log_level: debug</code>, un host de desarrollo obtiene <code>debug</code> porque el grupo más específico gana.</p>
+<p>Cubriremos el sistema completo de precedencia de variables en el Módulo 4. Por ahora, recuerda: lo más específico gana.</p>
+<h2 id="directorios-de-inventario-estructurados">Directorios de Inventario Estructurados</h2>
+<p>Ya has visto la estructura. Hagámosla explícita. Un <strong>directorio de inventario estructurado</strong> separa hosts, variables de grupo y variables de host en sus propios archivos y directorios:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>inventory/
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>├── hosts.yml              # Definiciones de hosts y grupos (sin variables)
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>├── group_vars/
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>│   ├── all.yml            # Variables para todos los hosts
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>│   ├── dev.yml            # Variables para el grupo dev
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>│   ├── staging.yml        # Variables para el grupo staging
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>│   └── production.yml     # Variables para el grupo production
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>└── host_vars/
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>    ├── db01.prod.parasol.example.yml
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>    └── db02.prod.parasol.example.yml
+</code></pre></div>
+<h3 id="por-que-no-un-solo-archivo">¿Por Qué No un Solo Archivo?</h3>
+<p><em>Puedes</em> poner todo en un solo archivo (hosts, grupos y todas las variables en línea). Pero no deberías, por las mismas razones por las que no pones una aplicación entera en un solo archivo:</p>
+<table>
+<thead>
+<tr>
+<th>Inventario en un solo archivo</th>
+<th>Directorio estructurado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Todo en un lugar, difícil de navegar</td>
+<td>Organizado por alcance, fácil encontrar lo que necesitas</td>
+</tr>
+<tr>
+<td>Un cambio = un diff grande</td>
+<td>Los cambios están aislados en archivos específicos</td>
+</tr>
+<tr>
+<td>Definiciones de variables mezcladas con listas de hosts</td>
+<td>Separación limpia de responsabilidades</td>
+</tr>
+<tr>
+<td>Difícil compartir variables entre inventarios</td>
+<td>Los archivos de <code>group_vars/</code> se pueden enlazar o usar como plantilla</td>
+</tr>
+</tbody>
+</table>
+<h3 id="apuntando-ansible-al-inventario">Apuntando Ansible al Inventario</h3>
+<p>En <code>ansible.cfg</code>, la configuración <code>inventory</code> le dice a Ansible dónde encontrar el inventario:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="k">[defaults]</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="na">inventory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">inventory/hosts.yml</span>
+</code></pre></div>
+<p>Cuando apuntas a un archivo dentro de un directorio que también contiene <code>group_vars/</code> y <code>host_vars/</code>, Ansible carga automáticamente las variables de esos directorios. Por eso el enfoque de directorio estructurado funciona sin ninguna configuración adicional.</p>
+<div class="admonition info">
+<p class="admonition-title">Ruta de directorio vs. ruta de archivo</p>
+<p>También puedes apuntar <code>inventory</code> al directorio mismo (<code>inventory = inventory/</code>). El comportamiento es casi idéntico: Ansible carga todos los archivos de inventario válidos en el directorio junto con <code>group_vars/</code> y <code>host_vars/</code>. Apuntar al archivo específico es más explícito y evita cargar archivos no deseados accidentalmente.</p>
+</div>
+<h2 id="seleccion-de-hosts">Selección de Hosts</h2>
+<p>Una vez que tienes un inventario con grupos, puedes seleccionar contra qué hosts se ejecuta un playbook usando <strong>patrones de host</strong> y el flag <code>--limit</code>.</p>
+<h3 id="patrones-de-host-en-playbooks">Patrones de Host en Playbooks</h3>
+<p>La directiva <code>hosts:</code> en un play acepta patrones, no solo nombres de grupos:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># Apuntar a un solo grupo</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">webservers</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="c1"># Apuntar a múltiples grupos (unión)</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">webservers:dbservers</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="c1"># Apuntar a la intersección de dos grupos (hosts en AMBOS)</span>
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">staging:&amp;webservers</span>
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>
+<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="c1"># Apuntar a un grupo pero excluir otro</span>
+<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">production:!dbservers</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Patrón</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>webservers</code></td>
+<td>Todos los hosts en el grupo webservers</td>
+</tr>
+<tr>
+<td><code>webservers:dbservers</code></td>
+<td>Hosts en webservers O dbservers</td>
+</tr>
+<tr>
+<td><code>staging:&amp;webservers</code></td>
+<td>Hosts en AMBOS staging Y webservers</td>
+</tr>
+<tr>
+<td><code>production:!dbservers</code></td>
+<td>Hosts en production pero NO en dbservers</td>
+</tr>
+<tr>
+<td><code>web*.prod.parasol.example</code></td>
+<td>Hosts que coinciden con el comodín</td>
+</tr>
+<tr>
+<td><code>all</code></td>
+<td>Todos los hosts en el inventario</td>
+</tr>
+</tbody>
+</table>
+<h3 id="el-flag-limit">El Flag <code>--limit</code></h3>
+<p>El flag <code>--limit</code> (o <code>-l</code>) reduce los hosts que un playbook selecciona en tiempo de ejecución, sin cambiar el playbook. Esto es especialmente útil para:</p>
+<ul>
+<li>Probar un playbook contra un host antes de desplegarlo a un grupo</li>
+<li>Ejecutar en producción en un subconjunto de hosts a la vez (actualizaciones progresivas)</li>
+<li>Diagnosticar problemas en un solo host</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1"># Ejecutar solo contra web01 en producción</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/deploy.yml<span class="w"> </span>--mode<span class="w"> </span>stdout<span class="w"> </span>--limit<span class="w"> </span>web01.prod.parasol.example
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="c1"># Ejecutar solo contra el entorno de desarrollo</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/deploy.yml<span class="w"> </span>--mode<span class="w"> </span>stdout<span class="w"> </span>--limit<span class="w"> </span>dev
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="c1"># Ejecutar contra webservers solo en staging</span>
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/deploy.yml<span class="w"> </span>--mode<span class="w"> </span>stdout<span class="w"> </span>--limit<span class="w"> </span><span class="s1">&#39;staging:&amp;webservers&#39;</span>
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Usa comillas en patrones con caracteres especiales</p>
+<p>Cuando uses <code>:</code>, <code>&amp;</code>, <code>!</code> o <code>*</code> en patrones de limit en la línea de comandos, envuelve el patrón entre comillas para evitar que el shell los interprete.</p>
+</div>
+<h3 id="listar-hosts-sin-ejecutar">Listar Hosts Sin Ejecutar</h3>
+<p>Puedes previsualizar qué hosts seleccionaría un playbook sin ejecutarlo:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1"># Listar todos los hosts en el inventario</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>ansible-navigator<span class="w"> </span>inventory<span class="w"> </span>--list<span class="w"> </span>--mode<span class="w"> </span>stdout
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="c1"># Listar hosts en un grupo específico</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>ansible-navigator<span class="w"> </span>inventory<span class="w"> </span>--graph<span class="w"> </span>production<span class="w"> </span>--mode<span class="w"> </span>stdout
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="c1"># Mostrar qué hosts seleccionaría un playbook</span>
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/deploy.yml<span class="w"> </span>--mode<span class="w"> </span>stdout<span class="w"> </span>--list-hosts
+</code></pre></div>
+<p>La opción <code>--graph</code> muestra la jerarquía de grupos como un árbol, lo cual es una excelente forma de verificar la estructura de tu inventario.</p>
+<h2 id="conceptos-de-inventario-dinamico">Conceptos de Inventario Dinámico</h2>
+<p>Todo lo que hemos cubierto hasta ahora es <strong>inventario estático</strong>: escribes la lista de hosts a mano y la actualizas manualmente cuando se agregan o eliminan hosts. Esto funciona bien para entornos pequeños y estables.</p>
+<p>Pero ¿qué pasa con entornos en la nube donde las máquinas virtuales se crean y destruyen automáticamente? ¿O entornos grandes con cientos de hosts gestionados por un CMDB (Base de Datos de Gestión de Configuración)?</p>
+<p>Aquí es donde entra el <strong>inventario dinámico</strong>. Un inventario dinámico es un script o plugin que consulta una fuente externa y genera el inventario sobre la marcha.</p>
+<h3 id="como-funciona-el-inventario-dinamico">Cómo Funciona el Inventario Dinámico</h3>
+<p>En lugar de apuntar <code>inventory</code> a un archivo estático, apuntas a un script o configuras un plugin de inventario. Cuando Ansible se ejecuta, ejecuta el script (o llama al plugin), que devuelve la lista de hosts y variables en formato JSON.</p>
+<p>Las fuentes comunes de inventario dinámico incluyen:</p>
+<table>
+<thead>
+<tr>
+<th>Fuente</th>
+<th>Caso de Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AWS EC2</td>
+<td>Instancias en la nube de Amazon Web Services</td>
+</tr>
+<tr>
+<td>Azure RM</td>
+<td>Máquinas virtuales en Microsoft Azure</td>
+</tr>
+<tr>
+<td>GCP Compute</td>
+<td>Instancias en Google Cloud Platform</td>
+</tr>
+<tr>
+<td>Red Hat Satellite</td>
+<td>Hosts gestionados por Satellite</td>
+</tr>
+<tr>
+<td>NetBox</td>
+<td>Hosts registrados en una fuente de verdad de red</td>
+</tr>
+<tr>
+<td>ServiceNow CMDB</td>
+<td>Gestión de servicios de TI empresarial</td>
+</tr>
+</tbody>
+</table>
+<h3 id="estatico-dinamico-juntos">Estático + Dinámico Juntos</h3>
+<p>Puedes combinar inventarios estáticos y dinámicos apuntando <code>inventory</code> a un directorio que contenga tanto un archivo estático como un script de inventario dinámico o configuración de plugin. Ansible fusiona los resultados.</p>
+<p>Esto es común en la práctica: mantienes un inventario estático para hosts que no existen en una fuente dinámica, y usas un plugin para el resto.</p>
+<div class="admonition info">
+<p class="admonition-title">Inventario dinámico en este curso</p>
+<p>No configuraremos inventario dinámico en este curso porque requiere acceso a un servicio externo (un proveedor de nube, un CMDB, etc.). Lo importante es entender el concepto: el inventario puede generarse programáticamente desde cualquier fuente. Los patrones de grupos y variables que aprendes con inventario estático se aplican igualmente al inventario dinámico.</p>
+</div>
+<h2 id="ejercicios">Ejercicios</h2>
+<h3 id="ejercicio-1-explorar-el-inventario">Ejercicio 1: Explorar el Inventario</h3>
+<p>Navega al directorio <code>ansible/</code> y ejecuta el playbook de verificación de inventario:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nb">cd</span><span class="w"> </span>ansible
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-03/check-inventory.yml<span class="w"> </span>--mode<span class="w"> </span>stdout
+</code></pre></div>
+<p>Examina la salida. Deberías ver:</p>
+<ul>
+<li>Todos los grupos definidos</li>
+<li>Hosts en cada grupo de entorno (dev, staging, production)</li>
+<li>Hosts en cada grupo funcional (webservers, dbservers)</li>
+<li>Variables de <code>group_vars/all.yml</code></li>
+<li>El conteo total de hosts</li>
+</ul>
+<h3 id="ejercicio-2-ver-el-grafo-del-inventario">Ejercicio 2: Ver el Grafo del Inventario</h3>
+<p>Usa <code>ansible-navigator</code> para visualizar la jerarquía del inventario:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>ansible-navigator<span class="w"> </span>inventory<span class="w"> </span>--graph<span class="w"> </span>--mode<span class="w"> </span>stdout
+</code></pre></div>
+<p>Deberías ver un árbol mostrando cómo están anidados los grupos. Prueba graficar un grupo específico:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>ansible-navigator<span class="w"> </span>inventory<span class="w"> </span>--graph<span class="w"> </span>production<span class="w"> </span>--mode<span class="w"> </span>stdout
+</code></pre></div>
+<h3 id="ejercicio-3-practicar-con-limit">Ejercicio 3: Practicar con <code>--limit</code></h3>
+<p>Ejecuta el playbook check-inventory con diferentes valores de <code>--limit</code> y observa cómo cambia la salida:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="c1"># Apuntar solo a localhost (el único host al que podemos conectarnos)</span>
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-03/check-inventory.yml<span class="w"> </span>--mode<span class="w"> </span>stdout<span class="w"> </span>--limit<span class="w"> </span>localhost
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="c1"># Ver qué pasaría si apuntáramos a producción</span>
+<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-03/check-inventory.yml<span class="w"> </span>--mode<span class="w"> </span>stdout<span class="w"> </span>--limit<span class="w"> </span>production<span class="w"> </span>--list-hosts
+</code></pre></div>
+<h3 id="ejercicio-4-agregar-un-archivo-de-variables-de-grupo">Ejercicio 4: Agregar un Archivo de Variables de Grupo</h3>
+<p>Crea un nuevo archivo <code>ansible/inventory/group_vars/webservers.yml</code> con variables específicas para servidores web:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nn">---</span>
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="nt">parasol_http_port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8080</span>
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="nt">parasol_max_connections</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
+<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="nt">parasol_document_root</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/var/www/html&quot;</span>
+</code></pre></div>
+<p>Ejecuta el playbook check-inventory de nuevo. ¿Puedes modificar el playbook para mostrar estas nuevas variables? (Pista: agrega una nueva tarea <code>ansible.builtin.debug</code>.)</p>
+<h3 id="ejercicio-5-inspeccionar-variables-de-host">Ejercicio 5: Inspeccionar Variables de Host</h3>
+<p>Ejecuta el siguiente comando para ver todas las variables que Ansible asignaría a un host específico:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>ansible-navigator<span class="w"> </span>inventory<span class="w"> </span>--host<span class="w"> </span>db01.prod.parasol.example<span class="w"> </span>--mode<span class="w"> </span>stdout
+</code></pre></div>
+<p>Observa cómo la salida incluye variables de <code>group_vars/all.yml</code>, <code>group_vars/production.yml</code> y <code>host_vars/db01.prod.parasol.example.yml</code>, todas fusionadas.</p>
+<h2 id="resumen">Resumen</h2>
+<p>En este módulo:</p>
+<ul>
+<li>Aprendiste los dos formatos de inventario estático (INI y YAML) y por qué se prefiere YAML</li>
+<li>Construiste un inventario estructurado con grupos anidados por entorno y función</li>
+<li>Separaste las variables en directorios <code>group_vars/</code> y <code>host_vars/</code>, nunca en el archivo de hosts</li>
+<li>Usaste patrones de host y <code>--limit</code> para seleccionar subconjuntos específicos de hosts</li>
+<li>Viste cómo los comandos <code>ansible-navigator inventory</code> ayudan a verificar y explorar la estructura del inventario</li>
+<li>Entendiste el concepto de inventario dinámico y cuándo usarlo</li>
+</ul>
+<p>Lionel ahora tiene un inventario que representa toda la infraestructura de Parasol Tech. Cada entorno tiene sus propios valores de configuración, y hosts específicos pueden tener configuraciones únicas. El siguiente desafío: cómo usar esas variables para hacer que los playbooks se adapten a diferentes hosts y entornos.</p>
+<h2 id="proximos-pasos">Próximos Pasos</h2>
+<p>Siguiente: <a href="../4-variables-and-facts/">Módulo 4 -- Variables y Facts</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

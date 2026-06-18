@@ -1,0 +1,2528 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A progressive course teaching Ansible from first principles to production-grade automation">
+      
+      
+      
+        <link rel="canonical" href="https://hero.ansible.ar/modules/9-scaling-with-aap/">
+      
+      
+        <link rel="prev" href="../8-packaging-and-deployment/">
+      
+      
+      
+        
+          <link rel="alternate" href="./" hreflang="en">
+        
+          <link rel="alternate" href="../../es/modules/9-scaling-with-aap/" hreflang="es">
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>9. Scaling with AAP - Ansible Zero to Hero</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#module-9-scaling-with-aap" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Ansible Zero to Hero" class="md-header__button md-logo" aria-label="Ansible Zero to Hero" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Ansible Zero to Hero
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              9. Scaling with AAP
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Select language">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="../../es/modules/9-scaling-with-aap/" hreflang="es" class="md-select__link">
+              Español
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/leogallego/ansible-zero-to-hero" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    leogallego/ansible-zero-to-hero
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../1-introduction/" class="md-tabs__link">
+          
+  
+  
+  Modules
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Ansible Zero to Hero" class="md-nav__button md-logo" aria-label="Ansible Zero to Hero" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Ansible Zero to Hero
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/leogallego/ansible-zero-to-hero" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    leogallego/ansible-zero-to-hero
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Modules
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../2-your-first-playbook/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Your First Playbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../3-managing-inventory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Managing Inventory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../4-variables-and-facts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Variables and Facts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../5-templates-and-handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Templates and Handlers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../6-roles-and-collections/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Roles and Collections
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../7-testing-your-automation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Testing Your Automation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../8-packaging-and-deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Packaging and Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Scaling with AAP
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Scaling with AAP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning Objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-story-so-far" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Story So Far
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#aap-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AAP Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="AAP Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Controller
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automation-hub" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automation Hub
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#event-driven-ansible" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Event-Driven Ansible
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lab-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lab Environment
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Lab Environment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aap-sandbox-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AAP Sandbox Access
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#from-cli-to-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        From CLI to Controller
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="From CLI to Controller">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#projects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Projects
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#job-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Job Templates
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Job Templates">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creating-a-job-template" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creating a Job Template
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#surveys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Surveys
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#launching-and-monitoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Launching and Monitoring
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#workflows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflows
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Workflows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-parasol-tech-deployment-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: Parasol Tech Deployment Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#convergence-and-branching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Convergence and Branching
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inventories-and-credentials" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inventories and Credentials
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Inventories and Credentials">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#inventories-in-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inventories in Controller
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variables-in-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Variables in Controller
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#credentials" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Credentials
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rbac" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RBAC
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RBAC">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#organizations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Organizations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#teams" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Teams
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#roles-and-permissions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Roles and Permissions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rbac-design-for-the-cop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RBAC Design for the CoP
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ee-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EE Integration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="EE Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#adding-ees-to-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adding EEs to Controller
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#assigning-ees-to-job-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Assigning EEs to Job Templates
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ee-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EE Lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#project-sync-and-content-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Project Sync and Content Verification
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Project Sync and Content Verification">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#project-sync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Project Sync
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#content-verification-with-gpg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Content Verification with GPG
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exercises">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercise-1-explore-the-aap-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 1: Explore the AAP Interface
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-2-create-a-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 2: Create a Project
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-3-create-an-inventory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 3: Create an Inventory
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-4-create-and-launch-a-job-template" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 4: Create and Launch a Job Template
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-5-build-a-simple-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 5: Build a Simple Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-6-configure-rbac" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 6: Configure RBAC
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#course-conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Course Conclusion
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Course Conclusion">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-comes-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Comes Next
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning Objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-story-so-far" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Story So Far
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#aap-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AAP Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="AAP Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Controller
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automation-hub" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automation Hub
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#event-driven-ansible" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Event-Driven Ansible
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lab-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lab Environment
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Lab Environment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aap-sandbox-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AAP Sandbox Access
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#from-cli-to-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        From CLI to Controller
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="From CLI to Controller">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#projects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Projects
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#job-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Job Templates
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Job Templates">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creating-a-job-template" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creating a Job Template
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#surveys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Surveys
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#launching-and-monitoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Launching and Monitoring
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#workflows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflows
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Workflows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-parasol-tech-deployment-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: Parasol Tech Deployment Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#convergence-and-branching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Convergence and Branching
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inventories-and-credentials" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inventories and Credentials
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Inventories and Credentials">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#inventories-in-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inventories in Controller
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variables-in-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Variables in Controller
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#credentials" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Credentials
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rbac" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RBAC
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RBAC">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#organizations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Organizations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#teams" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Teams
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#roles-and-permissions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Roles and Permissions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rbac-design-for-the-cop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RBAC Design for the CoP
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ee-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EE Integration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="EE Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#adding-ees-to-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adding EEs to Controller
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#assigning-ees-to-job-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Assigning EEs to Job Templates
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ee-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EE Lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#project-sync-and-content-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Project Sync and Content Verification
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Project Sync and Content Verification">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#project-sync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Project Sync
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#content-verification-with-gpg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Content Verification with GPG
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exercises">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercise-1-explore-the-aap-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 1: Explore the AAP Interface
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-2-create-a-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 2: Create a Project
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-3-create-an-inventory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 3: Create an Inventory
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-4-create-and-launch-a-job-template" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 4: Create and Launch a Job Template
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-5-build-a-simple-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 5: Build a Simple Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-6-configure-rbac" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 6: Configure RBAC
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#course-conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Course Conclusion
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Course Conclusion">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-comes-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Comes Next
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="module-9-scaling-with-aap">Module 9: Scaling with AAP</h1>
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>By the end of this module you will be able to:</p>
+<ul>
+<li>Describe the Ansible Automation Platform components (Controller, Hub, EDA)</li>
+<li>Create job templates and workflows in Controller</li>
+<li>Configure inventories and credentials in Controller</li>
+<li>Set up RBAC with teams, roles, and permissions</li>
+<li>Integrate Execution Environments with Controller</li>
+<li>Configure project sync with content verification</li>
+</ul>
+<h2 id="the-story-so-far">The Story So Far</h2>
+<p>The CoP at Parasol Tech has come a long way. The team has a tested, linted, and signed collection: <code>parasoltech.infrastructure</code>. It ships inside a custom Execution Environment built with <code>ansible-builder</code>. Every change passes through <code>ansible-lint</code>, Molecule, pytest, and tox-ansible before merging. Content is signed with <code>ansible-sign</code> so that nobody can tamper with playbooks between review and execution.</p>
+<p>But a new problem is emerging. Lionel runs the webserver deployment from a laptop. Jordan runs the patching playbook from a different laptop. A third team member runs ad-hoc commands from a jump host. Nobody has visibility into what ran, when, who ran it, or whether it succeeded. There is no audit trail, no access control, and no way to schedule recurring jobs.</p>
+<p>"I ran the database backup playbook yesterday," Jordan says. "But I used <code>--limit staging</code> instead of <code>--limit production</code>. Nobody noticed until this morning."</p>
+<p>Lionel frowns. "And I have no way to know who ran what on the prod servers last week. We need a control plane."</p>
+<p>The CoP agrees: CLI execution does not scale. They need centralized orchestration with governance, audit logging, role-based access control, and the ability to chain automation into multi-step workflows. They need <strong>Ansible Automation Platform</strong>.</p>
+<h2 id="aap-overview">AAP Overview</h2>
+<p>Ansible Automation Platform (AAP) is Red Hat's enterprise platform for managing Ansible automation at scale. It takes the CLI tools you have been using throughout this course and adds a centralized control plane with a web UI, REST API, RBAC, audit logging, credential management, and workflow orchestration.</p>
+<p>AAP has three main components:</p>
+<h3 id="controller">Controller</h3>
+<p><strong>Automation Controller</strong> (formerly Ansible Tower) is the central management layer. It provides:</p>
+<ul>
+<li><strong>Job Templates</strong>: reusable definitions for running playbooks with specific inventories, credentials, and variables</li>
+<li><strong>Workflows</strong>: multi-step automation pipelines that chain job templates together with conditional logic</li>
+<li><strong>Inventories</strong>: centralized host management with static sources, dynamic providers, and synced inventory from external systems</li>
+<li><strong>Credentials</strong>: secure storage for SSH keys, API tokens, cloud credentials, and vault passwords. No more secrets on individual laptops</li>
+<li><strong>RBAC</strong>: teams, roles, and granular permissions that control who can run what on which hosts</li>
+<li><strong>Audit logging</strong>: every job execution is recorded with who triggered it, what ran, when it started, how long it took, and what the result was</li>
+<li><strong>Scheduling</strong>: run jobs on a recurring schedule without human intervention</li>
+<li><strong>REST API</strong>: everything available in the UI is also available via API, enabling integration with CI/CD pipelines, ticketing systems, and custom tooling</li>
+</ul>
+<p>Controller is where the CoP will do most of their work. It replaces the pattern of "SSH into a server and run <code>ansible-playbook</code>" with a governed, auditable workflow.</p>
+<h3 id="automation-hub">Automation Hub</h3>
+<p><strong>Private Automation Hub</strong> is the organization's internal content repository. It serves two purposes:</p>
+<ol>
+<li>
+<p><strong>Collection registry</strong>: Teams publish collections to Hub instead of sharing tarballs or pointing at Git repositories. Other teams install collections from Hub using <code>ansible-galaxy</code>. Hub can host certified collections (from Red Hat and partners), validated community collections, and the organization's own private collections like <code>parasoltech.infrastructure</code>.</p>
+</li>
+<li>
+<p><strong>EE container registry</strong>: Hub stores Execution Environment images. Controller pulls EE images from Hub when running jobs, ensuring every execution uses the approved, tested image. This is where the EE built in Module 8 would be published for production use.</p>
+</li>
+</ol>
+<p>Hub solves the content distribution problem. Instead of each team maintaining their own copy of collections and EE images, there is a single, governed source of truth.</p>
+<h3 id="event-driven-ansible">Event-Driven Ansible</h3>
+<p><strong>Event-Driven Ansible (EDA)</strong> extends automation from "human triggers a job" to "events trigger jobs automatically." EDA introduces:</p>
+<ul>
+<li><strong>Event sources</strong>: integrations that listen for events from monitoring systems (Prometheus, Datadog), ticketing systems (ServiceNow), cloud providers (AWS CloudWatch), messaging systems (Kafka), webhooks, and more</li>
+<li><strong>Rulebooks</strong>: YAML files that define conditions and actions: "when this event occurs, run this job template"</li>
+<li><strong>Decision Environments</strong>: container images (similar to EEs) that bundle the Python dependencies needed by event source plugins</li>
+</ul>
+<p>A simple rulebook looks like this:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nn">---</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Respond to web server alerts</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">all</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="nt">sources</span><span class="p">:</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">ansible.eda.webhook</span><span class="p">:</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">        </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.0.0.0</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">        </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5000</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">  </span><span class="nt">rules</span><span class="p">:</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Restart web server on health check failure</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">      </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">event.payload.alert == &quot;webserver_down&quot;</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">      </span><span class="nt">action</span><span class="p">:</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">        </span><span class="nt">run_job_template</span><span class="p">:</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Restart</span><span class="nv"> </span><span class="s">Web</span><span class="nv"> </span><span class="s">Server&quot;</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">          </span><span class="nt">organization</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Parasol</span><span class="nv"> </span><span class="s">Tech&quot;</span>
+</code></pre></div>
+<p>EDA is powerful but it is an advanced topic. This module focuses on Controller and Hub, the components the CoP needs first. EDA becomes relevant once the team has stable job templates and workflows that can be triggered programmatically.</p>
+<div class="admonition note">
+<p class="admonition-title">EDA scope</p>
+<p>Event-Driven Ansible is a full topic on its own. This module introduces the concept so you understand where it fits in the platform. For hands-on EDA work, refer to the <a href="https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/">EDA documentation</a>.</p>
+</div>
+<h2 id="lab-environment">Lab Environment</h2>
+<h3 id="aap-sandbox-access">AAP Sandbox Access</h3>
+<p>To follow the exercises in this module, you need access to an AAP instance. There are two options:</p>
+<p><strong>Option 1: Red Hat AAP Sandbox (recommended)</strong></p>
+<p>Red Hat provides a free, time-limited AAP sandbox environment for learning:</p>
+<ol>
+<li>Visit the <a href="https://www.redhat.com/en/technologies/management/ansible/trial">AAP Trial page</a></li>
+<li>Log in with your Red Hat account (free to create)</li>
+<li>Follow the setup instructions to provision your sandbox</li>
+<li>You will receive a Controller URL and credentials</li>
+</ol>
+<p>The sandbox includes Controller, a private Automation Hub, and pre-configured resources to explore.</p>
+<p><strong>Option 2: Red Hat Developer Sandbox</strong></p>
+<p>The <a href="https://developers.redhat.com/products/ansible/getting-started">Red Hat Developer Sandbox</a> provides access to AAP as part of a broader developer environment. This option includes additional developer tools and services.</p>
+<div class="admonition tip">
+<p class="admonition-title">No AAP access?</p>
+<p>If you cannot access an AAP instance right now, this module is still valuable. The concepts, architecture, and mapping from CLI to Controller apply to any AAP version. Read through the material, study the diagrams, and revisit the exercises when you have access.</p>
+</div>
+<h2 id="from-cli-to-controller">From CLI to Controller</h2>
+<p>Everything you have done on the command line maps directly to a Controller concept. The transition is not about learning new automation; it is about managing the same automation through a governed platform.</p>
+<table>
+<thead>
+<tr>
+<th>CLI Concept</th>
+<th>Controller Equivalent</th>
+<th>What Changes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ansible-playbook deploy.yml</code></td>
+<td><strong>Job Template</strong></td>
+<td>Playbook, inventory, credentials, and variables are bundled into a reusable, parameterized definition</td>
+</tr>
+<tr>
+<td>Inventory files (<code>hosts.yml</code>, <code>group_vars/</code>)</td>
+<td><strong>Inventory</strong> + <strong>Inventory Source</strong></td>
+<td>Inventories are stored in Controller. Sources can sync from Git, cloud providers, or custom scripts</td>
+</tr>
+<tr>
+<td><code>~/.ssh/</code> keys, vault passwords</td>
+<td><strong>Credentials</strong></td>
+<td>Secrets are stored encrypted in Controller. Users can <em>use</em> credentials without <em>seeing</em> them</td>
+</tr>
+<tr>
+<td><code>ansible.cfg</code></td>
+<td><strong>Project</strong> + <strong>Organization settings</strong></td>
+<td>Configuration is managed per-project and per-organization through the UI/API</td>
+</tr>
+<tr>
+<td><code>--limit webservers</code></td>
+<td><strong>Limit</strong> field on Job Template</td>
+<td>Same concept, exposed as a UI field that can be locked down or parameterized</td>
+</tr>
+<tr>
+<td><code>--extra-vars "env=prod"</code></td>
+<td><strong>Extra Variables</strong> / <strong>Survey</strong></td>
+<td>Variables can be prompted at launch time with validation using surveys</td>
+</tr>
+<tr>
+<td>Running from cron</td>
+<td><strong>Schedule</strong> on Job Template</td>
+<td>Built-in scheduler with recurrence rules, no cron management needed</td>
+</tr>
+<tr>
+<td>Checking terminal output</td>
+<td><strong>Job output log</strong> + <strong>Notifications</strong></td>
+<td>Full stdout capture, log retention, and notifications to Slack, email, webhook, etc.</td>
+</tr>
+</tbody>
+</table>
+<p>The key insight: Controller does not change <em>what</em> Ansible does. It changes <em>how you manage</em> what Ansible does. Your playbooks, roles, collections, and EEs work exactly the same way. Controller adds governance, audit, and collaboration on top.</p>
+<h3 id="projects">Projects</h3>
+<p>A <strong>Project</strong> in Controller is a reference to a source control repository containing Ansible content. When you create a Project, you tell Controller:</p>
+<ul>
+<li>Where the Git repository lives (URL)</li>
+<li>Which branch or tag to use</li>
+<li>Which credential to use for authentication (SSH key or token)</li>
+<li>Whether to verify content signatures (using the GPG credential from Module 8)</li>
+</ul>
+<p>Controller clones the repository and makes its contents available for Job Templates. When the repository changes, you sync the Project to pull the latest content.</p>
+<p>This is how the signed content from Module 8 gets into Controller. The supply chain security workflow completes here:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Developer signs content → Pushes to Git → Controller syncs Project → Verifies GPG signature
+</code></pre></div>
+<h2 id="job-templates">Job Templates</h2>
+<p>A <strong>Job Template</strong> is the most fundamental unit of work in Controller. It bundles everything needed to run a playbook:</p>
+<ul>
+<li><strong>Project</strong>: which Git repository contains the playbook</li>
+<li><strong>Playbook</strong>: which playbook file to run (selected from the Project)</li>
+<li><strong>Inventory</strong>: which hosts to target</li>
+<li><strong>Credentials</strong>: which keys/tokens to use for authentication</li>
+<li><strong>Execution Environment</strong>: which EE image to use for the runtime</li>
+<li><strong>Extra Variables</strong>: default variables to pass to the playbook</li>
+<li><strong>Limit</strong>: optional host pattern to restrict execution</li>
+<li><strong>Verbosity</strong>: the <code>-v</code> level (0-5)</li>
+</ul>
+<h3 id="creating-a-job-template">Creating a Job Template</h3>
+<p>To create a Job Template for the webserver deployment from Module 6:</p>
+<ol>
+<li><strong>Create a Project</strong> pointing to the Git repository that contains the <code>parasoltech.infrastructure</code> collection and its playbooks</li>
+<li><strong>Create or select an Inventory</strong> with the target hosts</li>
+<li><strong>Create or select a Credential</strong> with the SSH key for the target hosts</li>
+<li><strong>Create the Job Template</strong> with:<ul>
+<li>Name: <code>Deploy Web Server</code></li>
+<li>Project: the project created in step 1</li>
+<li>Playbook: <code>playbooks/deploy-webserver.yml</code></li>
+<li>Inventory: the inventory from step 2</li>
+<li>Credentials: the SSH credential from step 3</li>
+<li>Execution Environment: <code>parasoltech-ee</code></li>
+</ul>
+</li>
+</ol>
+<p>Once created, anyone with the right permissions can launch the job template from the UI or API. Every execution is logged with the user who launched it, the parameters used, and the full output.</p>
+<h3 id="surveys">Surveys</h3>
+<p><strong>Surveys</strong> let you prompt users for input at launch time. Instead of trusting users to type <code>--extra-vars</code> correctly, you define a form with typed fields, default values, and validation rules.</p>
+<p>For example, a survey for the webserver deployment might include:</p>
+<ul>
+<li><strong>Environment</strong> (dropdown): <code>dev</code>, <code>staging</code>, <code>production</code></li>
+<li><strong>Web server port</strong> (integer): default <code>8080</code>, minimum <code>1024</code>, maximum <code>65535</code></li>
+<li><strong>Enable TLS</strong> (boolean): default <code>true</code></li>
+</ul>
+<p>Surveys turn a generic job template into a self-service interface. A team member who does not know Ansible can deploy a web server by filling out a form. The survey maps their answers to extra variables that the playbook consumes.</p>
+<div class="admonition tip">
+<p class="admonition-title">Survey variables map to extra vars</p>
+<p>Survey answers are injected as extra variables. If your playbook uses <code>webserver_port</code>, create a survey question with the variable name <code>webserver_port</code>. The playbook code does not change at all.</p>
+</div>
+<h3 id="launching-and-monitoring">Launching and Monitoring</h3>
+<p>After creating a job template, you can:</p>
+<ul>
+<li><strong>Launch</strong> it immediately from the UI or via the API</li>
+<li><strong>Schedule</strong> it to run at specific times (daily, weekly, on a cron expression)</li>
+<li><strong>Monitor</strong> running jobs in real time; the output streams live, just like watching a terminal</li>
+<li><strong>Review</strong> completed jobs: every run is stored with its full output, start/end time, and status</li>
+</ul>
+<p>The job detail view shows the same output you would see from <code>ansible-playbook</code> on the command line, plus metadata about the execution environment, credentials used, and which user triggered the run.</p>
+<h2 id="workflows">Workflows</h2>
+<p>A <strong>Workflow</strong> chains multiple job templates into a multi-step automation pipeline. Each node in a workflow can:</p>
+<ul>
+<li>Run a <strong>Job Template</strong></li>
+<li>Run another <strong>Workflow</strong> (nested workflows)</li>
+<li>Run a <strong>Project Sync</strong></li>
+<li>Run an <strong>Inventory Source Sync</strong></li>
+<li>Execute an <strong>Approval</strong> node (pause and wait for a human to approve before continuing)</li>
+</ul>
+<p>Nodes connect with three types of edges:</p>
+<table>
+<thead>
+<tr>
+<th>Edge Type</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>On Success</strong> (green)</td>
+<td>Run the next node only if this one succeeded</td>
+</tr>
+<tr>
+<td><strong>On Failure</strong> (red)</td>
+<td>Run the next node only if this one failed</td>
+</tr>
+<tr>
+<td><strong>Always</strong> (blue)</td>
+<td>Run the next node regardless of this one's result</td>
+</tr>
+</tbody>
+</table>
+<h3 id="example-parasol-tech-deployment-workflow">Example: Parasol Tech Deployment Workflow</h3>
+<p>The CoP designs a deployment workflow that chains the automation from previous modules:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>┌─────────────────┐   success   ┌────────────────┐   success   ┌──────────────────┐
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>│  Sync Project   │────────────▶│  Deploy Web    │────────────▶│  Verify Service  │
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>│  (verify GPG)   │             │  Server        │             │  Health          │
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>└─────────────────┘             └────────────────┘             └──────────────────┘
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>        │                              │                              │
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>     failure                        failure                        failure
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>        ▼                              ▼                              ▼
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>┌─────────────────┐             ┌────────────────┐             ┌──────────────────┐
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>│  Notify: Content│             │  Notify: Deploy│             │  Rollback Web    │
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>│  Tampered       │             │  Failed        │             │  Server          │
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>└─────────────────┘             └────────────────┘             └──────────────────┘
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>                                                                      │
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>                                                                   always
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>                                                                      ▼
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>                                                               ┌──────────────────┐
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>                                                               │  Notify: Rollback│
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>                                                               │  Executed        │
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>                                                               └──────────────────┘
+</code></pre></div>
+<p>This workflow:</p>
+<ol>
+<li><strong>Syncs the Project</strong> and verifies the GPG signature (Module 8). If the content has been tampered with, the workflow stops and sends a notification.</li>
+<li><strong>Deploys the web server</strong> using the job template. If deployment fails, a notification is sent.</li>
+<li><strong>Verifies the service</strong> is healthy. If the health check fails, it triggers a rollback and then notifies regardless of the rollback's outcome.</li>
+</ol>
+<p>Each node in this workflow is a separate job template. The workflow orchestrates them, handles failures, and ensures the right people are notified. This is far more robust than a shell script that runs three <code>ansible-playbook</code> commands in sequence.</p>
+<h3 id="convergence-and-branching">Convergence and Branching</h3>
+<p>Workflows support more than linear chains. Nodes can fan out (one node triggers multiple parallel nodes) and converge (multiple nodes must complete before the next one starts). This enables patterns like:</p>
+<ul>
+<li>Run database migration and cache warming in parallel, then deploy the application after both succeed</li>
+<li>Run the same playbook against multiple environments in parallel</li>
+<li>Add an approval gate before production deployment</li>
+</ul>
+<h2 id="inventories-and-credentials">Inventories and Credentials</h2>
+<h3 id="inventories-in-controller">Inventories in Controller</h3>
+<p>Controller inventories serve the same purpose as the inventory files from Module 3, but with additional capabilities:</p>
+<ul>
+<li><strong>Static hosts</strong>: add hosts and groups directly in the UI, equivalent to editing <code>hosts.yml</code></li>
+<li><strong>Inventory Sources</strong>: sync hosts from external systems automatically:<ul>
+<li><strong>SCM (Git)</strong>: pull inventory files from a repository (your structured <code>inventory/</code> directory works directly)</li>
+<li><strong>Cloud providers</strong>: discover hosts from AWS, Azure, GCP, VMware, OpenStack</li>
+<li><strong>Custom scripts</strong>: run a dynamic inventory script that returns JSON</li>
+</ul>
+</li>
+<li><strong>Smart Inventories</strong>: create dynamic groups based on host facts and filters</li>
+</ul>
+<p>For the CoP, the most natural starting point is an SCM inventory source that points to the same Git repository as the Project. This keeps the inventory files the team already wrote (in Module 3) as the source of truth, while making them available in Controller.</p>
+<h3 id="variables-in-controller">Variables in Controller</h3>
+<p>Inventory variables in Controller follow the same precedence rules as CLI Ansible. You can define variables at the host level, group level, or inventory level. These map directly to what you would put in <code>host_vars/</code> and <code>group_vars/</code> in your structured inventory directory.</p>
+<div class="admonition warning">
+<p class="admonition-title">One source of truth</p>
+<p>Avoid defining the same variable in both your Git-tracked inventory files and in the Controller UI. Pick one location and be consistent. The recommended approach is to keep variables in Git (managed by the CoP) and sync them to Controller via the SCM inventory source.</p>
+</div>
+<h3 id="credentials">Credentials</h3>
+<p>Credentials are one of Controller's most important features. They store secrets (SSH keys, passwords, API tokens, vault passwords, cloud provider credentials) encrypted in the database.</p>
+<p>Key credential types:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Machine</strong></td>
+<td>SSH keys and passwords for connecting to managed hosts</td>
+</tr>
+<tr>
+<td><strong>Source Control</strong></td>
+<td>Git credentials for syncing Projects</td>
+</tr>
+<tr>
+<td><strong>Vault</strong></td>
+<td>Ansible Vault passwords for decrypting encrypted files</td>
+</tr>
+<tr>
+<td><strong>Container Registry</strong></td>
+<td>Credentials for pulling EE images from private registries</td>
+</tr>
+<tr>
+<td><strong>GPG Public Key</strong></td>
+<td>Public key for content signature verification</td>
+</tr>
+<tr>
+<td><strong>Cloud</strong></td>
+<td>AWS, Azure, GCP, VMware credentials for cloud modules and dynamic inventory</td>
+</tr>
+</tbody>
+</table>
+<p>The critical security benefit: users can <em>use</em> a credential to run a job without ever seeing the secret value. A junior team member can deploy to production servers using an SSH key they cannot download, copy, or view. The credential is injected into the EE at runtime by Controller.</p>
+<p>This is a fundamental shift from CLI Ansible, where everyone who runs playbooks needs direct access to SSH keys and vault passwords on their local machine.</p>
+<h2 id="rbac">RBAC</h2>
+<p>Role-Based Access Control (RBAC) in Controller determines who can do what. It is built on three concepts:</p>
+<h3 id="organizations">Organizations</h3>
+<p>An <strong>Organization</strong> is the top-level grouping. It contains users, teams, projects, inventories, and credentials. A single AAP installation can host multiple organizations.</p>
+<p>For Parasol Tech, there might be one organization for each division:</p>
+<ul>
+<li><code>Parasol Tech - Platform</code> (the CoP's organization)</li>
+<li><code>Parasol Tech - Database</code> (the database team)</li>
+<li><code>Parasol Tech - Networking</code> (the network team)</li>
+</ul>
+<h3 id="teams">Teams</h3>
+<p>A <strong>Team</strong> is a group of users within an organization. Teams are how you assign permissions at scale: instead of giving permissions to each user individually, you assign permissions to a team and add users to that team.</p>
+<p>The CoP might create teams like:</p>
+<ul>
+<li><code>Platform Admins</code>: full access to all resources</li>
+<li><code>Platform Developers</code>: can create and edit job templates, but cannot modify credentials or inventories</li>
+<li><code>Platform Operators</code>: can launch job templates and view results, but cannot edit them</li>
+</ul>
+<h3 id="roles-and-permissions">Roles and Permissions</h3>
+<p>Controller has a granular permission model. For each resource type (Job Template, Inventory, Credential, Project, etc.), several permission levels exist:</p>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Capabilities</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Admin</strong></td>
+<td>Full control: create, edit, delete, execute, and grant permissions to others</td>
+</tr>
+<tr>
+<td><strong>Use</strong></td>
+<td>Can use the resource (e.g., attach a credential to a job template) but cannot edit it</td>
+</tr>
+<tr>
+<td><strong>Execute</strong></td>
+<td>Can launch a job template or workflow but cannot edit its configuration</td>
+</tr>
+<tr>
+<td><strong>Read</strong></td>
+<td>Can view the resource but cannot modify or execute it</td>
+</tr>
+<tr>
+<td><strong>Approval</strong></td>
+<td>Can approve or deny workflow approval nodes</td>
+</tr>
+</tbody>
+</table>
+<p>These roles are assigned per-resource. This means you can give a team <code>Execute</code> permission on the <code>Deploy Web Server</code> job template, <code>Read</code> permission on the production inventory, and no access to the credentials used by that job template. The team can launch the deployment but cannot see the SSH keys, edit the inventory, or modify the job template configuration.</p>
+<h3 id="rbac-design-for-the-cop">RBAC Design for the CoP</h3>
+<p>A practical RBAC setup for Parasol Tech:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Organization: Parasol Tech - Platform
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>│
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>├── Team: Platform Admins
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>│   ├── Admin on all Projects
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>│   ├── Admin on all Inventories
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>│   ├── Admin on all Credentials
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>│   └── Admin on all Job Templates
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>│
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>├── Team: Platform Developers
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>│   ├── Admin on Job Templates (can create/edit)
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>│   ├── Use on Credentials (can attach to JTs)
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>│   ├── Use on Inventories (can attach to JTs)
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>│   └── Read on Projects
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>│
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>└── Team: Platform Operators
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>    ├── Execute on specific Job Templates
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>    ├── Read on Inventories
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>    └── Approval on Deployment Workflow
+</code></pre></div>
+<p>With this setup:</p>
+<ul>
+<li><strong>Admins</strong> manage the infrastructure: credentials, inventories, projects, and EE configurations</li>
+<li><strong>Developers</strong> create and test job templates using existing credentials and inventories</li>
+<li><strong>Operators</strong> run approved job templates and approve deployment workflows without any ability to modify the automation or access secrets</li>
+</ul>
+<p>This is the governance the CoP was missing when everyone ran <code>ansible-playbook</code> from their own laptop.</p>
+<h2 id="ee-integration">EE Integration</h2>
+<p>The Execution Environment built in Module 8 integrates directly with Controller. Instead of running playbooks with whatever Python happens to be on a server, Controller runs every job inside an EE container.</p>
+<h3 id="adding-ees-to-controller">Adding EEs to Controller</h3>
+<p>Controller needs to know where to pull EE images from. There are two approaches:</p>
+<p><strong>From a container registry (recommended for production):</strong></p>
+<ol>
+<li>Push the EE image to a container registry (Private Automation Hub, Quay.io, or any OCI registry), as shown in Module 8</li>
+<li>In Controller, create an <strong>Execution Environment</strong> resource pointing to the image URL (e.g., <code>hub.parasol.example/ee-images/parasoltech-ee:1.0.0</code>)</li>
+<li>If the registry requires authentication, create a <strong>Container Registry</strong> credential and attach it to the EE</li>
+</ol>
+<p><strong>From a local image (for development/testing):</strong></p>
+<ol>
+<li>Build the image on the Controller host with <code>ansible-builder</code></li>
+<li>Reference the local image name in the Controller EE configuration</li>
+</ol>
+<h3 id="assigning-ees-to-job-templates">Assigning EEs to Job Templates</h3>
+<p>Each job template can specify which EE to use. When the job launches, Controller pulls the EE image (if not already cached) and runs the playbook inside it.</p>
+<p>This completes the portability story from Module 8:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>Module 8:  Build EE → Test locally with ansible-navigator
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>Module 9:  Push EE to registry → Controller pulls and uses it for every job
+</code></pre></div>
+<p>Every execution, whether triggered by a user, a schedule, a workflow, or an API call, uses the same EE image with the same dependencies. The "works on my machine" problem is eliminated at the platform level, not just the individual developer level.</p>
+<h3 id="ee-lifecycle">EE Lifecycle</h3>
+<p>As the CoP updates their collection and dependencies, the EE lifecycle looks like this:</p>
+<ol>
+<li>Developer updates <code>execution-environment.yml</code> (add a new collection, update a Python dependency)</li>
+<li>CI builds a new EE image with a new version tag (e.g., <code>parasoltech-ee:1.1.0</code>)</li>
+<li>The image is pushed to the container registry</li>
+<li>An admin updates the Controller EE resource to point to the new tag</li>
+<li>All job templates using that EE now run with the updated dependencies</li>
+</ol>
+<p>This is a controlled, versioned process. The EE in production does not change until an admin deliberately updates it. Rollback is as simple as pointing back to the previous tag.</p>
+<h2 id="project-sync-and-content-verification">Project Sync and Content Verification</h2>
+<h3 id="project-sync">Project Sync</h3>
+<p>When Controller syncs a Project, it clones (or pulls) the Git repository and makes its contents available. You can trigger a sync manually, schedule it, or configure webhooks so that a Git push automatically triggers a sync.</p>
+<p>The sync process:</p>
+<ol>
+<li>Controller connects to the Git repository using the Source Control credential</li>
+<li>It clones the repository (or fetches updates to an existing clone)</li>
+<li>It scans the repository for playbook files and makes them available for Job Templates</li>
+<li>If content verification is configured, it runs signature verification</li>
+</ol>
+<h3 id="content-verification-with-gpg">Content Verification with GPG</h3>
+<p>This is where the content signing from Module 8 closes the loop. When a Project has GPG content verification enabled:</p>
+<ol>
+<li>Upload the public GPG key to Controller as a <strong>GPG Public Key</strong> credential</li>
+<li>Configure the Project to use this credential for content verification</li>
+<li>On every sync, Controller runs the equivalent of <code>ansible-sign project gpg-verify .</code> on the repository content</li>
+</ol>
+<p>If verification succeeds, the Project syncs normally and its content is available. If verification fails (because a file was modified, added, or removed after signing), the sync fails. No job templates can run the unverified content.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>Complete supply chain:
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>Developer → Reviews code → Signs with ansible-sign → Pushes to Git
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>                                                          │
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>Controller ← Syncs Project ← Verifies GPG signature ─────┘
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>     │
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>     └── Runs playbook in EE ← Pulls EE from Hub
+</code></pre></div>
+<p>Every link in this chain is verified:</p>
+<ul>
+<li>The <strong>content</strong> is signed and verified (ansible-sign + GPG)</li>
+<li>The <strong>runtime</strong> is packaged and versioned (EE + container registry)</li>
+<li>The <strong>access</strong> is governed (RBAC + credentials)</li>
+<li>The <strong>execution</strong> is audited (job logs + notifications)</li>
+</ul>
+<p>This is the mature automation practice the CoP set out to build.</p>
+<h2 id="exercises">Exercises</h2>
+<h3 id="exercise-1-explore-the-aap-interface">Exercise 1: Explore the AAP Interface</h3>
+<p>Log in to your AAP sandbox and explore the main navigation areas. Identify where each concept from this module lives in the UI:</p>
+<ul>
+<li>Organizations</li>
+<li>Projects</li>
+<li>Inventories</li>
+<li>Credentials</li>
+<li>Job Templates</li>
+<li>Workflows</li>
+<li>Execution Environments</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Use the documentation</p>
+<p>The AAP UI may vary slightly between versions. Refer to the <a href="https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/">AAP documentation</a> for version-specific navigation instructions.</p>
+</div>
+<h3 id="exercise-2-create-a-project">Exercise 2: Create a Project</h3>
+<p>Create a Project in Controller:</p>
+<ol>
+<li>Navigate to the Projects section</li>
+<li>
+<p>Create a new Project with:</p>
+<ul>
+<li><strong>Name</strong>: <code>Parasol Infrastructure</code></li>
+<li><strong>Organization</strong>: your sandbox organization</li>
+<li><strong>Source Control Type</strong>: Git</li>
+<li><strong>Source Control URL</strong>: the URL of your course repository</li>
+</ul>
+</li>
+<li>
+<p>Sync the Project and verify it succeeds</p>
+</li>
+</ol>
+<p>If you set up content signing in Module 8 and have a GPG public key, configure the Project to verify signatures during sync.</p>
+<h3 id="exercise-3-create-an-inventory">Exercise 3: Create an Inventory</h3>
+<p>Create an Inventory in Controller:</p>
+<ol>
+<li>Navigate to the Inventories section</li>
+<li>Create a new Inventory:<ul>
+<li><strong>Name</strong>: <code>Parasol Dev Environment</code></li>
+<li><strong>Organization</strong>: your sandbox organization</li>
+</ul>
+</li>
+<li>Add a host manually (use <code>localhost</code> with <code>ansible_connection: local</code> for sandbox testing)</li>
+<li>Create a group called <code>webservers</code> and add the host to it</li>
+</ol>
+<h3 id="exercise-4-create-and-launch-a-job-template">Exercise 4: Create and Launch a Job Template</h3>
+<p>Create a Job Template that ties together the Project and Inventory:</p>
+<ol>
+<li>Navigate to Job Templates</li>
+<li>
+<p>Create a new Job Template:</p>
+<ul>
+<li><strong>Name</strong>: <code>Deploy Web Server</code></li>
+<li><strong>Project</strong>: <code>Parasol Infrastructure</code></li>
+<li><strong>Playbook</strong>: select a playbook from the synced Project</li>
+<li><strong>Inventory</strong>: <code>Parasol Dev Environment</code></li>
+<li><strong>Credentials</strong>: select or create an appropriate credential</li>
+</ul>
+</li>
+<li>
+<p>Launch the job template</p>
+</li>
+<li>Watch the output in real time</li>
+<li>After completion, review the job details: note the start time, end time, user, and status</li>
+</ol>
+<h3 id="exercise-5-build-a-simple-workflow">Exercise 5: Build a Simple Workflow</h3>
+<p>Create a Workflow that chains two job templates:</p>
+<ol>
+<li>Navigate to Workflow Templates</li>
+<li>Create a new Workflow Template:<ul>
+<li><strong>Name</strong>: <code>Deploy and Verify</code></li>
+<li><strong>Organization</strong>: your sandbox organization</li>
+</ul>
+</li>
+<li>Open the workflow visualizer</li>
+<li>Add the <code>Deploy Web Server</code> job template as the first node</li>
+<li>Add a second node (a simple verification playbook) connected with an "On Success" edge</li>
+<li>Save and launch the workflow</li>
+<li>Watch both nodes execute in sequence</li>
+</ol>
+<h3 id="exercise-6-configure-rbac">Exercise 6: Configure RBAC</h3>
+<p>Explore the RBAC model:</p>
+<ol>
+<li>Navigate to Teams and create a team called <code>Operators</code></li>
+<li>Navigate to Users and create a test user or note an existing one</li>
+<li>Add the user to the <code>Operators</code> team</li>
+<li>On the <code>Deploy Web Server</code> job template, grant the <code>Operators</code> team <strong>Execute</strong> permission</li>
+<li>Verify that the team can launch the job template but cannot edit it</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Sandbox limitations</p>
+<p>Some sandbox environments may not support all RBAC operations. If you encounter permission restrictions, study the RBAC concepts and permission model in the documentation instead.</p>
+</div>
+<h2 id="summary">Summary</h2>
+<p>In this module you:</p>
+<ul>
+<li>Learned that Ansible Automation Platform provides a centralized control plane with three components: <strong>Controller</strong> for orchestration and governance, <strong>Automation Hub</strong> for content distribution, and <strong>Event-Driven Ansible</strong> for event-based automation</li>
+<li>Mapped every CLI concept to its Controller equivalent: playbooks become Job Templates, inventory files become Inventories with Sources, SSH keys become Credentials, and scripts become Schedules</li>
+<li>Created Job Templates that bundle a playbook, inventory, credentials, EE, and variables into a reusable, launchable unit of work</li>
+<li>Built Workflows that chain job templates with success, failure, and always edges to create robust multi-step automation pipelines with approval gates</li>
+<li>Configured Inventories from static hosts and SCM sources, and used Credentials to securely store and inject secrets without exposing them to users</li>
+<li>Set up RBAC with Organizations, Teams, and granular per-resource roles (Admin, Use, Execute, Read) to govern who can do what</li>
+<li>Integrated the Execution Environment from Module 8 with Controller, ensuring every job uses the same versioned, tested runtime</li>
+<li>Completed the supply chain security workflow: developers sign content with <code>ansible-sign</code>, push to Git, and Controller verifies the GPG signature on every Project Sync before allowing execution</li>
+</ul>
+<p>The CoP at Parasol Tech now has a complete automation practice. Content is developed collaboratively (Module 6), tested rigorously (Module 7), packaged reproducibly (Module 8), and managed through a governed platform with RBAC, audit logging, and workflow orchestration (Module 9). The journey from Lionel running ad-hoc commands on a laptop to a fully governed enterprise automation practice is complete.</p>
+<h2 id="course-conclusion">Course Conclusion</h2>
+<p>Lionel leans back and looks at the dashboard. The deployment workflow ran overnight. Project synced, GPG signatures verified, web servers deployed across three environments, health checks passed, notifications sent to the team channel. No one had to SSH into anything. No one typed <code>ansible-playbook</code> at 2 AM.</p>
+<p>It is hard to believe this started with a single ad-hoc command on a laptop.</p>
+<p><strong>The journey:</strong></p>
+<ul>
+<li><strong>Module 1</strong> -- Lionel discovered Ansible and ran the first ad-hoc command. One engineer, one machine, one problem.</li>
+<li><strong>Module 2</strong> -- Ad-hoc commands became playbooks. Automation became repeatable.</li>
+<li><strong>Module 3</strong> -- Playbooks grew beyond localhost. Structured inventories organized hosts across environments.</li>
+<li><strong>Module 4</strong> -- Variables and facts made playbooks flexible. The same automation adapted to different environments.</li>
+<li><strong>Module 5</strong> -- Templates and handlers turned playbooks into configuration management tools. Services restarted when configs changed.</li>
+<li><strong>Module 6</strong> -- The CoP formed. Roles and collections turned individual playbooks into reusable, shareable components. <code>ansible-creator</code> scaffolded the collection. <code>ade</code> managed the development environment.</li>
+<li><strong>Module 7</strong> -- Quality gates went up. <code>ansible-lint</code> caught style issues, Molecule tested roles end-to-end, pytest validated logic, and tox-ansible orchestrated the matrix. No untested code reached production.</li>
+<li><strong>Module 8</strong> -- Execution Environments eliminated "works on my machine." Content signing with <code>ansible-sign</code> proved that what runs in production is what the CoP reviewed. The supply chain was secured.</li>
+<li><strong>Module 9</strong> -- Controller brought governance. Job templates, workflows, RBAC, audit logging, and centralized credential management replaced the chaos of everyone running playbooks from their own laptop.</li>
+</ul>
+<p>What started as one person solving one problem is now an enterprise automation practice with testing, packaging, signing, and governance.</p>
+<h3 id="what-comes-next">What Comes Next</h3>
+<p>The core journey is complete, but there is more to explore:</p>
+<p><strong>Domain tracks (Modules 10-11)</strong></p>
+<ul>
+<li><a href="10-linux-systems.md">Module 10 -- Linux Systems</a>: Apply everything you have learned to Linux system administration: user management, hardening, patching, and compliance at scale</li>
+<li><a href="11-network-automation.md">Module 11 -- Network Automation</a>: Extend Ansible to network devices with <code>network_cli</code>, resource modules, and integration with NetBox as a source of truth</li>
+</ul>
+<p>These tracks are optional and self-contained. They do not introduce new core concepts; they apply the skills from modules 1-9 to specific domains.</p>
+<p><strong>Community and certification</strong></p>
+<ul>
+<li><strong>Contribute to Ansible</strong>: The Ansible community thrives on contributions. Start by improving documentation, submitting bug reports, or sharing roles on <a href="https://galaxy.ansible.com/">Ansible Galaxy</a>. Join the community on <a href="https://forum.ansible.com/">forum.ansible.com</a>.</li>
+<li><strong>Red Hat Certification</strong>: Validate your skills with the <a href="https://www.redhat.com/en/services/certification/rhce">Red Hat Certified Engineer (RHCE)</a> exam, which includes Ansible automation, or the <a href="https://www.redhat.com/en/services/certification/red-hat-certified-specialist-developing-automation-ansible-automation-platform">Red Hat Certified Specialist in Developing Automation with Ansible Automation Platform</a> exam.</li>
+<li><strong>Ansible Development Tools</strong>: Continue exploring <code>adt</code> and its components. The tools evolve rapidly; check the <a href="https://ansible.readthedocs.io/projects/dev-tools/">Ansible Development Tools documentation</a> for the latest features.</li>
+</ul>
+<p><strong>Keep practicing</strong></p>
+<p>The best way to learn automation is to automate. Find a manual process at your organization, break it into the architecture hierarchy (landscape, type, function, component), write a role, test it with Molecule, package it as a collection, and deploy it through Controller. Then do it again with the next process.</p>
+<p>The Zen of Ansible says it well: <em>"Ansible is not just a tool -- it is a practice."</em> This course gave you the tools and the patterns. The practice is yours to build.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
