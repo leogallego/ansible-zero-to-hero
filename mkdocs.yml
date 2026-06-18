@@ -1,6 +1,6 @@
 site_name: Ansible Zero to Hero
 site_description: A progressive course teaching Ansible from first principles to production-grade automation
-site_url: https://leogallego.github.io/ansible-zero-to-hero/
+site_url: https://hero.ansible.ar/
 repo_url: https://github.com/leogallego/ansible-zero-to-hero
 repo_name: leogallego/ansible-zero-to-hero
 
