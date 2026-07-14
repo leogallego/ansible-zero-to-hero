@@ -1,0 +1,1763 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A progressive course teaching Ansible from first principles to production-grade automation">
+      
+      
+      
+        <link rel="canonical" href="https://hero.ansible.ar/es/modules/7-controlling-execution-flow/">
+      
+      
+      
+      
+        
+          <link rel="alternate" href="../../../modules/7-controlling-execution-flow/" hreflang="en">
+        
+          <link rel="alternate" href="./" hreflang="es">
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Módulo 7: Controlando el Flujo de Ejecución - Ansible Zero to Hero</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#modulo-7-controlando-el-flujo-de-ejecucion" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../../" title="Ansible Zero to Hero" class="md-header__button md-logo" aria-label="Ansible Zero to Hero" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Ansible Zero to Hero
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Módulo 7: Controlando el Flujo de Ejecución
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Seleccionar idioma">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="../../../modules/7-controlling-execution-flow/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="es" class="md-select__link">
+              Español
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/leogallego/ansible-zero-to-hero" title="Ir al repositorio" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    leogallego/ansible-zero-to-hero
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Pestañas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../1-introduction/" class="md-tabs__link">
+          
+  
+  
+  Modules
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../" title="Ansible Zero to Hero" class="md-nav__button md-logo" aria-label="Ansible Zero to Hero" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Ansible Zero to Hero
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/leogallego/ansible-zero-to-hero" title="Ir al repositorio" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    leogallego/ansible-zero-to-hero
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Modules
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../2-your-first-playbook/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Your First Playbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../3-managing-inventory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Managing Inventory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../4-variables-and-facts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Variables and Facts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../5-templates-and-handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Templates and Handlers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../6-protecting-your-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Protecting Your Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../8-roles-and-collections/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Roles and Collections
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../9-testing-your-automation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Testing Your Automation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-packaging-and-deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Packaging and Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11-cicd-for-ansible/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. CI/CD for Ansible
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12-scaling-with-aap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Scaling with AAP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objetivos-de-aprendizaje" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos de Aprendizaje
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#la-historia-hasta-ahora" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Historia Hasta Ahora
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bloques-rescue-y-always" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bloques, Rescue y Always
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Bloques, Rescue y Always">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#agrupando-tareas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Agrupando Tareas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manejo-de-errores-el-patron-trycatchfinally" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Manejo de Errores: El Patrón Try/Catch/Finally
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejecutando-handlers-en-rescue" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejecutando Handlers en Rescue
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#salida-anticipada-con-meta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Salida Anticipada con meta
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#control-fino-de-tareas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Control Fino de Tareas
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Control Fino de Tareas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#changed_when-controlando-el-reporte-de-cambios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        changed_when -- Controlando el Reporte de Cambios
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#failed_when-redefiniendo-el-fallo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        failed_when -- Redefiniendo el Fallo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ansiblebuiltinassert-verificaciones-de-precondiciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ansible.builtin.assert -- Verificaciones de Precondiciones
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ignore_errors-usar-con-precaucion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ignore_errors -- Usar con Precaución
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#control-de-fallos-por-lote" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Control de Fallos por Lote
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tags
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tags">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#agregando-tags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Agregando Tags
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tags-especiales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tags Especiales
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#previsualizando-tags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Previsualizando Tags
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#herencia-de-tags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Herencia de Tags
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tags-y-bloques" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tags y Bloques
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#delegacion-y-run-once" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Delegación y Run Once
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Delegación y Run Once">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#delegate_to" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        delegate_to
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run_once" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        run_once
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delegate_facts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        delegate_facts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#actualizaciones-progresivas-con-serial" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Actualizaciones Progresivas con serial
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reset_connection-para-cambios-a-mitad-del-play" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        reset_connection para Cambios a Mitad del Play
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#include-vs-import" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Include vs Import
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Include vs Import">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#import_tasks-estatico-tiempo-de-compilacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        import_tasks -- Estático (Tiempo de Compilación)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#include_tasks-dinamico-tiempo-de-ejecucion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        include_tasks -- Dinámico (Tiempo de Ejecución)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cuando-usar-cada-uno" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cuándo Usar Cada Uno
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejemplo-de-herencia-de-tags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejemplo de Herencia de Tags
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aplicandolo-a-roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Aplicándolo a Roles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ejercicios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicios
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ejercicios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-1-manejo-de-errores-con-bloques" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 1: Manejo de Errores con Bloques
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-2-controlando-el-estado-de-tareas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 2: Controlando el Estado de Tareas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-3-trabajando-con-tags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 3: Trabajando con Tags
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-4-delegacion-y-run-once" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 4: Delegación y Run Once
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-5-include-vs-import" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 5: Include vs Import
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resumen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proximos-pasos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Próximos Pasos
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="modulo-7-controlando-el-flujo-de-ejecucion">Módulo 7: Controlando el Flujo de Ejecución</h1>
+<h2 id="objetivos-de-aprendizaje">Objetivos de Aprendizaje</h2>
+<p>Al finalizar este módulo serás capaz de:</p>
+<ul>
+<li>Usar <code>block</code>, <code>rescue</code> y <code>always</code> para manejar errores de tareas de forma elegante e implementar lógica de rollback</li>
+<li>Controlar el reporte de estado de tareas con <code>changed_when</code> y <code>failed_when</code>, y entender cuándo <code>ignore_errors</code> es apropiado versus cuándo no lo es</li>
+<li>Organizar tareas de playbooks con tags y aplicar la regla de seguridad: cada tag debe ser seguro de ejecutar de forma independiente</li>
+<li>Delegar tareas a otros hosts con <code>delegate_to</code> y <code>run_once</code> para coordinación entre hosts</li>
+<li>Distinguir entre <code>include_tasks</code> (dinámico) e <code>import_tasks</code> (estático), y elegir el correcto para cada situación</li>
+<li>Usar <code>ansible.builtin.assert</code> para validar precondiciones antes de proceder con operaciones riesgosas</li>
+</ul>
+<h2 id="la-historia-hasta-ahora">La Historia Hasta Ahora</h2>
+<p>Lionel y Jordan ejecutan su playbook de despliegue de servidores web contra el entorno de staging. El playbook instala paquetes, despliega archivos de configuración, ejecuta una migración de base de datos y reinicia servicios. La migración de base de datos falla en el segundo de cuatro servidores. Ansible se detiene en ese host pero continúa en los demás. El resultado: dos servidores tienen el nuevo esquema, uno está atascado a mitad de la migración y uno nunca comenzó. El equipo pasa las siguientes dos horas arreglando la inconsistencia manualmente.</p>
+<p>"Necesitamos manejar errores," dice Jordan. "Si la migración falla, el playbook debería revertir los cambios de configuración y dejar el servidor en un estado conocido -- no en un estado intermedio. Y necesitamos una forma de ejecutar solo el paso de migración para depuración, sin re-ejecutar todo el playbook."</p>
+<p>Lionel está de acuerdo: "También quiero ejecutar una verificación de salud en el balanceador de carga desde el nodo de control durante el despliegue, no desde los servidores web mismos."</p>
+<p>En este módulo, Lionel y Jordan aprenden manejo estructurado de errores con bloques, control fino de tareas, tags para ejecución selectiva, delegación para tareas entre hosts, y cómo dividir sus playbooks crecientes en archivos de tareas reutilizables. Estas técnicas transforman sus playbooks frágiles de todo-o-nada en automatización resiliente y quirúrgica -- y preparan el terreno para extraer roles reutilizables en el Módulo 8.</p>
+<h2 id="bloques-rescue-y-always">Bloques, Rescue y Always</h2>
+<p>Un <strong>bloque</strong> agrupa múltiples tareas bajo una directiva única. Los bloques sirven dos propósitos: aplicar atributos compartidos (como <code>when</code>, <code>become</code> o <code>tags</code>) a un conjunto de tareas, y manejar errores con <code>rescue</code> y <code>always</code>.</p>
+<h3 id="agrupando-tareas">Agrupando Tareas</h3>
+<p>En su forma más simple, un bloque te permite aplicar una condición o escalación de privilegios a varias tareas a la vez en lugar de repetirla en cada una:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install and configure the application</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">block</span><span class="p">:</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install application packages</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">      </span><span class="nt">ansible.builtin.package</span><span class="p">:</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">parasol_app_packages</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">        </span><span class="nt">state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">present</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deploy application configuration</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">      </span><span class="nt">ansible.builtin.template</span><span class="p">:</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">        </span><span class="nt">src</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app.conf.j2</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">        </span><span class="nt">dest</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc/myapp/app.conf</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">        </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0644&quot;</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">        </span><span class="nt">backup</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">  </span><span class="nt">when</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">parasol_app_enabled | default(true)</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">  </span><span class="nt">become</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+<p>Ambas tareas heredan la condición <code>when</code> y <code>become: true</code> del bloque. Sin el bloque, necesitarías repetir ambas directivas en cada tarea.</p>
+<h3 id="manejo-de-errores-el-patron-trycatchfinally">Manejo de Errores: El Patrón Try/Catch/Finally</h3>
+<p>El verdadero poder de los bloques es el manejo de errores. Un bloque con <code>rescue</code> y <code>always</code> funciona como try/catch/finally en lenguajes de programación:</p>
+<ul>
+<li><strong>block</strong> -- las tareas a intentar (el "try")</li>
+<li><strong>rescue</strong> -- se ejecuta solo si una tarea en el bloque falla (el "catch")</li>
+<li><strong>always</strong> -- se ejecuta sin importar si hubo éxito o fallo (el "finally")</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deploy application with error handling</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">block</span><span class="p">:</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deploy configuration file</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">      </span><span class="nt">ansible.builtin.copy</span><span class="p">:</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">        </span><span class="nt">content</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;version={{</span><span class="nv"> </span><span class="s">parasol_app_version</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">default(&#39;1.0&#39;)</span><span class="nv"> </span><span class="s">}}\n&quot;</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">        </span><span class="nt">dest</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">parasol_demo_dir</span><span class="nv"> </span><span class="s">}}/app/config.ini&quot;</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">        </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0644&quot;</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run database migration</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">      </span><span class="nt">ansible.builtin.command</span><span class="p">:</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">        </span><span class="nt">cmd</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/bin/false</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">      </span><span class="nt">changed_when</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">      </span><span class="nt">when</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">parasol_simulate_failure | default(true)</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">  </span><span class="nt">rescue</span><span class="p">:</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Report the failure</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">      </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">        </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">          </span><span class="no">Deployment failed at task &#39;{{ ansible_failed_task.name }}&#39;.</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">          </span><span class="no">Rolling back.</span>
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w">        </span><span class="nt">verbosity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Roll back configuration</span>
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="w">      </span><span class="nt">ansible.builtin.file</span><span class="p">:</span>
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">parasol_demo_dir</span><span class="nv"> </span><span class="s">}}/app/config.ini&quot;</span>
+<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="w">        </span><span class="nt">state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">absent</span>
+<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>
+<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="w">  </span><span class="nt">always</span><span class="p">:</span>
+<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Record deployment attempt</span>
+<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="w">      </span><span class="nt">ansible.builtin.lineinfile</span><span class="p">:</span>
+<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">parasol_demo_dir</span><span class="nv"> </span><span class="s">}}/deploy.log&quot;</span>
+<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="w">        </span><span class="nt">line</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">ansible_facts[&#39;date_time&#39;][&#39;iso8601&#39;]</span><span class="nv"> </span><span class="s">}}</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">Deployment</span><span class="nv"> </span><span class="s">attempt</span><span class="nv"> </span><span class="s">completed&quot;</span>
+<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="w">        </span><span class="nt">create</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="w">        </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0644&quot;</span>
+</code></pre></div>
+<p>Cuando la tarea de migración falla, Ansible salta las tareas restantes del bloque y pasa a <code>rescue</code>. Dentro de rescue, dos variables especiales están disponibles:</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Contiene</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ansible_failed_task</code></td>
+<td>El objeto completo de la tarea que falló (usa <code>.name</code> para obtener su nombre)</td>
+</tr>
+<tr>
+<td><code>ansible_failed_result</code></td>
+<td>El objeto resultado de la tarea fallida (usa <code>.rc</code>, <code>.msg</code>, <code>.stderr</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>La sección <code>always</code> se ejecuta después tanto del bloque como del rescue (o después del bloque solo si nada falló). Úsala para tareas de limpieza como registro de logs, cierre de conexiones o eliminación de archivos temporales.</p>
+<h3 id="ejecutando-handlers-en-rescue">Ejecutando Handlers en Rescue</h3>
+<p>En el Módulo 5 aprendiste que los handlers se ejecutan al final del play. Pero ¿qué pasa si un handler fue notificado antes de un fallo, y necesitas que se ejecute durante rescue? Usa <code>meta: flush_handlers</code> para forzar la ejecución inmediata de handlers pendientes:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">rescue</span><span class="p">:</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Flush pending handlers before rollback</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">ansible.builtin.meta</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">flush_handlers</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Roll back configuration</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="nt">ansible.builtin.file</span><span class="p">:</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">      </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc/myapp/app.conf</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">      </span><span class="nt">state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">absent</span>
+</code></pre></div>
+<h3 id="salida-anticipada-con-meta">Salida Anticipada con <code>meta</code></h3>
+<p>A veces un error es irrecuperable y quieres detener el play completo o remover un host del procesamiento posterior:</p>
+<ul>
+<li><strong><code>meta: end_play</code></strong> -- detiene el play actual para todos los hosts. Úsalo en rescue cuando el fallo afecta todo el despliegue.</li>
+<li><strong><code>meta: end_host</code></strong> -- remueve solo el host actual del play. Los demás hosts continúan.</li>
+<li><strong><code>meta: clear_host_errors</code></strong> -- restablece el estado de error de un host para que participe en plays posteriores.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">rescue</span><span class="p">:</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">This host cannot continue</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="nt">ansible.builtin.meta</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">end_host</span>
+</code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Los bloques no son bucles</p>
+<p>Los bloques agrupan tareas para directivas compartidas y manejo de errores. Cada tarea en un bloque se ejecuta en secuencia. No se puede iterar sobre un bloque. Si necesitas repetir un conjunto de tareas, usa <code>ansible.builtin.include_tasks</code> con un <code>loop</code> -- cubierto más adelante en este módulo.</p>
+</div>
+<h2 id="control-fino-de-tareas">Control Fino de Tareas</h2>
+<p>Una vez que puedes capturar errores con bloques, la siguiente pregunta es: ¿qué cuenta como error? ¿Y qué cuenta como un cambio? Ansible proporciona varias directivas para controlar el reporte de estado de las tareas.</p>
+<h3 id="changed_when-controlando-el-reporte-de-cambios"><code>changed_when</code> -- Controlando el Reporte de Cambios</h3>
+<p>Los módulos <code>ansible.builtin.command</code> y <code>ansible.builtin.shell</code> siempre reportan <code>changed</code>, incluso cuando realizan una operación de solo lectura. Esto es engañoso y dispara handlers innecesariamente. Usa <code>changed_when</code> para decirle a Ansible cuándo una tarea realmente cambió algo:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check application version</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="nt">ansible.builtin.command</span><span class="p">:</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="nt">cmd</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cat {{ parasol_demo_dir }}/app/config.ini</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span><span class="nt">register</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">parasol_version_check</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span><span class="nt">changed_when</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+</code></pre></div>
+<p>Establecer <code>changed_when: false</code> significa "esta tarea nunca cambia nada." También puedes usar expresiones:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Initialize the database</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span><span class="nt">ansible.builtin.command</span><span class="p">:</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="nt">cmd</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myapp-cli db init</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span><span class="nt">register</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">parasol_db_init</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span><span class="nt">changed_when</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&#39;Created&#39;</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">parasol_db_init.stdout&quot;</span>
+</code></pre></div>
+<p>Ahora la tarea solo reporta <code>changed</code> cuando la salida contiene "Created." En ejecuciones posteriores donde la base de datos ya existe, reporta <code>ok</code>.</p>
+<div class="admonition danger">
+<p class="admonition-title">Siempre agrega <code>changed_when</code> a tareas command y shell</p>
+<p>Esto no es opcional. Sin <code>changed_when</code>, las tareas command y shell siempre se muestran como changed, haciendo tu playbook no idempotente. La regla de ansible-lint <code>no-changed-when</code> lo impone -- lo verás en el Módulo 9.</p>
+</div>
+<h3 id="failed_when-redefiniendo-el-fallo"><code>failed_when</code> -- Redefiniendo el Fallo</h3>
+<p>Algunos comandos usan códigos de salida distintos de cero para condiciones que no son errores. <code>grep</code> devuelve código de salida 1 cuando no encuentra coincidencias -- eso no es un fallo, es un resultado esperado. Usa <code>failed_when</code> para definir qué constituye realmente un fallo:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check for deprecated configuration entries</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="nt">ansible.builtin.command</span><span class="p">:</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span><span class="nt">cmd</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">grep -c &quot;deprecated&quot; {{ parasol_demo_dir }}/app/config.ini</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span><span class="nt">register</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">parasol_deprecated_check</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">  </span><span class="nt">failed_when</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">parasol_deprecated_check.rc &gt; 1</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">  </span><span class="nt">changed_when</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+</code></pre></div>
+<p>Aquí la tarea solo falla si <code>grep</code> mismo tiene un error (código de salida 2+), no cuando simplemente no encuentra coincidencias (código de salida 1).</p>
+<h3 id="ansiblebuiltinassert-verificaciones-de-precondiciones"><code>ansible.builtin.assert</code> -- Verificaciones de Precondiciones</h3>
+<p>Antes de ejecutar una operación riesgosa, valida que los prerequisitos se cumplan. El módulo <code>assert</code> falla con un mensaje claro si las condiciones no se satisfacen:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Validate deployment preconditions</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span><span class="nt">ansible.builtin.assert</span><span class="p">:</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="nt">that</span><span class="p">:</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">parasol_app_version is defined</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">parasol_app_version is version(&#39;1.0&#39;, &#39;&gt;=&#39;)</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">    </span><span class="nt">fail_msg</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">      </span><span class="no">parasol_app_version must be defined and &gt;= 1.0.</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">      </span><span class="no">Got: &#39;{{ parasol_app_version | default(&#39;undefined&#39;) }}&#39;.</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">    </span><span class="nt">success_msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Preconditions</span><span class="nv"> </span><span class="s">met:</span><span class="nv"> </span><span class="s">deploying</span><span class="nv"> </span><span class="s">version</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">parasol_app_version</span><span class="nv"> </span><span class="s">}}&quot;</span>
+</code></pre></div>
+<p>Assert es una alternativa mucho mejor que saltar tareas silenciosamente con <code>when</code>. Si una variable falta, quieres saberlo inmediatamente -- no descubrir después que la mitad del playbook fue saltada.</p>
+<h3 id="ignore_errors-usar-con-precaucion"><code>ignore_errors</code> -- Usar con Precaución</h3>
+<p>La directiva <code>ignore_errors: true</code> hace que una tarea continúe sin importar el fallo. Tiene su lugar, pero se usa en exceso:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check connectivity to optional metrics endpoint</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span><span class="nt">ansible.builtin.command</span><span class="p">:</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">    </span><span class="nt">cmd</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cat /nonexistent/metrics/endpoint</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span><span class="nt">ignore_errors</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span><span class="nt">changed_when</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+</code></pre></div>
+<p>Esta tarea falla (la ruta no existe), pero el playbook continúa. El error es visible en la salida pero no detiene la ejecución.</p>
+<div class="admonition warning">
+<p class="admonition-title"><code>ignore_errors</code> es un indicador de problemas</p>
+<p><code>ignore_errors: true</code> silencia <strong>todos</strong> los errores en una tarea, incluyendo los inesperados. Prefiere <code>failed_when</code> para definir exactamente qué constituye un fallo, o usa <code>block</code>/<code>rescue</code> para manejar errores explícitamente. Reserva <code>ignore_errors</code> para tareas donde genuinamente no te importa el resultado -- como verificar un endpoint externo opcional. Si te encuentras usándolo frecuentemente, tu playbook probablemente tiene un problema de diseño.</p>
+</div>
+<h3 id="control-de-fallos-por-lote">Control de Fallos por Lote</h3>
+<p>Para despliegues a través de muchos hosts, puede que no quieras detenerte completamente cuando un host falla. Dos configuraciones a nivel de play controlan esto:</p>
+<ul>
+<li><strong><code>any_errors_fatal: true</code></strong> -- si cualquier host falla, todos los hosts se detienen. Usa esto para cambios que deben ser todo-o-nada (como migraciones de base de datos).</li>
+<li><strong><code>max_fail_percentage: 25</code></strong> -- el play continúa mientras menos del 25% de los hosts hayan fallado. Útil para actualizaciones progresivas donde algunos fallos son aceptables.</li>
+</ul>
+<h2 id="tags">Tags</h2>
+<p>Los tags te permiten ejecutar un subconjunto de tu playbook sin ejecutar todo. Son etiquetas que adjuntas a tareas, bloques, plays o roles, y luego seleccionas en la línea de comandos.</p>
+<h3 id="agregando-tags">Agregando Tags</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install application packages</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span><span class="nt">ansible.builtin.package</span><span class="p">:</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">parasol_app_packages</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">    </span><span class="nt">state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">present</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">  </span><span class="nt">tags</span><span class="p">:</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">install</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deploy configuration</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="w">  </span><span class="nt">ansible.builtin.template</span><span class="p">:</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="w">    </span><span class="nt">src</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app.conf.j2</span>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="w">    </span><span class="nt">dest</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc/myapp/app.conf</span>
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="w">    </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0644&quot;</span>
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="w">  </span><span class="nt">tags</span><span class="p">:</span>
+<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">configure</span>
+</code></pre></div>
+<p>Ejecuta solo las tareas de instalación:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>deploy.yml<span class="w"> </span>--mode<span class="w"> </span>stdout<span class="w"> </span>--tags<span class="w"> </span>install
+</code></pre></div>
+<h3 id="tags-especiales">Tags Especiales</h3>
+<p>Ansible proporciona dos tags especiales integrados:</p>
+<ul>
+<li><strong><code>always</code></strong> -- las tareas etiquetadas con <code>always</code> se ejecutan sin importar qué tags selecciones. Usa esto para verificaciones de estado o logging que siempre deben ocurrir.</li>
+<li><strong><code>never</code></strong> -- las tareas etiquetadas con <code>never</code> solo se ejecutan cuando solicitas explícitamente el tag. Usa esto para volcados de depuración u operaciones destructivas.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Show deployment status</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Deployment</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">progress&quot;</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">    </span><span class="nt">verbosity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">  </span><span class="nt">tags</span><span class="p">:</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">always</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Dump all variables for debugging</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="w">    </span><span class="nt">var</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vars</span>
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="w">    </span><span class="nt">verbosity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="w">  </span><span class="nt">tags</span><span class="p">:</span>
+<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">never</span>
+<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">debug</span>
+</code></pre></div>
+<p>El volcado de depuración solo se ejecuta con <code>--tags debug</code>. Nunca se ejecuta en operación normal.</p>
+<h3 id="previsualizando-tags">Previsualizando Tags</h3>
+<p>Antes de ejecutar con tags, previsualiza lo que sucederá:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># Listar todos los tags disponibles</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>deploy.yml<span class="w"> </span>--mode<span class="w"> </span>stdout<span class="w"> </span>--list-tags
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="c1"># Listar tareas que se ejecutarían con tags específicos</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>deploy.yml<span class="w"> </span>--mode<span class="w"> </span>stdout<span class="w"> </span>--list-tasks<span class="w"> </span>--tags<span class="w"> </span>configure
+</code></pre></div>
+<h3 id="herencia-de-tags">Herencia de Tags</h3>
+<p>Los tags en <code>ansible.builtin.import_tasks</code> fluyen hacia abajo a cada tarea dentro del archivo importado. Los tags en <code>ansible.builtin.include_tasks</code> aplican solo a la declaración de include misma -- las tareas internas no los heredan. Esta distinción importa y se cubre en la sección Include vs Import a continuación.</p>
+<div class="admonition danger">
+<p class="admonition-title">La regla de seguridad de tags</p>
+<p>Cada tag <strong>debe</strong> ser seguro de ejecutar de forma independiente. Si ejecutar <code>--tags deploy</code> sin ejecutar también <code>--tags install</code> rompería algo, tu diseño de tags está mal. Los tags son para seleccionar subconjuntos de un playbook bien estructurado, no para imponer orden de ejecución.</p>
+</div>
+<h3 id="tags-y-bloques">Tags y Bloques</h3>
+<p>Cuando etiquetas un bloque, el tag aplica a todas las tareas en <code>block</code>, <code>rescue</code> y <code>always</code>. Pero ten cuidado: si ejecutas con <code>--tags</code> y el bloque está etiquetado pero <code>rescue</code>/<code>always</code> no, el manejo de errores podría no ejecutarse. Siempre asegúrate de que si un bloque tiene tags, las secciones rescue y always compartan esos tags o usen el tag especial <code>always</code>.</p>
+<h2 id="delegacion-y-run-once">Delegación y Run Once</h2>
+<p>A veces una tarea necesita ejecutarse en un host diferente al que se está configurando. Por ejemplo, remover un servidor web de un balanceador de carga antes de desplegarlo -- esa acción se ejecuta en el balanceador de carga (o el nodo de control), no en el servidor web.</p>
+<h3 id="delegate_to"><code>delegate_to</code></h3>
+<p>La directiva <code>delegate_to</code> ejecuta una tarea en un host especificado mientras sigue operando en el contexto del host actual:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Remove host from load balancer</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Removing</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">inventory_hostname</span><span class="nv"> </span><span class="s">}}</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">load</span><span class="nv"> </span><span class="s">balancer</span><span class="nv"> </span><span class="s">pool&quot;</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">    </span><span class="nt">verbosity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">  </span><span class="nt">delegate_to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localhost</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deploy application</span>
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="w">  </span><span class="nt">ansible.builtin.copy</span><span class="p">:</span>
+<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="w">    </span><span class="nt">content</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;version={{</span><span class="nv"> </span><span class="s">parasol_app_version</span><span class="nv"> </span><span class="s">}}\n&quot;</span>
+<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="w">    </span><span class="nt">dest</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">parasol_demo_dir</span><span class="nv"> </span><span class="s">}}/app/release.txt&quot;</span>
+<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="w">    </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0644&quot;</span>
+<a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a>
+<a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Add host back to load balancer</span>
+<a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a><span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
+<a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a><span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Adding</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">inventory_hostname</span><span class="nv"> </span><span class="s">}}</span><span class="nv"> </span><span class="s">back</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">load</span><span class="nv"> </span><span class="s">balancer</span><span class="nv"> </span><span class="s">pool&quot;</span>
+<a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a><span class="w">    </span><span class="nt">verbosity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a><span class="w">  </span><span class="nt">delegate_to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localhost</span>
+</code></pre></div>
+<p>La clave: <code>delegate_to: localhost</code> ejecuta la tarea en el nodo de control, pero <code>inventory_hostname</code> sigue refiriéndose al host objetivo. Así es como interactúas con sistemas externos (balanceadores de carga, monitoreo, DNS) durante un despliegue por host.</p>
+<div class="admonition tip">
+<p class="admonition-title">Prefiere <code>delegate_to: localhost</code> sobre <code>local_action</code></p>
+<p>La directiva más antigua <code>local_action</code> hace lo mismo pero está deprecada por ansible-lint (regla <code>deprecated-local-action</code>). Siempre usa <code>delegate_to: localhost</code> en su lugar.</p>
+</div>
+<h3 id="run_once"><code>run_once</code></h3>
+<p>Cuando una tarea debe ejecutarse solo una vez sin importar cuántos hosts estén en el play, usa <code>run_once: true</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Send deployment notification</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Deployment</span><span class="nv"> </span><span class="s">notification</span><span class="nv"> </span><span class="s">sent</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">ansible_play_hosts</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">length</span><span class="nv"> </span><span class="s">}}</span><span class="nv"> </span><span class="s">hosts&quot;</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">    </span><span class="nt">verbosity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">  </span><span class="nt">run_once</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">  </span><span class="nt">delegate_to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localhost</span>
+</code></pre></div>
+<p>Sin <code>run_once</code>, esta notificación se dispararía una vez por host. Con él, la tarea se ejecuta en el primer host del lote y salta todos los demás.</p>
+<h3 id="delegate_facts"><code>delegate_facts</code></h3>
+<p>Por defecto, los facts recopilados durante una tarea delegada se asignan al host que delega, no al host objetivo de la delegación. Si necesitas que los facts se almacenen en el objetivo, agrega <code>delegate_facts: true</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Gather load balancer facts</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">  </span><span class="nt">ansible.builtin.setup</span><span class="p">:</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">  </span><span class="nt">delegate_to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lb01.parasol.example</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">  </span><span class="nt">delegate_facts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+<h3 id="actualizaciones-progresivas-con-serial">Actualizaciones Progresivas con <code>serial</code></h3>
+<p>Para desplegar a muchos hosts sin tiempo de inactividad, usa <code>serial</code> a nivel de play para procesar hosts en lotes:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Rolling deployment</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">  </span><span class="nt">hosts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">webservers</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">  </span><span class="nt">serial</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+</code></pre></div>
+<p>Esto procesa dos hosts a la vez. Combinado con <code>delegate_to</code> para gestión del balanceador de carga, obtienes un patrón de despliegue progresivo sin tiempo de inactividad.</p>
+<h3 id="reset_connection-para-cambios-a-mitad-del-play"><code>reset_connection</code> para Cambios a Mitad del Play</h3>
+<p>Si una tarea cambia los parámetros de conexión a mitad del play (por ejemplo, cambiar el usuario remoto después de otorgar acceso sudo), usa <code>meta: reset_connection</code> para cerrar y reestablecer la conexión SSH:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Reset connection after user change</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">  </span><span class="nt">ansible.builtin.meta</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">reset_connection</span>
+</code></pre></div>
+<h2 id="include-vs-import">Include vs Import</h2>
+<p>A medida que los playbooks crecen, dividirlos en archivos más pequeños los hace más fáciles de mantener. Ansible proporciona dos mecanismos para esto, y se comportan de manera diferente.</p>
+<h3 id="import_tasks-estatico-tiempo-de-compilacion"><code>import_tasks</code> -- Estático (Tiempo de Compilación)</h3>
+<p><code>ansible.builtin.import_tasks</code> funciona como pegar el contenido del archivo en tu playbook antes de que se ejecute. Ansible pre-procesa los imports durante el análisis del playbook:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Import application setup tasks</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="w">  </span><span class="nt">ansible.builtin.import_tasks</span><span class="p">:</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">    </span><span class="nt">file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tasks/setup-app.yml</span>
+</code></pre></div>
+<h3 id="include_tasks-dinamico-tiempo-de-ejecucion"><code>include_tasks</code> -- Dinámico (Tiempo de Ejecución)</h3>
+<p><code>ansible.builtin.include_tasks</code> funciona como llamar a una función en tiempo de ejecución. Ansible procesa los includes durante la ejecución del play:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Include application setup tasks</span>
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="w">  </span><span class="nt">ansible.builtin.include_tasks</span><span class="p">:</span>
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">    </span><span class="nt">file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tasks/setup-app.yml</span>
+</code></pre></div>
+<h3 id="cuando-usar-cada-uno">Cuándo Usar Cada Uno</h3>
+<table>
+<thead>
+<tr>
+<th>Característica</th>
+<th><code>import_tasks</code></th>
+<th><code>include_tasks</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Momento de procesamiento</td>
+<td>Pre-procesado (estático)</td>
+<td>Tiempo de ejecución (dinámico)</td>
+</tr>
+<tr>
+<td>Visibilidad en <code>--list-tasks</code></td>
+<td>Muestra nombres de tareas individuales</td>
+<td>Muestra solo la declaración de include</td>
+</tr>
+<tr>
+<td>Herencia de tags</td>
+<td>Los tags fluyen hacia abajo a todas las tareas</td>
+<td>Los tags aplican solo al include mismo</td>
+</tr>
+<tr>
+<td>Bucles</td>
+<td>No puede usarse en bucles</td>
+<td>Puede usarse en bucles</td>
+</tr>
+<tr>
+<td>Condicionales</td>
+<td><code>when</code> aplica a cada tarea importada individualmente</td>
+<td><code>when</code> aplica a la declaración de include</td>
+</tr>
+<tr>
+<td>Handlers</td>
+<td>Puede notificar y ser notificado por nombre</td>
+<td>Puede notificar pero los nombres de handlers no son visibles hasta la inclusión</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="admonition-title">Import = tiempo de compilación, include = tiempo de ejecución</p>
+<p>En caso de duda: usa <code>import_tasks</code> para archivos de tareas fijos que siempre se ejecutan de la misma manera. Usa <code>include_tasks</code> para archivos de tareas condicionales o con bucles. La distinción importa más con tags: las tareas importadas heredan tags de la declaración de import, pero las tareas incluidas no.</p>
+</div>
+<h3 id="ejemplo-de-herencia-de-tags">Ejemplo de Herencia de Tags</h3>
+<p>Esta es la fuente de confusión más común. Considera un archivo de tareas <code>tasks/setup-app.yml</code> con tres tareas dentro. Si lo importas con un tag:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Import setup tasks</span>
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="w">  </span><span class="nt">ansible.builtin.import_tasks</span><span class="p">:</span>
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">    </span><span class="nt">file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tasks/setup-app.yml</span>
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">  </span><span class="nt">tags</span><span class="p">:</span>
+<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">setup</span>
+</code></pre></div>
+<p>Ejecutar <code>--tags setup</code> ejecuta ambas tareas dentro del archivo, porque el tag fluye hacia abajo.</p>
+<p>Pero si lo incluyes con un tag:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Include setup tasks</span>
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="w">  </span><span class="nt">ansible.builtin.include_tasks</span><span class="p">:</span>
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="w">    </span><span class="nt">file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tasks/setup-app.yml</span>
+<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="w">  </span><span class="nt">tags</span><span class="p">:</span>
+<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">setup</span>
+</code></pre></div>
+<p>Ejecutar <code>--tags setup</code> dispara la declaración de include, que luego ejecuta las tareas internas. La diferencia es sutil aquí pero se vuelve significativa en playbooks complejos: con <code>include_tasks</code>, también puedes usar la palabra clave <code>apply</code> para pasar tags a las tareas incluidas.</p>
+<h3 id="aplicandolo-a-roles">Aplicándolo a Roles</h3>
+<p>Todo lo referente a <code>include_tasks</code> vs <code>import_tasks</code> aplica a roles también. <code>ansible.builtin.import_role</code> es estático y <code>ansible.builtin.include_role</code> es dinámico. Cuando extraigas archivos de tareas reutilizables en roles en el Módulo 8, las mismas reglas sobre tags, condicionales y bucles aplican.</p>
+<h2 id="ejercicios">Ejercicios</h2>
+<h3 id="ejercicio-1-manejo-de-errores-con-bloques">Ejercicio 1: Manejo de Errores con Bloques</h3>
+<p>Ejecuta el playbook de manejo de errores para ver block/rescue/always en acción:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="nb">cd</span><span class="w"> </span>ansible
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-07/error-handling.yml<span class="w"> </span>--mode<span class="w"> </span>stdout
+</code></pre></div>
+<p>Observa la salida:</p>
+<ol>
+<li>Las tareas del bloque se ejecutan hasta el fallo simulado de migración</li>
+<li>Las tareas después del fallo en el bloque se saltan</li>
+<li>Rescue se ejecuta y reporta el nombre de la tarea fallida usando <code>ansible_failed_task.name</code></li>
+<li>Always se ejecuta y registra el intento de despliegue</li>
+</ol>
+<p>Ahora ejecútalo de nuevo con el fallo deshabilitado:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-07/error-handling.yml<span class="w"> </span>--mode<span class="w"> </span>stdout<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="w">  </span>-e<span class="w"> </span><span class="s2">&quot;parasol_simulate_failure=false&quot;</span>
+</code></pre></div>
+<p>Observa que rescue <strong>no</strong> se ejecuta (no hubo fallo), pero always sí se ejecuta. Este es el patrón try/catch/finally: always significa siempre.</p>
+<h3 id="ejercicio-2-controlando-el-estado-de-tareas">Ejercicio 2: Controlando el Estado de Tareas</h3>
+<p>Ejecuta el playbook de control de tareas:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-07/task-control.yml<span class="w"> </span>--mode<span class="w"> </span>stdout
+</code></pre></div>
+<p>Observa cada técnica:</p>
+<ol>
+<li>La tarea <code>command</code> reporta <code>ok</code> (no <code>changed</code>) gracias a <code>changed_when: false</code></li>
+<li>La tarea <code>failed_when</code> no falla a pesar de que <code>grep</code> devuelve código de salida 1</li>
+<li>La tarea <code>assert</code> valida precondiciones con un mensaje de error claro</li>
+<li>La tarea <code>ignore_errors</code> falla visiblemente pero el playbook continúa</li>
+</ol>
+<p>Ejecútalo una segunda vez -- la salida debería ser idéntica, confirmando idempotencia.</p>
+<h3 id="ejercicio-3-trabajando-con-tags">Ejercicio 3: Trabajando con Tags</h3>
+<p>Explora el playbook de despliegue con tags sin ejecutarlo primero:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-07/tagged-deployment.yml<span class="w"> </span>--mode<span class="w"> </span>stdout<span class="w"> </span>--list-tags
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-07/tagged-deployment.yml<span class="w"> </span>--mode<span class="w"> </span>stdout<span class="w"> </span>--list-tasks<span class="w"> </span>--tags<span class="w"> </span>configure
+</code></pre></div>
+<p>Luego ejecútalo con diferentes selecciones de tags:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="c1"># Ejecutar solo tareas de instalación</span>
+<a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-07/tagged-deployment.yml<span class="w"> </span>--mode<span class="w"> </span>stdout<span class="w"> </span>--tags<span class="w"> </span>install
+<a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>
+<a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="c1"># Ejecutar solo tareas de verificación</span>
+<a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-07/tagged-deployment.yml<span class="w"> </span>--mode<span class="w"> </span>stdout<span class="w"> </span>--tags<span class="w"> </span>verify
+<a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a>
+<a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a><span class="c1"># Ejecutar todo (sin filtro de tags)</span>
+<a id="__codelineno-26-8" name="__codelineno-26-8" href="#__codelineno-26-8"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-07/tagged-deployment.yml<span class="w"> </span>--mode<span class="w"> </span>stdout
+</code></pre></div>
+<p>Observa que la tarea con tag <code>always</code> se ejecuta en cada caso, y el volcado de depuración con tag <code>never</code> solo se ejecuta cuando se solicita explícitamente con <code>--tags debug</code>.</p>
+<h3 id="ejercicio-4-delegacion-y-run-once">Ejercicio 4: Delegación y Run Once</h3>
+<p>Ejecuta el playbook de delegación:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-07/delegation.yml<span class="w"> </span>--mode<span class="w"> </span>stdout
+</code></pre></div>
+<p>Observa el patrón de despliegue progresivo:</p>
+<ol>
+<li>"Remove from load balancer" usa <code>delegate_to: localhost</code> y referencia <code>inventory_hostname</code></li>
+<li>Las tareas de despliegue no tienen <code>delegate_to</code> -- en producción, se ejecutarían en el host objetivo</li>
+<li>"Add back to load balancer" usa <code>delegate_to: localhost</code></li>
+<li>La tarea de notificación se ejecuta solo una vez (el primer host la ejecuta, el resto la salta)</li>
+</ol>
+<h3 id="ejercicio-5-include-vs-import">Ejercicio 5: Include vs Import</h3>
+<p>Ejecuta el playbook de comparación y explora las diferencias:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="c1"># Primero, lista las tareas para ver la diferencia de visibilidad</span>
+<a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-07/include-vs-import.yml<span class="w"> </span>--mode<span class="w"> </span>stdout<span class="w"> </span>--list-tasks
+<a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>
+<a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="c1"># Ejecutar con el tag setup</span>
+<a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-07/include-vs-import.yml<span class="w"> </span>--mode<span class="w"> </span>stdout<span class="w"> </span>--tags<span class="w"> </span>setup
+<a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a>
+<a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a><span class="c1"># Ejecutar todo</span>
+<a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-07/include-vs-import.yml<span class="w"> </span>--mode<span class="w"> </span>stdout
+</code></pre></div>
+<p>Compara la salida de <code>--list-tasks</code>: las tareas importadas muestran sus nombres individuales, mientras que las tareas incluidas muestran solo la declaración de include. Luego compara la ejecución con <code>--tags setup</code>: las tareas importadas heredan el tag, pero las tareas incluidas se comportan diferente.</p>
+<h2 id="resumen">Resumen</h2>
+<p>En este módulo:</p>
+<ul>
+<li>Usaste <code>block</code>, <code>rescue</code> y <code>always</code> para manejo estructurado de errores con lógica de rollback, e inspeccionaste fallos con <code>ansible_failed_task</code> y <code>ansible_failed_result</code></li>
+<li>Controlaste el reporte de estado de tareas con <code>changed_when</code> (obligatorio en <code>command</code>/<code>shell</code>) y <code>failed_when</code> para comandos que usan códigos de salida distintos de cero legítimamente</li>
+<li>Validaste precondiciones con <code>ansible.builtin.assert</code> en lugar de saltar tareas silenciosamente</li>
+<li>Aprendiste por qué <code>ignore_errors</code> es un indicador de problemas y cuándo es genuinamente apropiado</li>
+<li>Organizaste playbooks con tags, incluyendo los tags especiales <code>always</code> y <code>never</code>, y aplicaste la regla de seguridad: cada tag debe funcionar de forma independiente</li>
+<li>Delegaste tareas a otros hosts con <code>delegate_to</code> y usaste <code>run_once</code> para notificaciones y coordinación entre hosts</li>
+<li>Distinguiste <code>import_tasks</code> (estático, tiempo de compilación, herencia de tags) de <code>include_tasks</code> (dinámico, tiempo de ejecución, compatible con bucles) y aprendiste cuándo elegir cada uno</li>
+</ul>
+<p>Lionel y Jordan ahora manejan errores de forma elegante -- cuando una migración falla, el playbook revierte y registra el intento en lugar de dejar servidores en un estado inconsistente. Usan tags para ejecutar solo el despliegue o solo el paso de verificación. Y sus playbooks crecientes están divididos en archivos de tareas reutilizables, listos para ser extraídos en roles.</p>
+<h2 id="proximos-pasos">Próximos Pasos</h2>
+<p>Siguiente: <a href="../8-roles-and-collections/">Módulo 8 -- Roles y Collections</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

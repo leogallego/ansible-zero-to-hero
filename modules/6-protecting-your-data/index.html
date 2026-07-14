@@ -1,0 +1,2396 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A progressive course teaching Ansible from first principles to production-grade automation">
+      
+      
+      
+        <link rel="canonical" href="https://hero.ansible.ar/modules/6-protecting-your-data/">
+      
+      
+        <link rel="prev" href="../5-templates-and-handlers/">
+      
+      
+        <link rel="next" href="../8-roles-and-collections/">
+      
+      
+        
+          <link rel="alternate" href="./" hreflang="en">
+        
+          <link rel="alternate" href="../../es/modules/6-protecting-your-data/" hreflang="es">
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>6. Protecting Your Data - Ansible Zero to Hero</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#module-6-protecting-your-data" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Ansible Zero to Hero" class="md-header__button md-logo" aria-label="Ansible Zero to Hero" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Ansible Zero to Hero
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              6. Protecting Your Data
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Select language">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="../../es/modules/6-protecting-your-data/" hreflang="es" class="md-select__link">
+              Español
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/leogallego/ansible-zero-to-hero" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    leogallego/ansible-zero-to-hero
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../1-introduction/" class="md-tabs__link">
+          
+  
+  
+  Modules
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Ansible Zero to Hero" class="md-nav__button md-logo" aria-label="Ansible Zero to Hero" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Ansible Zero to Hero
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/leogallego/ansible-zero-to-hero" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    leogallego/ansible-zero-to-hero
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Modules
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../2-your-first-playbook/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Your First Playbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../3-managing-inventory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Managing Inventory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../4-variables-and-facts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Variables and Facts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../5-templates-and-handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Templates and Handlers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Protecting Your Data
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Protecting Your Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning Objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-story-so-far" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Story So Far
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-problem-secrets-in-plaintext" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Problem: Secrets in Plaintext
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ansible-vault-encrypting-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ansible Vault: Encrypting Variables
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ansible Vault: Encrypting Variables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#encrypting-a-single-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Encrypting a Single Value
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#embedding-encrypted-values-in-variable-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Embedding Encrypted Values in Variable Files
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-encrypted-variables-in-playbooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using Encrypted Variables in Playbooks
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ansible-vault-encrypting-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ansible Vault: Encrypting Files
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ansible Vault: Encrypting Files">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#encrypting-a-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Encrypting a File
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#managing-encrypted-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Managing Encrypted Files
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variable-vs-file-encryption" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Variable vs. File Encryption
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#managing-vault-passwords" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Managing Vault Passwords
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Managing Vault Passwords">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#password-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Password Files
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#environment-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment Variables
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#password-scripts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Password Scripts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vault-ids-preview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vault IDs (Preview)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-vault-with-ansible-navigator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running Vault with ansible-navigator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Running Vault with ansible-navigator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-1-environment-variable-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method 1: Environment Variable (Recommended)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-2-passthrough-arguments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method 2: Passthrough Arguments
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vault-commands-through-navigator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vault Commands Through Navigator
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lookup-plugins-sourcing-data-from-outside" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lookup Plugins: Sourcing Data from Outside
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Lookup Plugins: Sourcing Data from Outside">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ansiblebuiltinfile-read-a-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ansible.builtin.file -- Read a File
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ansiblebuiltinenv-read-an-environment-variable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ansible.builtin.env -- Read an Environment Variable
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ansiblebuiltinpipe-run-a-command" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ansible.builtin.pipe -- Run a Command
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ansiblebuiltinpassword-generate-or-retrieve-a-password" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ansible.builtin.password -- Generate or Retrieve a Password
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lookup-vs-query" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        lookup() vs. query()
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#protecting-sensitive-output-no_log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Protecting Sensitive Output: no_log
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Protecting Sensitive Output: no_log">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-no_log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When to Use no_log
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-debugging-trade-off" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Debugging Trade-off
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices-what-to-vault-what-not-to-vault" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best Practices: What to Vault, What Not to Vault
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices: What to Vault, What Not to Vault">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-to-encrypt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What to Encrypt
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-not-to-encrypt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What NOT to Encrypt
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-vault_-prefix-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The vault_ Prefix Pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vault-in-version-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vault in Version Control
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#password-rotation-with-rekey" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Password Rotation with rekey
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exercises">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercise-1-encrypt-a-variable-with-ansible-vault-encrypt_string" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 1: Encrypt a Variable with ansible-vault encrypt_string
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-2-encrypt-and-manage-a-whole-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 2: Encrypt and Manage a Whole File
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-3-vault-in-inventory-group_vars" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 3: Vault in Inventory group_vars
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-4-lookup-plugins" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 4: Lookup Plugins
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-5-protecting-output-with-no_log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 5: Protecting Output with no_log
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next Steps
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../8-roles-and-collections/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Roles and Collections
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../9-testing-your-automation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Testing Your Automation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-packaging-and-deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Packaging and Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11-cicd-for-ansible/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. CI/CD for Ansible
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12-scaling-with-aap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Scaling with AAP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning Objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-story-so-far" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Story So Far
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-problem-secrets-in-plaintext" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Problem: Secrets in Plaintext
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ansible-vault-encrypting-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ansible Vault: Encrypting Variables
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ansible Vault: Encrypting Variables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#encrypting-a-single-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Encrypting a Single Value
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#embedding-encrypted-values-in-variable-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Embedding Encrypted Values in Variable Files
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-encrypted-variables-in-playbooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using Encrypted Variables in Playbooks
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ansible-vault-encrypting-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ansible Vault: Encrypting Files
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ansible Vault: Encrypting Files">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#encrypting-a-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Encrypting a File
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#managing-encrypted-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Managing Encrypted Files
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variable-vs-file-encryption" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Variable vs. File Encryption
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#managing-vault-passwords" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Managing Vault Passwords
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Managing Vault Passwords">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#password-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Password Files
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#environment-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment Variables
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#password-scripts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Password Scripts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vault-ids-preview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vault IDs (Preview)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-vault-with-ansible-navigator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running Vault with ansible-navigator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Running Vault with ansible-navigator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-1-environment-variable-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method 1: Environment Variable (Recommended)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-2-passthrough-arguments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method 2: Passthrough Arguments
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vault-commands-through-navigator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vault Commands Through Navigator
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lookup-plugins-sourcing-data-from-outside" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lookup Plugins: Sourcing Data from Outside
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Lookup Plugins: Sourcing Data from Outside">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ansiblebuiltinfile-read-a-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ansible.builtin.file -- Read a File
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ansiblebuiltinenv-read-an-environment-variable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ansible.builtin.env -- Read an Environment Variable
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ansiblebuiltinpipe-run-a-command" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ansible.builtin.pipe -- Run a Command
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ansiblebuiltinpassword-generate-or-retrieve-a-password" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ansible.builtin.password -- Generate or Retrieve a Password
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lookup-vs-query" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        lookup() vs. query()
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#protecting-sensitive-output-no_log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Protecting Sensitive Output: no_log
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Protecting Sensitive Output: no_log">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-no_log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When to Use no_log
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-debugging-trade-off" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Debugging Trade-off
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices-what-to-vault-what-not-to-vault" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best Practices: What to Vault, What Not to Vault
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices: What to Vault, What Not to Vault">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-to-encrypt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What to Encrypt
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-not-to-encrypt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What NOT to Encrypt
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-vault_-prefix-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The vault_ Prefix Pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vault-in-version-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vault in Version Control
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#password-rotation-with-rekey" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Password Rotation with rekey
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exercises">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercise-1-encrypt-a-variable-with-ansible-vault-encrypt_string" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 1: Encrypt a Variable with ansible-vault encrypt_string
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-2-encrypt-and-manage-a-whole-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 2: Encrypt and Manage a Whole File
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-3-vault-in-inventory-group_vars" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 3: Vault in Inventory group_vars
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-4-lookup-plugins" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 4: Lookup Plugins
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-5-protecting-output-with-no_log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 5: Protecting Output with no_log
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next Steps
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="module-6-protecting-your-data">Module 6: Protecting Your Data</h1>
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>By the end of this module you will be able to:</p>
+<ul>
+<li>Encrypt sensitive variables using <code>ansible-vault encrypt_string</code> and embed them in plaintext YAML files</li>
+<li>Encrypt entire files with <code>ansible-vault encrypt</code> and manage them with <code>edit</code>, <code>view</code>, <code>rekey</code>, and <code>decrypt</code></li>
+<li>Manage vault passwords using password files and environment variables</li>
+<li>Run vault-protected playbooks with <code>ansible-navigator</code></li>
+<li>Use lookup plugins (<code>ansible.builtin.file</code>, <code>ansible.builtin.env</code>, <code>ansible.builtin.pipe</code>, <code>ansible.builtin.password</code>) to source data from outside playbooks</li>
+<li>Protect sensitive task output from logs using <code>no_log: true</code></li>
+</ul>
+<h2 id="the-story-so-far">The Story So Far</h2>
+<p>Lionel's team has been productive. They have parameterized playbooks with variables, deployed templated configuration files, and set up handlers to restart services when configurations change. The Parasol Tech platform playbooks are checked into the team's Git repository, and everyone is contributing.</p>
+<p>Then it happens. During a routine code review, Jordan notices that <code>group_vars/production.yml</code> contains the production database password in plaintext: <code>parasol_db_password: "Sup3rS3cret!"</code>. Worse, the file has been in version control for three weeks. The security team flags it during an audit. Even though the password is rotated immediately, the plaintext value is permanently baked into the Git history. "We need to treat secrets differently from regular variables," Lionel says. "Passwords, API keys, certificates -- none of these belong in plaintext, even in a private repository."</p>
+<p>Jordan pulls up the Ansible documentation. "Ansible has this built in. It is called Vault. We can encrypt individual values right inside our existing variable files, or encrypt entire files. Either way, the secrets live alongside our code but are protected at rest. And there are lookup plugins to pull secrets from files, environment variables, or external commands -- so we are not limited to hardcoding anything." The team spends an afternoon learning Vault and locking down every secret in the repository. By the end of the day, the security team signs off.</p>
+<h2 id="the-problem-secrets-in-plaintext">The Problem: Secrets in Plaintext</h2>
+<p>Before diving into solutions, it is worth understanding why plaintext secrets are dangerous -- even in a private repository.</p>
+<p>Consider this line in <code>group_vars/production.yml</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">parasol_db_password</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Sup3rS3cret!&quot;</span>
+</code></pre></div>
+<p>The moment this file is committed, the password exists in Git history forever. Running <code>git rm</code> or overwriting the file does not help -- anyone with repository access can run <code>git log -p</code> and find the plaintext value. Rotating the password fixes the immediate risk, but the leaked value remains in the history.</p>
+<p>Secrets fall into the category of <strong>data at rest</strong> when they sit in files on disk or in version control. Ansible Vault protects data at rest by encrypting it with AES-256, the same standard used by governments and financial institutions. But there is a second category -- <strong>data in use</strong> -- that Vault alone does not cover. When Ansible decrypts a value and passes it to a task, the plaintext may appear in logs, callback output, or task results. Protecting data in use requires <code>no_log: true</code>, which we will cover later in this module.</p>
+<div class="admonition warning">
+<p class="admonition-title">Data at rest vs. data in use</p>
+<p>Ansible Vault protects secrets <strong>at rest</strong> -- encrypted on disk and in version control. Once Ansible decrypts a value and uses it in a task, the plaintext exists in memory and may appear in logs or artifacts. Vault does not prevent runtime leaks. Always combine vault encryption with <code>no_log: true</code> on tasks that handle sensitive values.</p>
+</div>
+<h2 id="ansible-vault-encrypting-variables">Ansible Vault: Encrypting Variables</h2>
+<p>The most common real-world pattern is encrypting individual variable values while keeping the rest of the YAML file readable. This is called <strong>variable-level encryption</strong>, and the tool for it is <code>ansible-vault encrypt_string</code>.</p>
+<h3 id="encrypting-a-single-value">Encrypting a Single Value</h3>
+<p>To encrypt a string value and assign it to a variable name:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>ansible-vault<span class="w"> </span>encrypt_string<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span>--vault-password-file<span class="w"> </span>.vault_password<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="s1">&#39;Sup3rS3cret!&#39;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span>--name<span class="w"> </span><span class="s1">&#39;parasol_db_password&#39;</span>
+</code></pre></div>
+<p>This produces output like:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">parasol_db_password</span><span class="p">:</span><span class="w"> </span><span class="kt">!vault</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">          </span><span class="no">$ANSIBLE_VAULT;1.1;AES256</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">          </span><span class="no">63306536653963613135303839343061383532316130623562653463623437376665</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">          </span><span class="no">3738633237343963643339353833396533626562373934340a626431646537363633</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">          </span><span class="no">...</span>
+</code></pre></div>
+<p>The <code>!vault |</code> tag tells Ansible this value is encrypted. You paste this block into any YAML variable file, and the surrounding plaintext remains readable.</p>
+<h3 id="embedding-encrypted-values-in-variable-files">Embedding Encrypted Values in Variable Files</h3>
+<p>The power of <code>encrypt_string</code> is that encrypted values live alongside plaintext variables in the same file:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nn">---</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nt">parasol_db_description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Production</span><span class="nv"> </span><span class="s">PostgreSQL</span><span class="nv"> </span><span class="s">database&quot;</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="nt">parasol_db_password</span><span class="p">:</span><span class="w"> </span><span class="kt">!vault</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">          </span><span class="no">$ANSIBLE_VAULT;1.1;AES256</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">          </span><span class="no">63306536653963613135303839343061383532316130623562653463623437376665</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">          </span><span class="no">...</span>
+</code></pre></div>
+<p>Anyone reading this file can see that <code>parasol_db_description</code> is "Production PostgreSQL database" and that <code>parasol_db_password</code> exists and is encrypted. They know the variable name, its purpose from context, and that it contains a secret -- without seeing the actual value. This is the ideal balance of transparency and security.</p>
+<h3 id="using-encrypted-variables-in-playbooks">Using Encrypted Variables in Playbooks</h3>
+<p>Encrypted variables are completely transparent to playbooks. Ansible decrypts them automatically when the vault password is provided:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Display the decrypted database password</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Database</span><span class="nv"> </span><span class="s">password</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">parasol_db_password</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="nt">verbosity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+</code></pre></div>
+<p>Without the vault password, Ansible refuses to run:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>ERROR! Attempting to decrypt but no vault secrets found
+</code></pre></div>
+<h2 id="ansible-vault-encrypting-files">Ansible Vault: Encrypting Files</h2>
+<p>Sometimes it makes more sense to encrypt an entire file rather than individual values. This is appropriate when every variable in a file is sensitive (e.g., a file full of API credentials) or when you want to encrypt non-YAML content like certificates or license keys.</p>
+<h3 id="encrypting-a-file">Encrypting a File</h3>
+<p>Start with a plaintext file:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nn">---</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nt">parasol_api_key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;l9bTqfBlbXTQiDaJMqgPJ1VdeFLfId98&quot;</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="nt">parasol_api_secret</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;k8mPq2nRtYwXzA3bC5dE7fG9hJ1lN4oQ&quot;</span>
+</code></pre></div>
+<p>Encrypt it in place:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>ansible-vault<span class="w"> </span>encrypt<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span>--vault-password-file<span class="w"> </span>.vault_password<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span>playbooks/module-06/vars/api_credentials.yml
+</code></pre></div>
+<p>The file is now opaque:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>$ANSIBLE_VAULT;1.1;AES256
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>36313338626336336233626231663835643435393434623535613530636365363034
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>...
+</code></pre></div>
+<h3 id="managing-encrypted-files">Managing Encrypted Files</h3>
+<p>Ansible Vault provides four commands for working with encrypted files:</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ansible-vault view</code></td>
+<td>Decrypt and display contents without modifying the file</td>
+</tr>
+<tr>
+<td><code>ansible-vault edit</code></td>
+<td>Decrypt into a temporary file, open in <code>$EDITOR</code>, re-encrypt on save</td>
+</tr>
+<tr>
+<td><code>ansible-vault rekey</code></td>
+<td>Change the encryption password without decrypting to plaintext</td>
+</tr>
+<tr>
+<td><code>ansible-vault decrypt</code></td>
+<td>Remove encryption entirely (use with caution)</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># View without modifying</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>ansible-vault<span class="w"> </span>view<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span>--vault-password-file<span class="w"> </span>.vault_password<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">  </span>playbooks/module-06/vars/api_credentials.yml
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="c1"># Edit in place</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>ansible-vault<span class="w"> </span>edit<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">  </span>--vault-password-file<span class="w"> </span>.vault_password<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="w">  </span>playbooks/module-06/vars/api_credentials.yml
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="c1"># Change the password</span>
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>ansible-vault<span class="w"> </span>rekey<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="w">  </span>--vault-password-file<span class="w"> </span>.vault_password<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a><span class="w">  </span>--new-vault-password-file<span class="w"> </span>.vault_password_new<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a><span class="w">  </span>playbooks/module-06/vars/api_credentials.yml
+</code></pre></div>
+<h3 id="variable-vs-file-encryption">Variable vs. File Encryption</h3>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Variable encryption (<code>encrypt_string</code>)</th>
+<th>File encryption (<code>encrypt</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Readability</td>
+<td>Plaintext context preserved</td>
+<td>Entire file is opaque</td>
+</tr>
+<tr>
+<td>Searchability</td>
+<td><code>grep</code> finds variable names</td>
+<td><code>grep</code> finds nothing useful</td>
+</tr>
+<tr>
+<td>Granularity</td>
+<td>Mix secrets and non-secrets in one file</td>
+<td>All-or-nothing</td>
+</tr>
+<tr>
+<td>Version control diffs</td>
+<td>Meaningful diffs for plaintext portions</td>
+<td>Diffs are opaque binary blobs</td>
+</tr>
+<tr>
+<td>Best for</td>
+<td>A few secrets among many variables</td>
+<td>Files where everything is sensitive</td>
+</tr>
+</tbody>
+</table>
+<p>In practice, most teams use variable-level encryption for inventory and role variables, and file-level encryption for certificates, license keys, and credential bundles.</p>
+<h2 id="managing-vault-passwords">Managing Vault Passwords</h2>
+<p>Vault encryption is only as strong as your password management. There are several ways to provide the vault password to Ansible.</p>
+<h3 id="password-files">Password Files</h3>
+<p>The simplest approach is a file containing the password:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;parasol-vault-password&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>.vault_password
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>chmod<span class="w"> </span><span class="m">600</span><span class="w"> </span>.vault_password
+</code></pre></div>
+<p>Use it with the <code>--vault-password-file</code> flag:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>ansible-vault<span class="w"> </span>encrypt_string<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">  </span>--vault-password-file<span class="w"> </span>.vault_password<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span><span class="s1">&#39;my-secret&#39;</span><span class="w"> </span>--name<span class="w"> </span><span class="s1">&#39;my_variable&#39;</span>
+</code></pre></div>
+<div class="admonition danger">
+<p class="admonition-title">Never commit vault password files</p>
+<p>Vault password files (<code>.vault_password</code>, <code>.vault_password_dev</code>, etc.) must NEVER be committed to version control. Add them to <code>.gitignore</code> immediately. If you commit a vault password alongside vault-encrypted files, anyone with repository access can decrypt everything -- defeating the entire purpose of encryption.</p>
+</div>
+<h3 id="environment-variables">Environment Variables</h3>
+<p>Set <code>ANSIBLE_VAULT_PASSWORD_FILE</code> to avoid passing <code>--vault-password-file</code> on every command:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">ANSIBLE_VAULT_PASSWORD_FILE</span><span class="o">=</span>.vault_password
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>ansible-vault<span class="w"> </span>encrypt_string<span class="w"> </span><span class="s1">&#39;my-secret&#39;</span><span class="w"> </span>--name<span class="w"> </span><span class="s1">&#39;my_variable&#39;</span>
+</code></pre></div>
+<p>This is especially useful in CI/CD pipelines and shared development environments where the password file path is standardized.</p>
+<h3 id="password-scripts">Password Scripts</h3>
+<p>For dynamic password retrieval (from a password manager, secrets service, or hardware token), point <code>--vault-password-file</code> at an executable script:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="ch">#!/bin/bash</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="c1"># .vault_password_script.sh</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="c1"># Retrieve vault password from a secrets manager</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>pass<span class="w"> </span>show<span class="w"> </span>ansible/vault-password<span class="w"> </span><span class="m">2</span>&gt;/dev/null
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>chmod<span class="w"> </span><span class="m">700</span><span class="w"> </span>.vault_password_script.sh
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>ansible-vault<span class="w"> </span>view<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">  </span>--vault-password-file<span class="w"> </span>.vault_password_script.sh<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">  </span>playbooks/module-06/vars/api_credentials.yml
+</code></pre></div>
+<p>Ansible detects that the file is executable and runs it, using its standard output as the password. This lets teams integrate vault with any secrets management tool.</p>
+<h3 id="vault-ids-preview">Vault IDs (Preview)</h3>
+<p>When a project grows to manage multiple environments, you may need different vault passwords for dev, staging, and production. Vault IDs provide this capability. We will cover vault IDs in depth in Module 10 when we discuss packaging and deployment. For now, know that the pattern exists and that all the single-password techniques you learn here extend naturally to multi-password setups.</p>
+<h2 id="running-vault-with-ansible-navigator">Running Vault with ansible-navigator</h2>
+<p>Throughout this course, you have been using <code>ansible-navigator</code> to run playbooks. Vault integrates smoothly, but there are a few patterns specific to navigator.</p>
+<h3 id="method-1-environment-variable-recommended">Method 1: Environment Variable (Recommended)</h3>
+<p>The simplest approach is to set the environment variable before running navigator:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">ANSIBLE_VAULT_PASSWORD_FILE</span><span class="o">=</span>.vault_password
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-06/vault-string-demo.yml<span class="w"> </span>--mode<span class="w"> </span>stdout
+</code></pre></div>
+<p>The <code>ANSIBLE_VAULT_PASSWORD_FILE</code> environment variable is automatically passed through to the execution environment, so this works identically whether navigator runs locally or inside a container.</p>
+<h3 id="method-2-passthrough-arguments">Method 2: Passthrough Arguments</h3>
+<p>You can pass vault arguments directly to the underlying <code>ansible-playbook</code> command using <code>--</code> as a separator:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-06/vault-string-demo.yml<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">  </span>--mode<span class="w"> </span>stdout<span class="w"> </span>--<span class="w"> </span>--vault-password-file<span class="w"> </span>.vault_password
+</code></pre></div>
+<p>Everything after <code>--</code> is passed through to <code>ansible-playbook</code> unchanged.</p>
+<h3 id="vault-commands-through-navigator">Vault Commands Through Navigator</h3>
+<p>You can run vault commands inside the execution environment using <code>ansible-navigator exec</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>ansible-navigator<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>--<span class="w"> </span>ansible-vault<span class="w"> </span>encrypt_string<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">  </span>--vault-password-file<span class="w"> </span>.vault_password<span class="w"> </span><span class="s1">&#39;my-secret&#39;</span><span class="w"> </span>--name<span class="w"> </span><span class="s1">&#39;my_variable&#39;</span>
+</code></pre></div>
+<p>This ensures you are using the same Ansible version inside the execution environment as the one that will run your playbooks.</p>
+<div class="admonition warning">
+<p class="admonition-title">Interactive prompts do not work with navigator</p>
+<p>The <code>--ask-vault-pass</code> flag does NOT work with <code>ansible-navigator</code> in default mode because interactive prompts are disabled. Always use password files or environment variables with navigator.</p>
+</div>
+<h2 id="lookup-plugins-sourcing-data-from-outside">Lookup Plugins: Sourcing Data from Outside</h2>
+<p>Vault is not the only way to handle sensitive data. <strong>Lookup plugins</strong> let you pull values from external sources at runtime -- files, environment variables, commands, or generated passwords. Lookups complement vault by keeping secrets out of variable files entirely.</p>
+<h3 id="ansiblebuiltinfile-read-a-file"><code>ansible.builtin.file</code> -- Read a File</h3>
+<p>Read the contents of a file on the control node:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Read the MOTD banner from a file</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">lookup(&#39;ansible.builtin.file&#39;,</span><span class="nv"> </span><span class="s">&#39;files/motd_banner.txt&#39;)</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">    </span><span class="nt">verbosity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+</code></pre></div>
+<p>This is useful for certificates, license keys, or any content that already exists as a file and should not be duplicated into variables.</p>
+<h3 id="ansiblebuiltinenv-read-an-environment-variable"><code>ansible.builtin.env</code> -- Read an Environment Variable</h3>
+<p>Read an environment variable from the control node:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Read the deploy token from the environment</span>
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Deploy</span><span class="nv"> </span><span class="s">token:</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">lookup(&#39;ansible.builtin.env&#39;,</span><span class="nv"> </span><span class="s">&#39;PARASOL_DEPLOY_TOKEN&#39;)</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="w">    </span><span class="nt">verbosity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+</code></pre></div>
+<p>If the variable is not set, the lookup returns an empty string by default. You can make it fail on a missing variable:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">lookup(&#39;ansible.builtin.env&#39;,</span><span class="nv"> </span><span class="s">&#39;PARASOL_DEPLOY_TOKEN&#39;,</span><span class="nv"> </span><span class="s">default=undef())</span><span class="nv"> </span><span class="s">}}&quot;</span>
+</code></pre></div>
+<h3 id="ansiblebuiltinpipe-run-a-command"><code>ansible.builtin.pipe</code> -- Run a Command</h3>
+<p>Execute a command on the control node and use its standard output:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Get the current user</span>
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Running</span><span class="nv"> </span><span class="s">as:</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">lookup(&#39;ansible.builtin.pipe&#39;,</span><span class="nv"> </span><span class="s">&#39;whoami&#39;)</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="w">    </span><span class="nt">verbosity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+</code></pre></div>
+<p>This is useful for extracting secrets from CLI tools like <code>pass</code>, <code>aws secretsmanager</code>, or <code>vault</code> (HashiCorp).</p>
+<h3 id="ansiblebuiltinpassword-generate-or-retrieve-a-password"><code>ansible.builtin.password</code> -- Generate or Retrieve a Password</h3>
+<p>Generate a random password and optionally store it in a file:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Generate a random password</span>
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="w">  </span><span class="nt">ansible.builtin.debug</span><span class="p">:</span>
+<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="w">    </span><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Generated:</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">lookup(&#39;ansible.builtin.password&#39;,</span><span class="nv"> </span><span class="s">&#39;/dev/null</span><span class="nv"> </span><span class="s">length=20</span><span class="nv"> </span><span class="s">chars=ascii_letters,digits&#39;)</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="w">    </span><span class="nt">verbosity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+</code></pre></div>
+<p>Using <code>/dev/null</code> as the path generates a new password each time without saving it. To persist the password across runs, specify a file path:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="nt">parasol_app_secret</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">lookup(&#39;ansible.builtin.password&#39;,</span><span class="nv"> </span><span class="s">&#39;credentials/app_secret</span><span class="nv"> </span><span class="s">length=32&#39;)</span><span class="nv"> </span><span class="s">}}&quot;</span>
+</code></pre></div>
+<p>Ansible creates the file on first run and reads the stored password on subsequent runs, ensuring the value stays consistent.</p>
+<h3 id="lookup-vs-query"><code>lookup()</code> vs. <code>query()</code></h3>
+<p>You will see two syntaxes for calling lookup plugins:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="c1"># lookup() returns a string (comma-separated for multiple results)</span>
+<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="nt">msg</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">lookup(&#39;ansible.builtin.file&#39;,</span><span class="nv"> </span><span class="s">&#39;file1.txt&#39;,</span><span class="nv"> </span><span class="s">&#39;file2.txt&#39;)</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>
+<a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="c1"># query() returns a list (useful in loops)</span>
+<a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a><span class="nt">loop</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">query(&#39;ansible.builtin.file&#39;,</span><span class="nv"> </span><span class="s">&#39;file1.txt&#39;,</span><span class="nv"> </span><span class="s">&#39;file2.txt&#39;)</span><span class="nv"> </span><span class="s">}}&quot;</span>
+</code></pre></div>
+<p>Use <code>lookup()</code> when you need a single string value. Use <code>query()</code> when you need a list, especially in <code>loop:</code> constructs.</p>
+<div class="admonition info">
+<p class="admonition-title">Lookups run on the control node</p>
+<p>All lookup plugins execute on the Ansible control node, not on target hosts. The <code>ansible.builtin.env</code> lookup reads environment variables from the machine running Ansible. If you need to read a file or environment variable from a remote host, use the <code>ansible.builtin.slurp</code> module or <code>ansible.builtin.command</code> with <code>register</code> instead.</p>
+</div>
+<h2 id="protecting-sensitive-output-no_log">Protecting Sensitive Output: <code>no_log</code></h2>
+<p>Vault protects secrets at rest, but what about runtime? When Ansible runs a task, it logs the task parameters and results to the console, log files, and callback plugins. If a task handles a password, the plaintext value may appear in the output.</p>
+<p>The <code>no_log: true</code> directive suppresses all output for a task:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Create application database user</span>
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="w">  </span><span class="nt">community.postgresql.postgresql_user</span><span class="p">:</span>
+<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;parasol_app&quot;</span>
+<a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">parasol_db_password</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="w">    </span><span class="nt">state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">present</span>
+<a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a><span class="w">  </span><span class="nt">no_log</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+<p>With <code>no_log: true</code>, Ansible suppresses the task's parameters and return values. In verbose mode (<code>-v</code>), the output shows a <code>censored</code> message. In standard output, the task simply reports its status without any details:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>TASK [Create application database user] ****
+<a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>ok: [db-01]
+</code></pre></div>
+<p>Without it, the password appears in the output:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>TASK [Create application database user] ****
+<a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>ok: [db-01] =&gt; {&quot;changed&quot;: false, &quot;password&quot;: &quot;Sup3rS3cret!&quot;, ...}
+</code></pre></div>
+<h3 id="when-to-use-no_log">When to Use <code>no_log</code></h3>
+<p>Use <code>no_log: true</code> on any task that handles sensitive values:</p>
+<ul>
+<li>Tasks that pass passwords as parameters</li>
+<li>Tasks that set API keys or tokens in configuration</li>
+<li>Tasks using <code>ansible.builtin.uri</code> with authentication headers</li>
+<li>Tasks that loop over a list containing secrets</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">ansible-lint catches missing no_log</p>
+<p>The <code>ansible-lint</code> tool (which you will learn in Module 9) includes a rule called <code>no-log-password</code> that flags tasks with password parameters missing <code>no_log: true</code>. This is an automated safety net -- but understanding why <code>no_log</code> matters is more important than relying on the linter to catch it.</p>
+</div>
+<h3 id="the-debugging-trade-off">The Debugging Trade-off</h3>
+<p><code>no_log: true</code> makes debugging harder because you cannot see task parameters or results. When troubleshooting a failing task, you may need to temporarily remove <code>no_log</code> in a dev environment, diagnose the issue, and then restore it. Never leave <code>no_log</code> disabled in production playbooks.</p>
+<h2 id="best-practices-what-to-vault-what-not-to-vault">Best Practices: What to Vault, What Not to Vault</h2>
+<p>Not everything needs encryption. Over-vaulting creates friction (every developer needs the vault password to run any playbook), and under-vaulting leaves secrets exposed.</p>
+<h3 id="what-to-encrypt">What to Encrypt</h3>
+<ul>
+<li>Passwords and passphrases</li>
+<li>API keys and tokens</li>
+<li>TLS/SSL private keys and certificates</li>
+<li>Database connection strings with credentials</li>
+<li>SSH private keys</li>
+<li>License keys</li>
+</ul>
+<h3 id="what-not-to-encrypt">What NOT to Encrypt</h3>
+<ul>
+<li>Package names (<code>parasol_packages</code>)</li>
+<li>Port numbers (<code>parasol_http_port: 8080</code>)</li>
+<li>Feature flags (<code>parasol_monitoring_enabled: true</code>)</li>
+<li>File paths (<code>parasol_log_dir: "/var/log/parasol"</code>)</li>
+<li>Non-sensitive configuration values</li>
+</ul>
+<p>The rule is simple: if the value would cause a security incident if exposed, encrypt it. Everything else stays in plaintext for readability and ease of use.</p>
+<h3 id="the-vault_-prefix-pattern">The <code>vault_</code> Prefix Pattern</h3>
+<p>When you encrypt individual variables, the variable names remain visible and searchable. But when you encrypt entire files (like <code>group_vars/production/vault.yml</code>), <code>grep</code> cannot find anything inside them.</p>
+<p>The recommended pattern splits variables into two files per group:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>group_vars/production/
+<a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>    vars.yml          # Plaintext references (searchable)
+<a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>    vault.yml         # Encrypted values
+</code></pre></div>
+<p>In <code>vault.yml</code> (encrypted):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="nt">vault_parasol_db_password</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Sup3rS3cret!&quot;</span>
+</code></pre></div>
+<p>In <code>vars.yml</code> (plaintext):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="nt">parasol_db_password</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">vault_parasol_db_password</span><span class="nv"> </span><span class="s">}}&quot;</span>
+</code></pre></div>
+<p>This way, <code>grep parasol_db_password</code> finds the reference in <code>vars.yml</code>, and the actual value is safely encrypted in <code>vault.yml</code>. Ansible automatically loads both files from the group directory and resolves the reference at runtime.</p>
+<h3 id="vault-in-version-control">Vault in Version Control</h3>
+<p>Vault-encrypted files are safe to commit to version control. The encrypted content is an opaque AES-256 blob -- without the vault password, it is computationally infeasible to recover the plaintext. This is the key difference from the plaintext problem we started with: encrypted secrets in Git history are not a security risk.</p>
+<h3 id="password-rotation-with-rekey">Password Rotation with <code>rekey</code></h3>
+<p>When you need to change the vault password (e.g., when a team member leaves), use <code>ansible-vault rekey</code> to re-encrypt all vault-protected files with a new password. This is the correct way to rotate vault passwords -- you do not need to decrypt and re-encrypt each file manually.</p>
+<h2 id="exercises">Exercises</h2>
+<h3 id="exercise-1-encrypt-a-variable-with-ansible-vault-encrypt_string">Exercise 1: Encrypt a Variable with <code>ansible-vault encrypt_string</code></h3>
+<p>Create a vault password file and encrypt a database password:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="nb">cd</span><span class="w"> </span>ansible
+<a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;parasol-vault-password&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>.vault_password
+<a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>chmod<span class="w"> </span><span class="m">600</span><span class="w"> </span>.vault_password
+</code></pre></div>
+<p>Encrypt a value:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>ansible-vault<span class="w"> </span>encrypt_string<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a><span class="w">  </span>--vault-password-file<span class="w"> </span>.vault_password<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a><span class="w">  </span><span class="s1">&#39;Sup3rS3cret!&#39;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a><span class="w">  </span>--name<span class="w"> </span><span class="s1">&#39;parasol_db_password&#39;</span>
+</code></pre></div>
+<p>Copy the output. Open <code>playbooks/module-06/vars/db_secrets.yml</code> and compare it to the output -- this file already has the encrypted value embedded alongside a plaintext variable.</p>
+<p>Now run the companion playbook:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">ANSIBLE_VAULT_PASSWORD_FILE</span><span class="o">=</span>.vault_password
+<a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-06/vault-string-demo.yml<span class="w"> </span>--mode<span class="w"> </span>stdout
+</code></pre></div>
+<p>Try running it without the vault password:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="nb">unset</span><span class="w"> </span>ANSIBLE_VAULT_PASSWORD_FILE
+<a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-06/vault-string-demo.yml<span class="w"> </span>--mode<span class="w"> </span>stdout
+</code></pre></div>
+<p>You should see <code>ERROR! Attempting to decrypt but no vault secrets found</code>. This confirms that the encrypted value cannot be used without the correct password.</p>
+<h3 id="exercise-2-encrypt-and-manage-a-whole-file">Exercise 2: Encrypt and Manage a Whole File</h3>
+<p>Create a plaintext secrets file:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>cat<span class="w"> </span>&gt;<span class="w"> </span>playbooks/module-06/vars/api_credentials.yml<span class="w"> </span><span class="s">&lt;&lt; &#39;EOF&#39;</span>
+<a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a><span class="s">---</span>
+<a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a><span class="s">parasol_api_key: &quot;l9bTqfBlbXTQiDaJMqgPJ1VdeFLfId98&quot;</span>
+<a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a><span class="s">parasol_api_secret: &quot;k8mPq2nRtYwXzA3bC5dE7fG9hJ1lN4oQ&quot;</span>
+<a id="__codelineno-35-5" name="__codelineno-35-5" href="#__codelineno-35-5"></a><span class="s">EOF</span>
+</code></pre></div>
+<p>Encrypt it:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a>ansible-vault<span class="w"> </span>encrypt<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a><span class="w">  </span>--vault-password-file<span class="w"> </span>.vault_password<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-36-3" name="__codelineno-36-3" href="#__codelineno-36-3"></a><span class="w">  </span>playbooks/module-06/vars/api_credentials.yml
+</code></pre></div>
+<p>View the encrypted file with <code>cat</code> -- you should see the <code>$ANSIBLE_VAULT;1.1;AES256</code> header followed by hex-encoded data:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a>cat<span class="w"> </span>playbooks/module-06/vars/api_credentials.yml
+</code></pre></div>
+<p>Now view the decrypted contents:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a>ansible-vault<span class="w"> </span>view<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a><span class="w">  </span>--vault-password-file<span class="w"> </span>.vault_password<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-38-3" name="__codelineno-38-3" href="#__codelineno-38-3"></a><span class="w">  </span>playbooks/module-06/vars/api_credentials.yml
+</code></pre></div>
+<p>Edit the file and add a third variable (<code>parasol_api_endpoint: "https://api.parasol.example"</code>):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a>ansible-vault<span class="w"> </span>edit<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a><span class="w">  </span>--vault-password-file<span class="w"> </span>.vault_password<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-39-3" name="__codelineno-39-3" href="#__codelineno-39-3"></a><span class="w">  </span>playbooks/module-06/vars/api_credentials.yml
+</code></pre></div>
+<p>Run the companion playbook:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">ANSIBLE_VAULT_PASSWORD_FILE</span><span class="o">=</span>.vault_password
+<a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-06/vault-file-demo.yml<span class="w"> </span>--mode<span class="w"> </span>stdout
+</code></pre></div>
+<h3 id="exercise-3-vault-in-inventory-group_vars">Exercise 3: Vault in Inventory group_vars</h3>
+<p>This exercise uses the recommended split-file pattern for managing secrets in structured inventories.</p>
+<p>Examine the two files that have been set up in <code>inventory/group_vars/production/</code>:</p>
+<ul>
+<li><code>vars.yml</code> -- plaintext references</li>
+<li><code>vault.yml</code> -- encrypted values</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a>cat<span class="w"> </span>inventory/group_vars/production/vars.yml
+<a id="__codelineno-41-2" name="__codelineno-41-2" href="#__codelineno-41-2"></a>ansible-vault<span class="w"> </span>view<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-41-3" name="__codelineno-41-3" href="#__codelineno-41-3"></a><span class="w">  </span>--vault-password-file<span class="w"> </span>.vault_password<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-41-4" name="__codelineno-41-4" href="#__codelineno-41-4"></a><span class="w">  </span>inventory/group_vars/production/vault.yml
+</code></pre></div>
+<p>Run the companion playbook:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">ANSIBLE_VAULT_PASSWORD_FILE</span><span class="o">=</span>.vault_password
+<a id="__codelineno-42-2" name="__codelineno-42-2" href="#__codelineno-42-2"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-06/vault-groupvars-demo.yml<span class="w"> </span>--mode<span class="w"> </span>stdout
+</code></pre></div>
+<p>Verify that <code>grep</code> can find the variable name in the plaintext file:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a>grep<span class="w"> </span>parasol_db_password<span class="w"> </span>inventory/group_vars/production/vars.yml
+</code></pre></div>
+<p>You should see the reference <code>parasol_db_password: "{{ vault_parasol_db_password }}"</code>. The actual value is encrypted in <code>vault.yml</code>, but the variable name is searchable in <code>vars.yml</code>. This is the recommended pattern for production inventories.</p>
+<h3 id="exercise-4-lookup-plugins">Exercise 4: Lookup Plugins</h3>
+<p>Set an environment variable for the <code>env</code> lookup demo:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-44-1" name="__codelineno-44-1" href="#__codelineno-44-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PARASOL_DEPLOY_TOKEN</span><span class="o">=</span><span class="s2">&quot;token-abc-123&quot;</span>
+</code></pre></div>
+<p>Run the lookups playbook:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-45-1" name="__codelineno-45-1" href="#__codelineno-45-1"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-06/lookups-demo.yml<span class="w"> </span>--mode<span class="w"> </span>stdout
+</code></pre></div>
+<p>Observe the four lookups in action:</p>
+<ol>
+<li><strong><code>ansible.builtin.file</code></strong> reads the banner from <code>files/motd_banner.txt</code></li>
+<li><strong><code>ansible.builtin.env</code></strong> reads <code>PARASOL_DEPLOY_TOKEN</code> from the environment</li>
+<li><strong><code>ansible.builtin.pipe</code></strong> runs <code>whoami</code> and captures the output</li>
+<li><strong><code>ansible.builtin.password</code></strong> generates a random 20-character password</li>
+</ol>
+<p>Try unsetting the environment variable and running again:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-46-1" name="__codelineno-46-1" href="#__codelineno-46-1"></a><span class="nb">unset</span><span class="w"> </span>PARASOL_DEPLOY_TOKEN
+<a id="__codelineno-46-2" name="__codelineno-46-2" href="#__codelineno-46-2"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-06/lookups-demo.yml<span class="w"> </span>--mode<span class="w"> </span>stdout
+</code></pre></div>
+<p>Notice that the <code>env</code> lookup returns an empty string instead of failing. In production, you would use <code>default=undef()</code> to make a missing variable an error.</p>
+<h3 id="exercise-5-protecting-output-with-no_log">Exercise 5: Protecting Output with <code>no_log</code></h3>
+<p>Run the no-log demo playbook:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-47-1" name="__codelineno-47-1" href="#__codelineno-47-1"></a>ansible-navigator<span class="w"> </span>run<span class="w"> </span>playbooks/module-06/no-log-demo.yml<span class="w"> </span>--mode<span class="w"> </span>stdout
+</code></pre></div>
+<p>Observe the difference between the two tasks:</p>
+<ol>
+<li>The <strong>unprotected</strong> task shows the password value in the output</li>
+<li>The <strong>protected</strong> task shows only its status (<code>ok</code>) with no details -- the password is suppressed</li>
+</ol>
+<p>Now edit <code>playbooks/module-06/no-log-demo.yml</code> and add <code>no_log: true</code> to the unprotected task. Run it again and confirm that both tasks now suppress their output.</p>
+<p>This is the "data in use" protection that complements Vault's "data at rest" encryption. Always use <code>no_log: true</code> on tasks that handle sensitive values.</p>
+<h2 id="summary">Summary</h2>
+<p>In this module you:</p>
+<ul>
+<li>Understood why plaintext secrets in version control are dangerous -- even after deletion, they persist in Git history</li>
+<li>Encrypted individual variable values with <code>ansible-vault encrypt_string</code> and embedded them in readable YAML files</li>
+<li>Encrypted entire files with <code>ansible-vault encrypt</code> and managed them with <code>view</code>, <code>edit</code>, <code>rekey</code>, and <code>decrypt</code></li>
+<li>Managed vault passwords with password files, environment variables, and executable scripts</li>
+<li>Ran vault-protected playbooks with <code>ansible-navigator</code> using <code>ANSIBLE_VAULT_PASSWORD_FILE</code> and passthrough arguments</li>
+<li>Used four lookup plugins (<code>file</code>, <code>env</code>, <code>pipe</code>, <code>password</code>) to source data from outside playbooks at runtime</li>
+<li>Protected sensitive task output from logs using <code>no_log: true</code></li>
+<li>Applied the <code>vault_</code> prefix pattern to keep variable names searchable while values stay encrypted</li>
+</ul>
+<p>Lionel and Jordan have locked down every secret in the Parasol Tech repository. Passwords are encrypted with Vault, API keys are sourced from environment variables, and <code>no_log</code> prevents sensitive values from leaking into logs. The security team is satisfied, and the team has a clear decision framework for what to encrypt and what to leave in plaintext.</p>
+<h2 id="next-steps">Next Steps</h2>
+<p>Next: <a href="../8-roles-and-collections/">Module 8 -- Roles and Collections</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

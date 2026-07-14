@@ -1,0 +1,2216 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A progressive course teaching Ansible from first principles to production-grade automation">
+      
+      
+      
+        <link rel="canonical" href="https://hero.ansible.ar/es/modules/11-cicd-for-ansible/">
+      
+      
+        <link rel="prev" href="../10-packaging-and-deployment/">
+      
+      
+        <link rel="next" href="../12-scaling-with-aap/">
+      
+      
+        
+          <link rel="alternate" href="../../../modules/11-cicd-for-ansible/" hreflang="en">
+        
+          <link rel="alternate" href="./" hreflang="es">
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>11. CI/CD for Ansible - Ansible Zero to Hero</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#modulo-11-cicd-para-contenido-ansible" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../../" title="Ansible Zero to Hero" class="md-header__button md-logo" aria-label="Ansible Zero to Hero" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Ansible Zero to Hero
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              11. CI/CD for Ansible
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="amber"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Seleccionar idioma">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="../../../modules/11-cicd-for-ansible/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="es" class="md-select__link">
+              Español
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/leogallego/ansible-zero-to-hero" title="Ir al repositorio" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    leogallego/ansible-zero-to-hero
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Pestañas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../1-introduction/" class="md-tabs__link">
+          
+  
+  
+  Modules
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../" title="Ansible Zero to Hero" class="md-nav__button md-logo" aria-label="Ansible Zero to Hero" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Ansible Zero to Hero
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/leogallego/ansible-zero-to-hero" title="Ir al repositorio" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    leogallego/ansible-zero-to-hero
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Modules
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../1-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../2-your-first-playbook/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Your First Playbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../3-managing-inventory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Managing Inventory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../4-variables-and-facts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Variables and Facts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../5-templates-and-handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Templates and Handlers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../6-protecting-your-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Protecting Your Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../8-roles-and-collections/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Roles and Collections
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../9-testing-your-automation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Testing Your Automation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-packaging-and-deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Packaging and Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. CI/CD for Ansible
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. CI/CD for Ansible
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objetivos-de-aprendizaje" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos de Aprendizaje
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#la-historia-hasta-ahora" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Historia Hasta Ahora
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cicd-para-contenido-ansible-vs-cicd-con-ansible" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CI/CD para Contenido Ansible vs CI/CD con Ansible
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CI/CD para Contenido Ansible vs CI/CD con Ansible">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#la-piramide-de-tests-en-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Pirámide de Tests en CI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fundamentos-de-github-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fundamentos de GitHub Actions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linting-en-ci-con-ansible-lint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Linting en CI con ansible-lint
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Linting en CI con ansible-lint">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#el-archivo-de-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        El Archivo de Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instalacion-de-dependencias-de-coleccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Instalación de Dependencias de Colección
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tests-de-integracion-con-molecule-en-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tests de Integración con Molecule en CI
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tests de Integración con Molecule en CI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#el-archivo-de-workflow_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        El Archivo de Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-de-colecciones-con-tox-ansible" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing de Colecciones con tox-ansible
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing de Colecciones con tox-ansible">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#el-patron-de-dos-jobs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        El Patrón de Dos Jobs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#el-archivo-de-workflow_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        El Archivo de Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workflows-reutilizables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflows Reutilizables
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#secretos-y-seguridad-en-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Secretos y Seguridad en CI
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Secretos y Seguridad en CI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#secretos-de-repositorio-en-github" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Secretos de Repositorio en GitHub
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#contrasena-de-vault-en-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Contraseña de Vault en CI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tokens-de-galaxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tokens de Galaxy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#seguridad-de-forks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Seguridad de Forks
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#badges-de-estado-y-buenas-practicas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Badges de Estado y Buenas Prácticas
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Badges de Estado y Buenas Prácticas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#badges-de-estado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Badges de Estado
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proteccion-de-ramas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Protección de Ramas
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#otras-plataformas-de-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Otras Plataformas de CI
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Otras Plataformas de CI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gitlab-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GitLab CI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jenkins" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Jenkins
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ejercicios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicios
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ejercicios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-1-crear-un-workflow-de-ansible-lint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 1: Crear un Workflow de ansible-lint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-2-crear-un-workflow-de-tests-con-molecule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 2: Crear un Workflow de Tests con Molecule
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-3-crear-un-workflow-de-tests-de-coleccion-con-tox-ansible" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 3: Crear un Workflow de Tests de Colección con tox-ansible
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-4-configurar-secretos-y-badges-de-estado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 4: Configurar Secretos y Badges de Estado
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-5-workflows-reutilizables-bonus" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 5: Workflows Reutilizables (Bonus)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resumen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proximos-pasos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Próximos Pasos
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12-scaling-with-aap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Scaling with AAP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objetivos-de-aprendizaje" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivos de Aprendizaje
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#la-historia-hasta-ahora" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Historia Hasta Ahora
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cicd-para-contenido-ansible-vs-cicd-con-ansible" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CI/CD para Contenido Ansible vs CI/CD con Ansible
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CI/CD para Contenido Ansible vs CI/CD con Ansible">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#la-piramide-de-tests-en-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La Pirámide de Tests en CI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fundamentos-de-github-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fundamentos de GitHub Actions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linting-en-ci-con-ansible-lint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Linting en CI con ansible-lint
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Linting en CI con ansible-lint">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#el-archivo-de-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        El Archivo de Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instalacion-de-dependencias-de-coleccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Instalación de Dependencias de Colección
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tests-de-integracion-con-molecule-en-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tests de Integración con Molecule en CI
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tests de Integración con Molecule en CI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#el-archivo-de-workflow_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        El Archivo de Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-de-colecciones-con-tox-ansible" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing de Colecciones con tox-ansible
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing de Colecciones con tox-ansible">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#el-patron-de-dos-jobs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        El Patrón de Dos Jobs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#el-archivo-de-workflow_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        El Archivo de Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workflows-reutilizables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflows Reutilizables
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#secretos-y-seguridad-en-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Secretos y Seguridad en CI
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Secretos y Seguridad en CI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#secretos-de-repositorio-en-github" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Secretos de Repositorio en GitHub
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#contrasena-de-vault-en-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Contraseña de Vault en CI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tokens-de-galaxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tokens de Galaxy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#seguridad-de-forks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Seguridad de Forks
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#badges-de-estado-y-buenas-practicas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Badges de Estado y Buenas Prácticas
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Badges de Estado y Buenas Prácticas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#badges-de-estado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Badges de Estado
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proteccion-de-ramas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Protección de Ramas
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#otras-plataformas-de-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Otras Plataformas de CI
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Otras Plataformas de CI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gitlab-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GitLab CI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jenkins" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Jenkins
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ejercicios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicios
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ejercicios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-1-crear-un-workflow-de-ansible-lint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 1: Crear un Workflow de ansible-lint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-2-crear-un-workflow-de-tests-con-molecule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 2: Crear un Workflow de Tests con Molecule
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-3-crear-un-workflow-de-tests-de-coleccion-con-tox-ansible" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 3: Crear un Workflow de Tests de Colección con tox-ansible
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-4-configurar-secretos-y-badges-de-estado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 4: Configurar Secretos y Badges de Estado
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ejercicio-5-workflows-reutilizables-bonus" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejercicio 5: Workflows Reutilizables (Bonus)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resumen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proximos-pasos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Próximos Pasos
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="modulo-11-cicd-para-contenido-ansible">Módulo 11: CI/CD para Contenido Ansible</h1>
+<h2 id="objetivos-de-aprendizaje">Objetivos de Aprendizaje</h2>
+<p>Al finalizar este módulo serás capaz de:</p>
+<ul>
+<li>Explicar por qué CI/CD para Ansible prueba tu código de automatización, no tu infraestructura, y cómo esto difiere de usar Ansible en pipelines de CI/CD de aplicaciones</li>
+<li>Crear un workflow de GitHub Actions que ejecute <code>ansible-lint</code> en cada pull request usando la acción compuesta oficial <code>ansible/ansible-lint</code></li>
+<li>Crear un workflow de GitHub Actions que ejecute tests de integración con Molecule en CI con salida a color y carga de artefactos en caso de fallo</li>
+<li>Configurar <code>tox-ansible</code> para producir una matriz de tests compatible con CI usando <code>--gh-matrix</code> y ejecutar la suite completa de tests de la colección en un pipeline de GitHub Actions</li>
+<li>Gestionar secretos en CI para contraseñas de Ansible Vault y tokens de Galaxy usando secretos de repositorio de GitHub</li>
+<li>Agregar badges de estado al README de la colección y comprender la protección de ramas como buena práctica para imponer puertas de calidad</li>
+</ul>
+<h2 id="la-historia-hasta-ahora">La Historia Hasta Ahora</h2>
+<p>La CoP ha estado creciendo. Seis equipos ahora contribuyen roles a <code>parasoltech.infrastructure</code>, y la colección se ha expandido de un rol a cuatro. El proceso es claro: ejecutar <code>ansible-lint</code>, ejecutar <code>molecule test</code>, ejecutar <code>tox --ansible</code> antes de fusionar. Todos conocen las reglas.</p>
+<p>Entonces un merge del viernes por la tarde rompe todo.</p>
+<p>Jordan revisa un PR del equipo de networking, examina el código visualmente, pero no ejecuta la suite de tests -- el cambio parece lo suficientemente simple. Para el lunes por la mañana, los despliegues a staging fallan en tres equipos. El culpable: un error tipográfico en un template de Jinja2 que <code>ansible-lint</code> habría detectado en segundos.</p>
+<p>"El problema no es el proceso," dice Lionel en la reunión de la CoP. "El problema es que el proceso depende de que la gente recuerde. Necesitamos que las máquinas lo impongan."</p>
+<p>El equipo acuerda automatizar sus puertas de calidad: cada pull request debe pasar linting, tests de integración y verificaciones de sanidad antes de poder fusionarse. Sin excepciones. Al final de la semana, el repositorio de la colección tiene tres nuevos archivos de workflow en <code>.github/workflows/</code>. Una marca verde significa que el cambio es seguro para fusionar. Una X roja significa que no lo es. Nadie necesita recordar ejecutar los tests -- GitHub lo hace por ellos.</p>
+<h2 id="cicd-para-contenido-ansible-vs-cicd-con-ansible">CI/CD para Contenido Ansible vs CI/CD con Ansible</h2>
+<p>Antes de escribir cualquier workflow, es importante entender qué significa CI/CD en el contexto del contenido Ansible.</p>
+<p>Hay dos usos muy diferentes de la frase "CI/CD y Ansible":</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>CI/CD <em>para</em> Ansible</th>
+<th>CI/CD <em>con</em> Ansible</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Qué significa</strong></td>
+<td>Probar tu código de automatización</td>
+<td>Usar Ansible para desplegar aplicaciones</td>
+</tr>
+<tr>
+<td><strong>Qué se ejecuta</strong></td>
+<td>ansible-lint, molecule, ansible-test, tox-ansible</td>
+<td>ansible-playbook contra infraestructura real</td>
+</tr>
+<tr>
+<td><strong>Dónde se ejecuta</strong></td>
+<td>Runner efímero de CI (GitHub Actions, GitLab CI)</td>
+<td>AAP Controller, AWX, o SSH directo</td>
+</tr>
+<tr>
+<td><strong>Qué valida</strong></td>
+<td>Calidad del código, sintaxis, comportamiento de roles</td>
+<td>Estado de la infraestructura</td>
+</tr>
+<tr>
+<td><strong>Se cubre en</strong></td>
+<td>Este módulo</td>
+<td>Módulo 12 (AAP)</td>
+</tr>
+</tbody>
+</table>
+<p>Este módulo cubre la primera columna: probar código de automatización en un runner efímero. Nada toca producción. El runner de CI aplica tu rol a localhost, verifica los resultados y se destruye. El Módulo 12 cubre la segunda columna -- usar Ansible Automation Platform para ejecutar automatización contra infraestructura real con RBAC, registros de auditoría e integración con webhooks.</p>
+<div class="admonition info">
+<p class="admonition-title">CI para Ansible prueba tu código, no tu infraestructura</p>
+<p>Esta es la distinción más importante de este módulo. Si te llevas una sola cosa, que sea esta: CI para contenido Ansible valida tu código de automatización en un runner desechable. Nunca toca la infraestructura de producción.</p>
+</div>
+<h3 id="la-piramide-de-tests-en-ci">La Pirámide de Tests en CI</h3>
+<p>La pirámide de tests del Módulo 9 se mapea directamente a las etapas de CI:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>         ┌─────────────┐
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>         │ Integración  │  Molecule      -- minutos
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>         │  (Molecule)  │
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        ┌┴─────────────┴┐
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        │   Tests Unit   │  pytest        -- segundos
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>        │  (pytest)      │
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>       ┌┴───────────────┴┐
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>       │  Tests Sanidad   │  ansible-test  -- segundos
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>       │  (ansible-test)  │
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>      ┌┴─────────────────┴┐
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>      │   Lint             │  ansible-lint  -- segundos
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>      │   (ansible-lint)   │
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>      └───────────────────┘
+</code></pre></div>
+<p>Se ejecuta de abajo hacia arriba: lint primero (rápido, barato), integración al final (lento, exhaustivo). Falla rápido en la capa más barata. Cada herramienta aquí es la misma que configuraste en el Módulo 9 -- la única diferencia es que ahora una máquina las ejecuta en cada pull request en lugar de depender de que un desarrollador recuerde hacerlo.</p>
+<h3 id="fundamentos-de-github-actions">Fundamentos de GitHub Actions</h3>
+<p>GitHub Actions es la plataforma de CI/CD integrada en GitHub. Los conceptos clave:</p>
+<table>
+<thead>
+<tr>
+<th>Concepto</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Workflow</strong></td>
+<td>Un archivo YAML en <code>.github/workflows/</code> que define un proceso automatizado</td>
+</tr>
+<tr>
+<td><strong>Trigger</strong></td>
+<td>El evento que inicia el workflow (<code>push</code>, <code>pull_request</code>, <code>schedule</code>)</td>
+</tr>
+<tr>
+<td><strong>Job</strong></td>
+<td>Un conjunto de pasos que se ejecutan en el mismo runner</td>
+</tr>
+<tr>
+<td><strong>Step</strong></td>
+<td>Un comando o acción individual dentro de un job</td>
+</tr>
+<tr>
+<td><strong>Runner</strong></td>
+<td>La máquina virtual que ejecuta el job (<code>ubuntu-24.04</code>)</td>
+</tr>
+<tr>
+<td><strong>Action</strong></td>
+<td>Una unidad de trabajo reutilizable (<code>actions/checkout@v4</code>, <code>ansible/ansible-lint@v26</code>)</td>
+</tr>
+<tr>
+<td><strong>Secret</strong></td>
+<td>Un valor cifrado almacenado en el repositorio, inyectado en tiempo de ejecución</td>
+</tr>
+</tbody>
+</table>
+<p>Los workflows se basan en eventos. Cuando un desarrollador abre un pull request, GitHub detecta que el evento coincide con un trigger de workflow y arranca un runner nuevo para ejecutar los jobs definidos.</p>
+<h2 id="linting-en-ci-con-ansible-lint">Linting en CI con ansible-lint</h2>
+<p>La primera y más rápida puerta de calidad es el linting. La acción oficial de GitHub <code>ansible/ansible-lint</code> envuelve la herramienta <code>ansible-lint</code> en una acción compuesta que maneja la configuración de Python, la instalación y la ejecución en un solo paso.</p>
+<h3 id="el-archivo-de-workflow">El Archivo de Workflow</h3>
+<p>Crea <code>.github/workflows/ansible-lint.yml</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nn">---</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Ansible Lint</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="nt">on</span><span class="p">:</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">main</span><span class="p p-Indicator">]</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="nt">paths</span><span class="p">:</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;ansible/**&#39;</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">  </span><span class="nt">pull_request</span><span class="p">:</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">main</span><span class="p p-Indicator">]</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="nt">paths</span><span class="p">:</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;ansible/**&#39;</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="nt">jobs</span><span class="p">:</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">  </span><span class="nt">lint</span><span class="p">:</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Ansible Lint</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-24.04</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check out code</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run ansible-lint</span>
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ansible/ansible-lint@v26</span>
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w">          </span><span class="nt">working_directory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ansible/collections/parasoltech/infrastructure</span>
+</code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Fijación de versiones</p>
+<p>La etiqueta <code>@v26</code> es una versión mayor continua -- siempre apunta a la última versión <code>v26.x.x</code>. Esto es conveniente para un curso, pero para workflows de producción debes fijar una versión específica (por ejemplo, <code>@v26.6.0</code>) para evitar comportamientos inesperados cuando la acción se actualice.</p>
+</div>
+<p>Recorramos cada sección:</p>
+<p><strong>Triggers (<code>on:</code>)</strong></p>
+<ul>
+<li><code>push: branches: [main]</code> -- se ejecuta cuando se hace push de código directamente a la rama <code>main</code></li>
+<li><code>pull_request: branches: [main]</code> -- se ejecuta cuando se abre o actualiza un PR contra <code>main</code></li>
+</ul>
+<p>Juntos, aseguran que tanto el PR como el resultado del merge sean validados.</p>
+<p><strong>Runner (<code>runs-on: ubuntu-24.04</code>)</strong></p>
+<p>El job se ejecuta en una máquina virtual Ubuntu 24.04 LTS. Siempre especifica la versión explícitamente -- <code>ubuntu-latest</code> es un objetivo móvil que puede cambiar sin aviso.</p>
+<p><strong>Steps</strong></p>
+<ol>
+<li><strong>Checkout</strong>: <code>actions/checkout@v4</code> clona el repositorio en el runner</li>
+<li><strong>Lint</strong>: <code>ansible/ansible-lint@v26</code> instala y ejecuta <code>ansible-lint</code>. La entrada <code>working_directory</code> le indica dónde encontrar la colección -- esencial para layouts de monorepo donde el contenido Ansible no está en la raíz del repositorio</li>
+</ol>
+<p>La acción de <code>ansible-lint</code> lee el archivo de configuración <code>.ansible-lint</code> del Módulo 9 automáticamente. No se necesita configuración adicional.</p>
+<h3 id="instalacion-de-dependencias-de-coleccion">Instalación de Dependencias de Colección</h3>
+<p>Si tu colección depende de otras colecciones (listadas en <code>requirements.yml</code>), la acción las instala antes del linting. La acción <code>ansible/ansible-lint</code> maneja esto de forma transparente a través de la resolución de dependencias integrada de <code>ansible-lint</code>.</p>
+<h2 id="tests-de-integracion-con-molecule-en-ci">Tests de Integración con Molecule en CI</h2>
+<p>El linting detecta problemas estáticos. Molecule detecta los dinámicos -- problemas que solo aparecen cuando realmente aplicas un rol. En CI, Molecule se ejecuta sin terminal interactivo, sin Docker-in-Docker y sin nadie observando la salida.</p>
+<h3 id="el-archivo-de-workflow_1">El Archivo de Workflow</h3>
+<p>Crea <code>.github/workflows/molecule.yml</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nn">---</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Molecule Tests</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="nt">on</span><span class="p">:</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span><span class="nt">pull_request</span><span class="p">:</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">main</span><span class="p p-Indicator">]</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="nt">paths</span><span class="p">:</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;ansible/**&#39;</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;.github/workflows/molecule.yml&#39;</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="nt">jobs</span><span class="p">:</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">  </span><span class="nt">molecule</span><span class="p">:</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Molecule - ${{ matrix.scenario }}</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-24.04</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">    </span><span class="nt">defaults</span><span class="p">:</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="w">      </span><span class="nt">run</span><span class="p">:</span>
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="w">        </span><span class="nt">working-directory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ansible/collections/parasoltech/infrastructure</span>
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="w">    </span><span class="nt">strategy</span><span class="p">:</span>
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="w">      </span><span class="nt">fail-fast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="w">      </span><span class="nt">matrix</span><span class="p">:</span>
+<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="w">        </span><span class="nt">scenario</span><span class="p">:</span>
+<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">integration_webserver</span>
+<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="w">    </span><span class="nt">env</span><span class="p">:</span>
+<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a><span class="w">      </span><span class="nt">PY_COLORS</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;1&#39;</span>
+<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a><span class="w">      </span><span class="nt">ANSIBLE_FORCE_COLOR</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;true&#39;</span>
+<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a><span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check out code</span>
+<a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a><span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+<a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>
+<a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Set up Python</span>
+<a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a><span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/setup-python@v5</span>
+<a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a><span class="w">          </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.12&#39;</span>
+<a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a><span class="w">          </span><span class="nt">cache</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;pip&#39;</span>
+<a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a>
+<a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install dependencies</span>
+<a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install ansible-dev-tools</span>
+<a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a>
+<a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run Molecule tests</span>
+<a id="__codelineno-2-40" name="__codelineno-2-40" href="#__codelineno-2-40"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">molecule test -s ${{ matrix.scenario }}</span>
+<a id="__codelineno-2-41" name="__codelineno-2-41" href="#__codelineno-2-41"></a>
+<a id="__codelineno-2-42" name="__codelineno-2-42" href="#__codelineno-2-42"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Upload logs on failure</span>
+<a id="__codelineno-2-43" name="__codelineno-2-43" href="#__codelineno-2-43"></a><span class="w">        </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">failure()</span>
+<a id="__codelineno-2-44" name="__codelineno-2-44" href="#__codelineno-2-44"></a><span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/upload-artifact@v4</span>
+<a id="__codelineno-2-45" name="__codelineno-2-45" href="#__codelineno-2-45"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<a id="__codelineno-2-46" name="__codelineno-2-46" href="#__codelineno-2-46"></a><span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">molecule-logs-${{ matrix.scenario }}</span>
+<a id="__codelineno-2-47" name="__codelineno-2-47" href="#__codelineno-2-47"></a><span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ansible/collections/parasoltech/infrastructure/extensions/molecule/${{ matrix.scenario }}/.molecule/</span>
+</code></pre></div>
+<p>Este workflow introduce varios conceptos nuevos:</p>
+<p><strong>Filtrado por rutas (<code>paths:</code>)</strong></p>
+<p>La clave <code>paths</code> limita el workflow a cambios dentro de <code>ansible/</code> o el archivo de workflow en sí. Un cambio solo de documentación no dispara una ejecución de Molecule, ahorrando minutos de CI.</p>
+<p><strong>Estrategia de matriz (<code>strategy.matrix</code>)</strong></p>
+<p>La matriz ejecuta el job una vez por escenario. Con un escenario (<code>integration_webserver</code>), hay un job. Cuando la CoP agregue un segundo rol con su propio escenario Molecule, agregan una línea a la matriz y CI se encarga del resto.</p>
+<p>Configurar <code>fail-fast: false</code> asegura que todos los escenarios se ejecuten hasta completarse aunque uno falle. De esta forma ves el panorama completo, no solo el primer fallo.</p>
+<p><strong>Salida a color</strong></p>
+<p>Los runners de CI no tienen terminal, por lo que Ansible y Python desactivan la salida a color por defecto. Configurar <code>PY_COLORS: '1'</code> y <code>ANSIBLE_FORCE_COLOR: 'true'</code> como variables de entorno restaura el color en los logs de CI, haciendo los fallos mucho más fáciles de leer.</p>
+<p><strong>Carga de artefactos en caso de fallo</strong></p>
+<p>La condición <code>if: failure()</code> en el paso de carga significa que solo se ejecuta cuando el test falla. Sube el directorio <code>.molecule/</code> de Molecule, que contiene los logs de ansible, como un artefacto descargable. Cuando un test falla a las 2 AM, la información de depuración está esperando en la pestaña de Actions a la mañana siguiente.</p>
+<div class="admonition tip">
+<p class="admonition-title">DIY vs acción oficial</p>
+<p>A diferencia de <code>ansible-lint</code>, no existe una acción oficial de Molecule. Este workflow toma el enfoque DIY: configurar Python, instalar <code>ansible-dev-tools</code> (que incluye Molecule) y ejecutar <code>molecule test</code>. Esto te da control total sobre la versión de Python, dependencias y configuración de Molecule.</p>
+</div>
+<h2 id="testing-de-colecciones-con-tox-ansible">Testing de Colecciones con tox-ansible</h2>
+<p><code>tox-ansible</code> orquesta todos los tipos de tests -- lint, sanidad, unitarios e integración -- a través de una interfaz única. Su flag <code>--gh-matrix</code> produce salida JSON que GitHub Actions puede consumir para crear una matriz de tests dinámica.</p>
+<h3 id="el-patron-de-dos-jobs">El Patrón de Dos Jobs</h3>
+<p>El workflow usa dos jobs:</p>
+<ol>
+<li><strong><code>matrix-gen</code></strong>: Ejecuta <code>tox --ansible --gh-matrix</code> para descubrir todos los entornos de test y produce el JSON como salida</li>
+<li><strong><code>test</code></strong>: Lee el JSON y ejecuta cada entorno de test en paralelo</li>
+</ol>
+<p>Este patrón significa que nunca actualizas manualmente la matriz de CI. Agrega un nuevo escenario de Molecule o un nuevo archivo de test, y <code>tox-ansible</code> lo descubre automáticamente en la siguiente ejecución.</p>
+<h3 id="el-archivo-de-workflow_2">El Archivo de Workflow</h3>
+<p>Crea <code>.github/workflows/collection-test.yml</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nn">---</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Collection Tests</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="nt">on</span><span class="p">:</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">main</span><span class="p p-Indicator">]</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="nt">paths</span><span class="p">:</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;ansible/**&#39;</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">  </span><span class="nt">pull_request</span><span class="p">:</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">main</span><span class="p p-Indicator">]</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">    </span><span class="nt">paths</span><span class="p">:</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;ansible/**&#39;</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="nt">jobs</span><span class="p">:</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">  </span><span class="nt">matrix-gen</span><span class="p">:</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Generate test matrix</span>
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-24.04</span>
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">    </span><span class="nt">defaults</span><span class="p">:</span>
+<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">      </span><span class="nt">run</span><span class="p">:</span>
+<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="w">        </span><span class="nt">working-directory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ansible/collections/parasoltech/infrastructure</span>
+<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="w">    </span><span class="nt">outputs</span><span class="p">:</span>
+<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="w">      </span><span class="nt">envlist</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ steps.generate-matrix.outputs.envlist }}</span>
+<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/setup-python@v5</span>
+<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a><span class="w">          </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.12&#39;</span>
+<a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a><span class="w">          </span><span class="nt">cache</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;pip&#39;</span>
+<a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install tox tox-ansible</span>
+<a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Generate matrix</span>
+<a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a><span class="w">        </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">generate-matrix</span>
+<a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python -m tox --ansible --gh-matrix --conf tox-ansible.ini</span>
+<a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a>
+<a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a><span class="w">  </span><span class="nt">test</span><span class="p">:</span>
+<a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.entry.name }}</span>
+<a id="__codelineno-3-36" name="__codelineno-3-36" href="#__codelineno-3-36"></a><span class="w">    </span><span class="nt">needs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">matrix-gen</span>
+<a id="__codelineno-3-37" name="__codelineno-3-37" href="#__codelineno-3-37"></a><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-24.04</span>
+<a id="__codelineno-3-38" name="__codelineno-3-38" href="#__codelineno-3-38"></a><span class="w">    </span><span class="nt">defaults</span><span class="p">:</span>
+<a id="__codelineno-3-39" name="__codelineno-3-39" href="#__codelineno-3-39"></a><span class="w">      </span><span class="nt">run</span><span class="p">:</span>
+<a id="__codelineno-3-40" name="__codelineno-3-40" href="#__codelineno-3-40"></a><span class="w">        </span><span class="nt">working-directory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ansible/collections/parasoltech/infrastructure</span>
+<a id="__codelineno-3-41" name="__codelineno-3-41" href="#__codelineno-3-41"></a><span class="w">    </span><span class="nt">strategy</span><span class="p">:</span>
+<a id="__codelineno-3-42" name="__codelineno-3-42" href="#__codelineno-3-42"></a><span class="w">      </span><span class="nt">fail-fast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a id="__codelineno-3-43" name="__codelineno-3-43" href="#__codelineno-3-43"></a><span class="w">      </span><span class="nt">matrix</span><span class="p">:</span>
+<a id="__codelineno-3-44" name="__codelineno-3-44" href="#__codelineno-3-44"></a><span class="w">        </span><span class="nt">entry</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ fromJSON(needs.matrix-gen.outputs.envlist) }}</span>
+<a id="__codelineno-3-45" name="__codelineno-3-45" href="#__codelineno-3-45"></a><span class="w">    </span><span class="nt">env</span><span class="p">:</span>
+<a id="__codelineno-3-46" name="__codelineno-3-46" href="#__codelineno-3-46"></a><span class="w">      </span><span class="nt">PY_COLORS</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;1&#39;</span>
+<a id="__codelineno-3-47" name="__codelineno-3-47" href="#__codelineno-3-47"></a><span class="w">      </span><span class="nt">ANSIBLE_FORCE_COLOR</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;true&#39;</span>
+<a id="__codelineno-3-48" name="__codelineno-3-48" href="#__codelineno-3-48"></a><span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<a id="__codelineno-3-49" name="__codelineno-3-49" href="#__codelineno-3-49"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+<a id="__codelineno-3-50" name="__codelineno-3-50" href="#__codelineno-3-50"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/setup-python@v5</span>
+<a id="__codelineno-3-51" name="__codelineno-3-51" href="#__codelineno-3-51"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<a id="__codelineno-3-52" name="__codelineno-3-52" href="#__codelineno-3-52"></a><span class="w">          </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.12&#39;</span>
+<a id="__codelineno-3-53" name="__codelineno-3-53" href="#__codelineno-3-53"></a><span class="w">          </span><span class="nt">cache</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;pip&#39;</span>
+<a id="__codelineno-3-54" name="__codelineno-3-54" href="#__codelineno-3-54"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install tox tox-ansible</span>
+<a id="__codelineno-3-55" name="__codelineno-3-55" href="#__codelineno-3-55"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tox --ansible -c tox-ansible.ini -e ${{ matrix.entry.name }}</span>
+<a id="__codelineno-3-56" name="__codelineno-3-56" href="#__codelineno-3-56"></a>
+<a id="__codelineno-3-57" name="__codelineno-3-57" href="#__codelineno-3-57"></a><span class="w">  </span><span class="nt">all_green</span><span class="p">:</span>
+<a id="__codelineno-3-58" name="__codelineno-3-58" href="#__codelineno-3-58"></a><span class="w">    </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">always()</span>
+<a id="__codelineno-3-59" name="__codelineno-3-59" href="#__codelineno-3-59"></a><span class="w">    </span><span class="nt">needs</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">test</span><span class="p p-Indicator">]</span>
+<a id="__codelineno-3-60" name="__codelineno-3-60" href="#__codelineno-3-60"></a><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-24.04</span>
+<a id="__codelineno-3-61" name="__codelineno-3-61" href="#__codelineno-3-61"></a><span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<a id="__codelineno-3-62" name="__codelineno-3-62" href="#__codelineno-3-62"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">re-actors/alls-green@release/v1</span>
+<a id="__codelineno-3-63" name="__codelineno-3-63" href="#__codelineno-3-63"></a><span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<a id="__codelineno-3-64" name="__codelineno-3-64" href="#__codelineno-3-64"></a><span class="w">          </span><span class="nt">jobs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ toJSON(needs) }}</span>
+</code></pre></div>
+<p>Desglosemos las partes clave:</p>
+<p><strong>Generación de la matriz</strong></p>
+<p>El job <code>matrix-gen</code> ejecuta <code>tox --ansible --gh-matrix --conf tox-ansible.ini</code> y captura la salida. El flag <code>--gh-matrix</code> le indica a <code>tox-ansible</code> que escriba un array JSON en <code>$GITHUB_OUTPUT</code> bajo la clave <code>envlist</code>. Cada entrada en el array tiene un campo <code>name</code> que corresponde a un entorno de tox como <code>sanity-py3.12-2.19</code> o <code>unit-py3.12-2.19</code>.</p>
+<p>La sección <code>outputs</code> expone este JSON a los jobs posteriores a través de <code>needs.matrix-gen.outputs.envlist</code>.</p>
+<p><strong>Consumo de la matriz dinámica</strong></p>
+<p>El job <code>test</code> usa <code>fromJSON(needs.matrix-gen.outputs.envlist)</code> para parsear el array JSON en una matriz de GitHub Actions. Cada entrada genera un job paralelo separado que ejecuta el entorno de tox correspondiente.</p>
+<p>Este es el mismo <code>tox --ansible</code> que usaste localmente en el Módulo 9. Mismo archivo de configuración, mismos comandos, mismos resultados -- solo que ejecutándose en un runner en la nube en lugar de tu portátil.</p>
+<p><strong>El job de agregación <code>all_green</code></strong></p>
+<p>Con una matriz dinámica que puede producir 4, 6 o 12 jobs de test, necesitas una única verificación de estado que reporte el resultado general. El job <code>all_green</code> depende de todos los jobs de la matriz <code>test</code> y usa la acción <code>re-actors/alls-green</code> para verificar que todos hayan pasado.</p>
+<div class="admonition tip">
+<p class="admonition-title">El patrón <code>all_green</code>: una puerta para gobernarlos a todos</p>
+<p>Con una matriz de 6 entornos de test, agrega un job <code>all_green</code> que dependa de todos los jobs de la matriz. Configura <code>all_green</code> como la única verificación requerida en la protección de ramas. Se adapta automáticamente cuando agregas o eliminas entornos -- sin necesidad de actualizar las reglas de protección de ramas cada vez que cambia la matriz.</p>
+</div>
+<p>El <code>if: always()</code> es crítico. Sin él, el job <code>all_green</code> se omite cuando cualquier job anterior falla -- que es exactamente cuando necesitas que reporte un fallo.</p>
+<h3 id="workflows-reutilizables">Workflows Reutilizables</h3>
+<p>El repositorio <code>ansible/ansible-content-actions</code> proporciona workflows reutilizables de calidad producción para tareas comunes de CI de contenido Ansible. Son mantenidos por el equipo de Ansible y cubren validación de changelog, automatización de releases y más.</p>
+<p>Por ejemplo, un workflow de validación de changelog:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nn">---</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Changelog Check</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="nt">on</span><span class="p">:</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span><span class="nt">pull_request</span><span class="p">:</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">main</span><span class="p p-Indicator">]</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="nt">jobs</span><span class="p">:</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">  </span><span class="nt">changelog</span><span class="p">:</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ansible/ansible-content-actions/.github/workflows/changelog.yaml@main</span>
+</code></pre></div>
+<p>Una línea en la sección <code>jobs</code> reemplaza una definición completa de workflow. La clave <code>uses</code> apunta a un archivo de workflow en otro repositorio, y GitHub Actions se encarga del resto.</p>
+<div class="admonition tip">
+<p class="admonition-title">Si pasa localmente, debe pasar en CI</p>
+<p>El objetivo principal de <code>tox-ansible</code> es garantizar esto. Si un test pasa localmente pero falla en CI, algo está mal con el aislamiento de tu entorno -- y eso es un bug que vale la pena corregir.</p>
+</div>
+<h2 id="secretos-y-seguridad-en-ci">Secretos y Seguridad en CI</h2>
+<p>Algunas tareas de CI necesitan valores sensibles: contraseñas de Vault para variables cifradas, tokens de Galaxy para publicar colecciones, credenciales de nube para tests de integración. Estos nunca deben aparecer en el código.</p>
+<h3 id="secretos-de-repositorio-en-github">Secretos de Repositorio en GitHub</h3>
+<p>GitHub almacena los secretos cifrados y los inyecta en los workflows en tiempo de ejecución. Estos son:</p>
+<ul>
+<li><strong>Cifrados en reposo</strong>: GitHub no puede leerlos después de guardarlos</li>
+<li><strong>Enmascarados en logs</strong>: Si un valor de secreto aparece en stdout, GitHub lo reemplaza con <code>***</code></li>
+<li><strong>Con alcance al repositorio</strong>: Cada repositorio tiene sus propios secretos</li>
+<li><strong>No disponibles para forks</strong>: Los pull requests de repositorios forkeados no pueden acceder a los secretos, previniendo la exfiltración</li>
+</ul>
+<p>Para agregar un secreto, ve a <strong>Settings → Secrets and variables → Actions → New repository secret</strong>.</p>
+<h3 id="contrasena-de-vault-en-ci">Contraseña de Vault en CI</h3>
+<p>Cuando los escenarios de Molecule usan variables cifradas, el workflow de Molecule necesita la contraseña de Vault. El patrón:</p>
+<ol>
+<li>Almacena la contraseña de Vault como un secreto de GitHub llamado <code>VAULT_PASSWORD</code></li>
+<li>En el workflow, escribe el secreto en un archivo temporal</li>
+<li>Apunta Molecule al archivo a través de una variable de entorno</li>
+<li>El archivo se limpia automáticamente cuando el runner se destruye</li>
+</ol>
+<p>Agrega estos pasos al workflow de Molecule antes del paso <code>Run Molecule tests</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Write vault password file</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">echo &quot;$VAULT_PASSWORD&quot; &gt; .vault-password</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">        </span><span class="nt">env</span><span class="p">:</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">          </span><span class="nt">VAULT_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.VAULT_PASSWORD }}</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run Molecule tests</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">molecule test -s ${{ matrix.scenario }}</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">        </span><span class="nt">env</span><span class="p">:</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">          </span><span class="nt">ANSIBLE_VAULT_PASSWORD_FILE</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.vault-password</span>
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Los secretos nunca pertenecen al código</p>
+<p>Cada plataforma de CI proporciona un mecanismo de secretos. Almacena el secreto en la plataforma, referéncialo por nombre en el workflow, y la plataforma lo inyecta en tiempo de ejecución. Los secretos se enmascaran en los logs y no están disponibles para PRs de forks.</p>
+</div>
+<h3 id="tokens-de-galaxy">Tokens de Galaxy</h3>
+<p>Publicar colecciones en Galaxy o Automation Hub requiere un token de API. Almacénalo como un secreto y referéncialo en los workflows:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Publish collection</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">          </span><span class="no">ansible-galaxy collection publish</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">          </span><span class="no">parasoltech-infrastructure-*.tar.gz</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">          </span><span class="no">--server https://galaxy.ansible.com/</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">        </span><span class="nt">env</span><span class="p">:</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">          </span><span class="nt">ANSIBLE_GALAXY_SERVER_AUTOMATION_HUB_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GALAXY_TOKEN }}</span>
+</code></pre></div>
+<h3 id="seguridad-de-forks">Seguridad de Forks</h3>
+<p>Cuando alguien forkea tu repositorio y abre un PR, el workflow se ejecuta sobre el código del fork. GitHub deliberadamente no inyecta los secretos del repositorio en estas ejecuciones. Esta es una característica de seguridad: un fork malicioso podría agregar un paso que imprima <code>${{ secrets.GALAXY_TOKEN }}</code> en los logs.</p>
+<p>Diseña tus workflows de modo que los tests que no necesitan secretos (linting, tests de sanidad, tests unitarios) pasen sin ellos, y los tests que requieren secretos (publicación, tests de integración cifrados) se omitan o se controlen con una condición <code>if: github.event.pull_request.head.repo.full_name == github.repository</code>.</p>
+<h2 id="badges-de-estado-y-buenas-practicas">Badges de Estado y Buenas Prácticas</h2>
+<h3 id="badges-de-estado">Badges de Estado</h3>
+<p>Los badges de estado son pequeñas imágenes que muestran el estado actual de un workflow: pasando o fallando. Agrégalos al README de la colección para dar a los contribuidores visibilidad instantánea sobre la salud del CI.</p>
+<p>El formato de URL del badge es:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>![Nombre del Workflow](https://github.com/OWNER/REPO/actions/workflows/ARCHIVO_WORKFLOW/badge.svg)
+</code></pre></div>
+<p>Para los tres workflows de este módulo:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>![<span class="nt">Ansible Lint</span>](<span class="na">https://github.com/OWNER/REPO/actions/workflows/ansible-lint.yml/badge.svg</span>)
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>![<span class="nt">Molecule Tests</span>](<span class="na">https://github.com/OWNER/REPO/actions/workflows/molecule.yml/badge.svg</span>)
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>![<span class="nt">Collection Tests</span>](<span class="na">https://github.com/OWNER/REPO/actions/workflows/collection-test.yml/badge.svg</span>)
+</code></pre></div>
+<p>Reemplaza <code>OWNER/REPO</code> con la ruta de tu repositorio en GitHub.</p>
+<h3 id="proteccion-de-ramas">Protección de Ramas</h3>
+<p>Las reglas de protección de ramas imponen puertas de calidad a nivel del repositorio. Cuando están configuradas, los pull requests no pueden fusionarse hasta que todas las verificaciones de estado requeridas pasen, sin importar quién esté fusionando.</p>
+<p>Las configuraciones clave para un repositorio de contenido Ansible:</p>
+<ul>
+<li><strong>Requerir que las verificaciones de estado pasen antes de fusionar</strong>: Selecciona el job <code>all_green</code> del workflow de tests de colección. Esta única verificación cubre todos los entornos de test.</li>
+<li><strong>Requerir revisiones de pull request</strong>: Al menos un miembro del equipo debe aprobar antes de fusionar.</li>
+<li><strong>No permitir eludir las configuraciones anteriores</strong>: Incluso los administradores del repositorio deben seguir las reglas.</li>
+<li><strong>Restringir force pushes</strong>: Prevenir la reescritura del historial en <code>main</code>.</li>
+</ul>
+<p>La protección de ramas se configura en <strong>Settings → Branches → Branch protection rules</strong> en el repositorio de GitHub. Las configuraciones específicas dependen del flujo de trabajo de tu equipo y el modelo de acceso -- comienza requiriendo la verificación de estado <code>all_green</code> e itera desde ahí.</p>
+<div class="admonition note">
+<p class="admonition-title">La protección de ramas requiere acceso de administrador</p>
+<p>Configurar reglas de protección de ramas requiere permisos de administrador del repositorio y varía según el flujo de trabajo del equipo. Las configuraciones anteriores son buenas prácticas -- aplícalas según las necesidades de tu organización.</p>
+</div>
+<h2 id="otras-plataformas-de-ci">Otras Plataformas de CI</h2>
+<p>Los workflows de este módulo usan GitHub Actions, pero las herramientas son las mismas en todas partes. Solo cambia el formato de configuración de CI.</p>
+<h3 id="gitlab-ci">GitLab CI</h3>
+<p>GitLab CI usa <code>.gitlab-ci.yml</code> en lugar de <code>.github/workflows/</code>. Las mismas herramientas se ejecutan de la misma manera -- solo cambia el formato de configuración:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nn">---</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="nt">stages</span><span class="p">:</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lint</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="nt">ansible-lint</span><span class="p">:</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">  </span><span class="nt">stage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lint</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ghcr.io/ansible/community-ansible-dev-tools:latest</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="w">  </span><span class="nt">script</span><span class="p">:</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ansible-lint</span>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="nt">collection-tests</span><span class="p">:</span>
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="w">  </span><span class="nt">stage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test</span>
+<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a><span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ghcr.io/ansible/community-ansible-dev-tools:latest</span>
+<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a><span class="w">  </span><span class="nt">script</span><span class="p">:</span>
+<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tox --ansible -c tox-ansible.ini</span>
+</code></pre></div>
+<h3 id="jenkins">Jenkins</h3>
+<p>Para Jenkins, usa la imagen de contenedor <code>ghcr.io/ansible/community-ansible-dev-tools</code> como agente de build -- incluye <code>ansible-lint</code>, Molecule, <code>tox-ansible</code> y todas las demás herramientas de este módulo. Los mismos comandos funcionan de manera idéntica dentro de ella.</p>
+<p>El punto clave: aprende las herramientas una vez, aplícalas en todas partes. Solo cambia el formato de configuración de CI.</p>
+<h2 id="ejercicios">Ejercicios</h2>
+<h3 id="ejercicio-1-crear-un-workflow-de-ansible-lint">Ejercicio 1: Crear un Workflow de ansible-lint</h3>
+<p>Usando solo los conceptos de la sección "Linting en CI con ansible-lint", crea <code>.github/workflows/ansible-lint.yml</code> desde cero. Tu workflow debe:</p>
+<ul>
+<li>Dispararse en pushes y pull requests a <code>main</code></li>
+<li>Usar un runner <code>ubuntu-24.04</code></li>
+<li>Hacer checkout del código y ejecutar <code>ansible-lint</code> usando la acción oficial</li>
+<li>Apuntar <code>ansible-lint</code> al directorio de trabajo de la colección</li>
+</ul>
+<p>Después de escribir tu versión, compárala con el workflow de referencia en la sección anterior. ¿Omitiste algo? ¿Agregaste algo innecesario?</p>
+<h3 id="ejercicio-2-crear-un-workflow-de-tests-con-molecule">Ejercicio 2: Crear un Workflow de Tests con Molecule</h3>
+<p>Crea <code>.github/workflows/molecule.yml</code> con filtrado por rutas, una estrategia de matriz para escenarios, salida a color y carga de artefactos en caso de fallo.</p>
+<p>Usa el workflow de la sección "Tests de Integración con Molecule en CI" anterior. Después de crear el archivo, abre un pull request que introduzca un error deliberado en el rol webserver (por ejemplo, un error tipográfico en un nombre de variable en un template). Observa el fallo del CI. Corrige el error, haz push de nuevo y observa que el CI pasa.</p>
+<h3 id="ejercicio-3-crear-un-workflow-de-tests-de-coleccion-con-tox-ansible">Ejercicio 3: Crear un Workflow de Tests de Colección con tox-ansible</h3>
+<p>Crea <code>.github/workflows/collection-test.yml</code> con el patrón de dos jobs: generación de la matriz y ejecución paralela de tests.</p>
+<p>Usa el workflow de la sección "Testing de Colecciones con tox-ansible" anterior. Antes de hacer push, ejecuta la generación de la matriz localmente para ver la salida JSON:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">cd</span><span class="w"> </span>ansible/collections/parasoltech/infrastructure
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>tox<span class="w"> </span>--ansible<span class="w"> </span>--gh-matrix<span class="w"> </span>-c<span class="w"> </span>tox-ansible.ini
+</code></pre></div>
+<p>Examina el JSON. Haz push del workflow y observa la matriz dinámica en la pestaña de GitHub Actions.</p>
+<h3 id="ejercicio-4-configurar-secretos-y-badges-de-estado">Ejercicio 4: Configurar Secretos y Badges de Estado</h3>
+<ol>
+<li>Navega a tu repositorio en GitHub y agrega un secreto llamado <code>VAULT_PASSWORD</code> en <strong>Settings → Secrets and variables → Actions</strong></li>
+<li>Agrega el paso de contraseña de vault de la sección "Contraseña de Vault en CI" a tu workflow de Molecule, antes del paso <code>Run Molecule tests</code></li>
+<li>
+<p>Agrega badges de estado para los tres workflows al README de la colección en <code>ansible/collections/parasoltech/infrastructure/README.md</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>![<span class="nt">Ansible Lint</span>](<span class="na">https://github.com/OWNER/REPO/actions/workflows/ansible-lint.yml/badge.svg</span>)
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>![<span class="nt">Molecule Tests</span>](<span class="na">https://github.com/OWNER/REPO/actions/workflows/molecule.yml/badge.svg</span>)
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>![<span class="nt">Collection Tests</span>](<span class="na">https://github.com/OWNER/REPO/actions/workflows/collection-test.yml/badge.svg</span>)
+</code></pre></div>
+</li>
+<li>
+<p>Haz push y verifica que los badges se rendericen correctamente en el README</p>
+</li>
+</ol>
+<h3 id="ejercicio-5-workflows-reutilizables-bonus">Ejercicio 5: Workflows Reutilizables (Bonus)</h3>
+<p>Crea <code>.github/workflows/changelog.yml</code> que llame al workflow reutilizable de <code>ansible/ansible-content-actions</code> para validación de changelog:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nn">---</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Changelog Check</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="nt">on</span><span class="p">:</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">  </span><span class="nt">pull_request</span><span class="p">:</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">main</span><span class="p p-Indicator">]</span>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="nt">jobs</span><span class="p">:</span>
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="w">  </span><span class="nt">changelog</span><span class="p">:</span>
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ansible/ansible-content-actions/.github/workflows/changelog.yaml@main</span>
+</code></pre></div>
+<p>Explora el <a href="https://github.com/ansible/ansible-content-actions">repositorio ansible-content-actions</a> para ver qué otros workflows reutilizables están disponibles. Considera cuáles beneficiarían a la colección de la CoP.</p>
+<h2 id="resumen">Resumen</h2>
+<p>En este módulo:</p>
+<ul>
+<li>Comprendiste la distinción crítica entre CI/CD <em>para</em> contenido Ansible (probar tu código de automatización en runners efímeros) y CI/CD <em>con</em> Ansible (ejecutar automatización contra infraestructura real con AAP)</li>
+<li>Creaste un workflow de <code>ansible-lint</code> usando la acción compuesta oficial <code>ansible/ansible-lint@v26</code>, con triggers en push y pull request</li>
+<li>Construiste un workflow de tests de Molecule con filtrado por rutas, estrategia de matriz para múltiples escenarios, salida a color mediante variables de entorno y carga de artefactos en caso de fallo para depuración post-mortem</li>
+<li>Configuraste <code>tox-ansible</code> con <code>--gh-matrix</code> para generar dinámicamente una matriz de tests en CI, y usaste el patrón de dos jobs (generación de la matriz → ejecución paralela) con un job de agregación <code>all_green</code></li>
+<li>Aprendiste a gestionar secretos en CI -- contraseñas de Vault escritas en archivos temporales, tokens de Galaxy inyectados como variables de entorno, y las implicaciones de seguridad de PRs desde forks</li>
+<li>Agregaste badges de estado al README de la colección y comprendiste la protección de ramas como buena práctica para imponer puertas de calidad a nivel del repositorio</li>
+</ul>
+<p>La CoP en Parasol Tech ahora tiene puertas de calidad automatizadas en cada pull request. El linting se ejecuta en segundos. Los tests de integración con Molecule y los tests de sanidad/unitarios con tox-ansible se ejecutan en paralelo. Un job <code>all_green</code> agrega los resultados en una señal única de pasa/falla. Nadie necesita recordar ejecutar los tests -- el pipeline de CI lo impone.</p>
+<h2 id="proximos-pasos">Próximos Pasos</h2>
+<p>Siguiente: <a href="../12-scaling-with-aap/">Módulo 12 -- Escalando con AAP</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
