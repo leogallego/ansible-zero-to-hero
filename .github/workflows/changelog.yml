@@ -1,0 +1,10 @@
+---
+name: Changelog Check
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  changelog:
+    uses: ansible/ansible-content-actions/.github/workflows/changelog.yaml@main

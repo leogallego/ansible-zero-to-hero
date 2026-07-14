@@ -1,0 +1,60 @@
+---
+name: Collection Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    paths:
+      - 'ansible/**'
+
+jobs:
+  matrix-gen:
+    name: Generate test matrix
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: ansible/collections/parasoltech/infrastructure
+    outputs:
+      envlist: ${{ steps.generate-matrix.outputs.envlist }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install tox tox-ansible
+      - name: Generate matrix
+        id: generate-matrix
+        run: python -m tox --ansible --gh-matrix --conf tox-ansible.ini
+
+  test:
+    name: ${{ matrix.entry.name }}
+    needs: matrix-gen
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: ansible/collections/parasoltech/infrastructure
+    strategy:
+      fail-fast: false
+      matrix:
+        entry: ${{ fromJSON(needs.matrix-gen.outputs.envlist) }}
+    env:
+      PY_COLORS: '1'
+      ANSIBLE_FORCE_COLOR: 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install tox tox-ansible
+      - run: tox --ansible -c tox-ansible.ini -e ${{ matrix.entry.name }}
+
+  all_green:
+    if: always()
+    needs: [test]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}

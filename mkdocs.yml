@@ -65,4 +65,5 @@ nav:
       - "8. Roles and Collections": modules/8-roles-and-collections.md
       - "9. Testing Your Automation": modules/9-testing-your-automation.md
       - "10. Packaging and Deployment": modules/10-packaging-and-deployment.md
+      - "11. CI/CD for Ansible": modules/11-cicd-for-ansible.md
       - "12. Scaling with AAP": modules/12-scaling-with-aap.md

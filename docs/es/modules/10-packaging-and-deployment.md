@@ -696,4 +696,4 @@ La CoP en Parasol Tech ahora tiene un pipeline completo: el código se prueba (M
 
 ## Próximos Pasos
 
-Siguiente: [Módulo 12: Escalando con AAP](12-scaling-with-aap.md)
+Siguiente: [Módulo 11 -- CI/CD para Contenido Ansible](11-cicd-for-ansible.md)
