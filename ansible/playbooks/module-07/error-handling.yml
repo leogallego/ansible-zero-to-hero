@@ -1,0 +1,94 @@
+---
+# Module 7 - Error handling with block/rescue/always
+# This playbook simulates a deployment with a deliberate failure
+# to demonstrate structured error handling and rollback.
+#
+# Run it:
+#   ansible-navigator run playbooks/module-07/error-handling.yml --mode stdout
+#
+# Run without failure:
+#   ansible-navigator run playbooks/module-07/error-handling.yml --mode stdout \
+#     -e "parasol_simulate_failure=false"
+
+- name: Deploy application with error handling
+  hosts: localhost
+  connection: local
+  gather_facts: true
+
+  vars:
+    parasol_demo_dir: "~/ansible-demo/module-07"
+    parasol_app_version: "2.1.0"
+    parasol_simulate_failure: true
+
+  tasks:
+    - name: Ensure demo directories exist
+      ansible.builtin.file:
+        path: "{{ parasol_demo_dir }}/{{ item }}"
+        state: directory
+        mode: "0755"
+      loop:
+        - app
+        - backups
+
+    - name: Deploy application with error handling
+      block:
+        - name: Deploy configuration file
+          ansible.builtin.copy:
+            content: |
+              [application]
+              version={{ parasol_app_version }}
+              environment=staging
+            dest: "{{ parasol_demo_dir }}/app/config.ini"
+            mode: "0644"
+
+        - name: Deploy application binary marker
+          ansible.builtin.copy:
+            content: "app-{{ parasol_app_version }}\n"
+            dest: "{{ parasol_demo_dir }}/app/release.txt"
+            mode: "0644"
+
+        - name: Simulate database migration
+          ansible.builtin.command:
+            cmd: /bin/false
+          changed_when: false
+          when: parasol_simulate_failure | bool
+
+        - name: Verify deployment
+          ansible.builtin.debug:
+            msg: "Deployment verified successfully"
+            verbosity: 0
+
+      rescue:
+        - name: Report the failure
+          ansible.builtin.debug:
+            msg: >-
+              Deployment failed at task '{{ ansible_failed_task.name }}'.
+              Error: {{ ansible_failed_result.msg | default('unknown') }}.
+              Rolling back.
+            verbosity: 0
+
+        - name: Roll back configuration
+          ansible.builtin.file:
+            path: "{{ parasol_demo_dir }}/app/config.ini"
+            state: absent
+
+        - name: Roll back release marker
+          ansible.builtin.file:
+            path: "{{ parasol_demo_dir }}/app/release.txt"
+            state: absent
+
+      always:
+        - name: Record deployment attempt
+          ansible.builtin.copy:
+            content: >-
+              version={{ parasol_app_version }}
+              result={{ (ansible_failed_task is defined) | ternary('FAILED', 'SUCCESS') }}
+            dest: "{{ parasol_demo_dir }}/deploy.log"
+            mode: "0644"
+
+        - name: Show deployment result
+          ansible.builtin.debug:
+            msg: >-
+              Deployment log: version={{ parasol_app_version }},
+              result={{ (ansible_failed_task is defined) | ternary('FAILED', 'SUCCESS') }}
+            verbosity: 0

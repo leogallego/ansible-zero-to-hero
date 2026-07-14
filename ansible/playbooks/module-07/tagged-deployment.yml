@@ -1,0 +1,122 @@
+---
+# Module 7 - Working with tags
+# Demonstrates tag-based selective execution, special tags
+# (always/never), and the tag safety rule.
+#
+# Run it:
+#   ansible-navigator run playbooks/module-07/tagged-deployment.yml --mode stdout
+#
+# List tags:
+#   ansible-navigator run playbooks/module-07/tagged-deployment.yml --mode stdout --list-tags
+#
+# Run specific tags:
+#   ansible-navigator run playbooks/module-07/tagged-deployment.yml --mode stdout --tags install
+#   ansible-navigator run playbooks/module-07/tagged-deployment.yml --mode stdout --tags configure
+#   ansible-navigator run playbooks/module-07/tagged-deployment.yml --mode stdout --tags verify
+#   ansible-navigator run playbooks/module-07/tagged-deployment.yml --mode stdout --tags debug
+
+- name: Tagged deployment playbook
+  hosts: localhost
+  connection: local
+  gather_facts: true
+
+  vars:
+    parasol_demo_dir: "~/ansible-demo/module-07"
+    parasol_app_version: "2.1.0"
+    parasol_app_packages:
+      - nginx
+      - postgresql
+      - redis
+
+  tasks:
+    # -- always tag: runs regardless of tag selection --
+    - name: Display deployment status
+      ansible.builtin.debug:
+        msg: >-
+          Deployment started for version {{ parasol_app_version }}
+          at {{ ansible_facts['date_time']['iso8601'] }}
+        verbosity: 0
+      tags:
+        - always
+
+    - name: Ensure demo directories exist
+      ansible.builtin.file:
+        path: "{{ parasol_demo_dir }}/{{ item }}"
+        state: directory
+        mode: "0755"
+      loop:
+        - app
+        - config
+        - logs
+      tags:
+        - always
+
+    # -- install tag --
+    - name: Install application packages (simulated)
+      ansible.builtin.copy:
+        content: "{{ item }} installed\n"
+        dest: "{{ parasol_demo_dir }}/app/{{ item }}.marker"
+        mode: "0644"
+      loop: "{{ parasol_app_packages }}"
+      tags:
+        - install
+
+    # -- configure tag (as a block) --
+    - name: Configure application
+      block:
+        - name: Deploy application configuration
+          ansible.builtin.copy:
+            content: |
+              [application]
+              version={{ parasol_app_version }}
+              environment=staging
+              log_level=info
+            dest: "{{ parasol_demo_dir }}/config/app.ini"
+            mode: "0644"
+
+        - name: Deploy logging configuration
+          ansible.builtin.copy:
+            content: |
+              [logging]
+              level=info
+              file={{ parasol_demo_dir }}/logs/app.log
+              max_size=100M
+            dest: "{{ parasol_demo_dir }}/config/logging.ini"
+            mode: "0644"
+      tags:
+        - configure
+
+    # -- verify tag --
+    - name: Verify application state
+      block:
+        - name: Check configuration files exist
+          ansible.builtin.stat:
+            path: "{{ parasol_demo_dir }}/config/app.ini"
+          register: parasol_config_stat
+
+        - name: Report verification result
+          ansible.builtin.debug:
+            msg: >-
+              Configuration file:
+              {{ parasol_config_stat.stat.exists |
+                 ternary('present', 'MISSING') }}
+            verbosity: 0
+      tags:
+        - verify
+
+    # -- never tag: only runs when explicitly requested --
+    - name: Dump all variables for debugging
+      ansible.builtin.debug:
+        var: hostvars[inventory_hostname]
+        verbosity: 0
+      tags:
+        - never
+        - debug
+
+    # -- always tag: completion message --
+    - name: Display completion status
+      ansible.builtin.debug:
+        msg: "Deployment tasks completed for version {{ parasol_app_version }}"
+        verbosity: 0
+      tags:
+        - always
