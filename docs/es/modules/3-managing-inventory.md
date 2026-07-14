@@ -229,7 +229,9 @@ ansible/inventory/
 │   ├── all.yml          # Se aplica a todos los hosts
 │   ├── dev.yml          # Se aplica al grupo dev
 │   ├── staging.yml      # Se aplica al grupo staging
-│   └── production.yml   # Se aplica al grupo production
+│   └── production/      # Se aplica al grupo production
+│       ├── vars.yml     #   Variables en texto plano
+│       └── vault.yml    #   Secretos encriptados (Módulo 6)
 └── host_vars/
     ├── db01.prod.parasol.example.yml
     └── db02.prod.parasol.example.yml
@@ -257,7 +259,7 @@ parasol_monitoring_enabled: false
 parasol_backup_schedule: "weekly"
 ```
 
-**`group_vars/production.yml`**: variables para el entorno de producción:
+**`group_vars/production/vars.yml`**: variables para el entorno de producción:
 
 ```yaml
 ---
@@ -266,6 +268,9 @@ parasol_log_level: "warning"
 parasol_monitoring_enabled: true
 parasol_backup_schedule: "hourly"
 ```
+
+!!! tip "Directorios en lugar de archivos"
+    Puedes usar un directorio en lugar de un solo archivo para las variables de un grupo. Ansible carga todos los archivos `.yml` dentro del directorio y los fusiona. Esto es útil cuando quieres separar variables en texto plano de secretos encriptados. Usaremos este patrón en el Módulo 6.
 
 Cuando Ansible se ejecuta contra `web01.dev.parasol.example`, fusiona las variables de `all.yml` y `dev.yml`. El host recibe tanto `parasol_organization` (de `all`) como `parasol_log_level: debug` (de `dev`). Un host de producción recibe `parasol_log_level: warning` en su lugar.
 
@@ -314,7 +319,9 @@ inventory/
 │   ├── all.yml            # Variables para todos los hosts
 │   ├── dev.yml            # Variables para el grupo dev
 │   ├── staging.yml        # Variables para el grupo staging
-│   └── production.yml     # Variables para el grupo production
+│   └── production/        # Variables para el grupo production
+│       ├── vars.yml
+│       └── vault.yml
 └── host_vars/
     ├── db01.prod.parasol.example.yml
     └── db02.prod.parasol.example.yml
@@ -513,7 +520,7 @@ Ejecuta el siguiente comando para ver todas las variables que Ansible asignaría
 ansible-navigator inventory --host db01.prod.parasol.example --mode stdout
 ```
 
-Observa cómo la salida incluye variables de `group_vars/all.yml`, `group_vars/production.yml` y `host_vars/db01.prod.parasol.example.yml`, todas fusionadas.
+Observa cómo la salida incluye variables de `group_vars/all.yml`, `group_vars/production/vars.yml` y `host_vars/db01.prod.parasol.example.yml`, todas fusionadas.
 
 ## Resumen
 

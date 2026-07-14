@@ -541,7 +541,7 @@ In this module you:
 - Debugged variables using `ansible.builtin.debug` with `verbosity` and `ansible-navigator` interactive mode
 - Used `when` to conditionally execute tasks based on facts, variables, and registered results
 
-Lionel and Jordan now have the tools to write playbooks that adapt to any environment. The same playbook reads different values from `group_vars/dev.yml` and `group_vars/production.yml`, makes decisions based on system facts, and computes values at runtime. No more hardcoded configuration.
+Lionel and Jordan now have the tools to write playbooks that adapt to any environment. The same playbook reads different values from `group_vars/dev.yml` and `group_vars/production/`, makes decisions based on system facts, and computes values at runtime. No more hardcoded configuration.
 
 ## Next Steps
 

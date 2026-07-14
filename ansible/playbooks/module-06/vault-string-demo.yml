@@ -1,0 +1,19 @@
+---
+- name: Demonstrate vault-encrypted variable strings
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars_files:
+    - vars/db_secrets.yml
+
+  tasks:
+    - name: Display the plaintext variable
+      ansible.builtin.debug:
+        msg: "Database description: {{ parasol_db_description }}"
+        verbosity: 0
+
+    - name: Display the decrypted vault variable
+      ansible.builtin.debug:
+        msg: "Database password: {{ parasol_db_password }}"
+        verbosity: 0

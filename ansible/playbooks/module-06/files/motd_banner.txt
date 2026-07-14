@@ -1,0 +1,5 @@
+=============================================
+  Welcome to Parasol Tech Infrastructure
+  Managed by Ansible Automation
+  Unauthorized access is prohibited
+=============================================

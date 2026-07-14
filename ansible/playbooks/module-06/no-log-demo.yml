@@ -1,0 +1,20 @@
+---
+- name: Demonstrate no_log protection
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    parasol_demo_password: "ThisIsA$ecretValue"
+
+  tasks:
+    - name: Display password WITHOUT no_log (exposes the value)
+      ansible.builtin.debug:
+        msg: "The password is: {{ parasol_demo_password }}"
+        verbosity: 0
+
+    - name: Display password WITH no_log (value is censored)
+      ansible.builtin.debug:
+        msg: "The password is: {{ parasol_demo_password }}"
+        verbosity: 0
+      no_log: true

@@ -1,0 +1,19 @@
+---
+- name: Demonstrate vault-encrypted file
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars_files:
+    - vars/api_credentials.yml
+
+  tasks:
+    - name: Display the decrypted API key
+      ansible.builtin.debug:
+        msg: "API key: {{ parasol_api_key }}"
+        verbosity: 0
+
+    - name: Display the decrypted API secret
+      ansible.builtin.debug:
+        msg: "API secret: {{ parasol_api_secret }}"
+        verbosity: 0

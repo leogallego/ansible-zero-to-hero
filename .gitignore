@@ -9,6 +9,7 @@ __pycache__/
 collections/ansible_collections/
 *-artifact-*.json
 ansible-navigator.log
+.vault_password
 
 # MkDocs
 site/

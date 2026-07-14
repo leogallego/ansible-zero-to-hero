@@ -1,0 +1,18 @@
+---
+- name: Demonstrate vault in inventory group_vars
+  hosts: production
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Display the database password from split vars/vault pattern
+      ansible.builtin.debug:
+        msg: "Database password for production: {{ parasol_db_password }}"
+        verbosity: 0
+
+    - name: Display other production variables
+      ansible.builtin.debug:
+        msg:
+          - "Environment: {{ parasol_environment }}"
+          - "Log level: {{ parasol_log_level }}"
+        verbosity: 0

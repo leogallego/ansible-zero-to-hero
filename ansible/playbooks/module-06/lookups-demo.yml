@@ -1,0 +1,26 @@
+---
+- name: Demonstrate lookup plugins
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Read a file with the file lookup
+      ansible.builtin.debug:
+        msg: "Banner contents:\n{{ lookup('ansible.builtin.file', 'files/motd_banner.txt') }}"
+        verbosity: 0
+
+    - name: Read an environment variable with the env lookup
+      ansible.builtin.debug:
+        msg: "Deploy token: {{ lookup('ansible.builtin.env', 'PARASOL_DEPLOY_TOKEN') | default('(not set)', true) }}"
+        verbosity: 0
+
+    - name: Run a command with the pipe lookup
+      ansible.builtin.debug:
+        msg: "Current user: {{ lookup('ansible.builtin.pipe', 'whoami') }}"
+        verbosity: 0
+
+    - name: Generate a random password with the password lookup
+      ansible.builtin.debug:
+        msg: "Generated password: {{ lookup('ansible.builtin.password', '/dev/null length=20 chars=ascii_letters,digits') }}"
+        verbosity: 0

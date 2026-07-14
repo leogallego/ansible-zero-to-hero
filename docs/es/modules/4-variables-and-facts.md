@@ -541,7 +541,7 @@ En este módulo:
 - Depuraste variables usando `ansible.builtin.debug` con `verbosity` y el modo interactivo de `ansible-navigator`
 - Usaste `when` para ejecutar tareas condicionalmente basándote en facts, variables y resultados registrados
 
-Lionel y Jordan ahora tienen las herramientas para escribir playbooks que se adaptan a cualquier entorno. El mismo playbook lee diferentes valores de `group_vars/dev.yml` y `group_vars/production.yml`, toma decisiones basadas en facts del sistema y calcula valores en tiempo de ejecución. No más configuración escrita directamente en el código.
+Lionel y Jordan ahora tienen las herramientas para escribir playbooks que se adaptan a cualquier entorno. El mismo playbook lee diferentes valores de `group_vars/dev.yml` y `group_vars/production/`, toma decisiones basadas en facts del sistema y calcula valores en tiempo de ejecución. No más configuración escrita directamente en el código.
 
 ## Próximos Pasos
 
