@@ -695,4 +695,4 @@ The CoP at Parasol Tech now has a complete pipeline: code is tested (Module 9), 
 
 ## Next Steps
 
-Next: [Module 12: Scaling with AAP](12-scaling-with-aap.md)
+Next: [Module 11 -- CI/CD for Ansible Content](11-cicd-for-ansible.md)

@@ -1,0 +1,47 @@
+---
+name: Molecule Tests
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'ansible/**'
+      - '.github/workflows/molecule.yml'
+
+jobs:
+  molecule:
+    name: Molecule - ${{ matrix.scenario }}
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: ansible/collections/parasoltech/infrastructure
+    strategy:
+      fail-fast: false
+      matrix:
+        scenario:
+          - integration_webserver
+    env:
+      PY_COLORS: '1'
+      ANSIBLE_FORCE_COLOR: 'true'
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install ansible-dev-tools
+
+      - name: Run Molecule tests
+        run: molecule test -s ${{ matrix.scenario }}
+
+      - name: Upload logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: molecule-logs-${{ matrix.scenario }}
+          path: ansible/collections/parasoltech/infrastructure/extensions/molecule/${{ matrix.scenario }}/.molecule/
