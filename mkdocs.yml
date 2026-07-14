@@ -62,6 +62,7 @@ nav:
       - "3. Managing Inventory": modules/3-managing-inventory.md
       - "4. Variables and Facts": modules/4-variables-and-facts.md
       - "5. Templates and Handlers": modules/5-templates-and-handlers.md
+      - "6. Protecting Your Data": modules/6-protecting-your-data.md
       - "8. Roles and Collections": modules/8-roles-and-collections.md
       - "9. Testing Your Automation": modules/9-testing-your-automation.md
       - "10. Packaging and Deployment": modules/10-packaging-and-deployment.md

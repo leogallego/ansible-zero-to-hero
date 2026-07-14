@@ -363,12 +363,11 @@ The `no_log: true` directive suppresses all output for a task:
   no_log: true
 ```
 
-With `no_log: true`, Ansible replaces the task output with `censored`:
+With `no_log: true`, Ansible suppresses the task's parameters and return values. In verbose mode (`-v`), the output shows a `censored` message. In standard output, the task simply reports its status without any details:
 
 ```text
 TASK [Create application database user] ****
-ok: [db-01] => {"censored": "the output has been hidden due to the fact
-that 'no_log: true' was specified for this result"}
+ok: [db-01]
 ```
 
 Without it, the password appears in the output:
@@ -611,9 +610,9 @@ ansible-navigator run playbooks/module-06/no-log-demo.yml --mode stdout
 Observe the difference between the two tasks:
 
 1. The **unprotected** task shows the password value in the output
-2. The **protected** task shows `censored` instead
+2. The **protected** task shows only its status (`ok`) with no details -- the password is suppressed
 
-Now edit `playbooks/module-06/no-log-demo.yml` and add `no_log: true` to the unprotected task. Run it again and confirm that both tasks now show `censored`.
+Now edit `playbooks/module-06/no-log-demo.yml` and add `no_log: true` to the unprotected task. Run it again and confirm that both tasks now suppress their output.
 
 This is the "data in use" protection that complements Vault's "data at rest" encryption. Always use `no_log: true` on tasks that handle sensitive values.
 
