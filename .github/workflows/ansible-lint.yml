@@ -4,8 +4,12 @@ name: Ansible Lint
 on:
   push:
     branches: [main]
+    paths:
+      - 'ansible/**'
   pull_request:
     branches: [main]
+    paths:
+      - 'ansible/**'
 
 jobs:
   lint:

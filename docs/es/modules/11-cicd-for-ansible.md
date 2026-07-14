@@ -95,8 +95,12 @@ name: Ansible Lint
 on:
   push:
     branches: [main]
+    paths:
+      - 'ansible/**'
   pull_request:
     branches: [main]
+    paths:
+      - 'ansible/**'
 
 jobs:
   lint:
@@ -181,6 +185,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          cache: 'pip'
 
       - name: Install dependencies
         run: pip install ansible-dev-tools
@@ -264,6 +269,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          cache: 'pip'
       - run: pip install tox tox-ansible
       - name: Generate matrix
         id: generate-matrix
@@ -288,6 +294,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          cache: 'pip'
       - run: pip install tox tox-ansible
       - run: tox --ansible -c tox-ansible.ini -e ${{ matrix.entry.name }}
 
@@ -476,63 +483,22 @@ collection-tests:
 
 ### Jenkins
 
-Para Jenkins, usa la imagen de contenedor `ghcr.io/ansible/community-ansible-dev-tools` como agente. Incluye `ansible-lint`, Molecule, `tox-ansible`, `ansible-builder` y todas las demás herramientas:
+Para Jenkins, usa la imagen de contenedor `ghcr.io/ansible/community-ansible-dev-tools` como agente de build -- incluye `ansible-lint`, Molecule, `tox-ansible` y todas las demás herramientas de este módulo. Los mismos comandos funcionan de manera idéntica dentro de ella.
 
-```groovy
-pipeline {
-    agent {
-        docker {
-            image 'ghcr.io/ansible/community-ansible-dev-tools:latest'
-        }
-    }
-    stages {
-        stage('Lint') {
-            steps {
-                sh 'ansible-lint'
-            }
-        }
-        stage('Test') {
-            steps {
-                sh 'tox --ansible -c tox-ansible.ini'
-            }
-        }
-    }
-}
-```
-
-El punto clave: `ansible-lint`, `molecule test` y `tox --ansible` funcionan de manera idéntica sin importar la plataforma de CI. Aprende las herramientas una vez, aplícalas en todas partes.
+El punto clave: aprende las herramientas una vez, aplícalas en todas partes. Solo cambia el formato de configuración de CI.
 
 ## Ejercicios
 
 ### Ejercicio 1: Crear un Workflow de ansible-lint
 
-Crea el archivo `.github/workflows/ansible-lint.yml` con el siguiente contenido:
+Usando solo los conceptos de la sección "Linting en CI con ansible-lint", crea `.github/workflows/ansible-lint.yml` desde cero. Tu workflow debe:
 
-```yaml
----
-name: Ansible Lint
+- Dispararse en pushes y pull requests a `main`
+- Usar un runner `ubuntu-24.04`
+- Hacer checkout del código y ejecutar `ansible-lint` usando la acción oficial
+- Apuntar `ansible-lint` al directorio de trabajo de la colección
 
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-jobs:
-  lint:
-    name: Ansible Lint
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v4
-
-      - name: Run ansible-lint
-        uses: ansible/ansible-lint@v26
-        with:
-          working_directory: ansible/collections/parasoltech/infrastructure
-```
-
-Recorre el workflow y explica cada sección: ¿Qué eventos lo disparan? ¿Qué runner usa? ¿Por qué se necesita `working_directory`?
+Después de escribir tu versión, compárala con el workflow de referencia en la sección anterior. ¿Omitiste algo? ¿Agregaste algo innecesario?
 
 ### Ejercicio 2: Crear un Workflow de Tests con Molecule
 
