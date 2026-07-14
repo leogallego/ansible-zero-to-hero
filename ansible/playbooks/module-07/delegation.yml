@@ -1,0 +1,90 @@
+---
+# Module 7 - Delegation and run_once
+# Simulates a rolling deployment with load balancer management
+# using delegate_to and run_once.
+#
+# Run it:
+#   ansible-navigator run playbooks/module-07/delegation.yml --mode stdout
+
+- name: Rolling deployment with delegation
+  hosts: webservers
+  connection: local
+  serial: 2
+  gather_facts: true
+
+  vars:
+    parasol_demo_dir: "~/ansible-demo/module-07"
+    parasol_app_version: "2.1.0"
+
+  tasks:
+    - name: Ensure demo directories exist
+      ansible.builtin.file:
+        path: "{{ parasol_demo_dir }}/{{ item }}"
+        state: directory
+        mode: "0755"
+      loop:
+        - app
+        - lb
+      delegate_to: localhost
+      run_once: true
+
+    # -- delegate_to: localhost --
+    # Runs on the control node but inventory_hostname
+    # still refers to the current target host
+    - name: Remove host from load balancer
+      ansible.builtin.lineinfile:
+        path: "{{ parasol_demo_dir }}/lb/pool.conf"
+        line: "server {{ inventory_hostname }} active"
+        state: absent
+        create: true
+        mode: "0644"
+      delegate_to: localhost
+
+    - name: Show load balancer action
+      ansible.builtin.debug:
+        msg: "Removed {{ inventory_hostname }} from load balancer pool"
+        verbosity: 0
+      delegate_to: localhost
+
+    # -- Deploy on target host --
+    - name: Deploy application to target host
+      ansible.builtin.copy:
+        content: |
+          version={{ parasol_app_version }}
+          host={{ inventory_hostname }}
+          deployed={{ ansible_date_time.iso8601 }}
+        dest: "{{ parasol_demo_dir }}/app/{{ inventory_hostname }}-release.txt"
+        mode: "0644"
+      delegate_to: localhost
+
+    - name: Simulate service restart
+      ansible.builtin.debug:
+        msg: "Restarting application on {{ inventory_hostname }}"
+        verbosity: 0
+
+    # -- Add back to load balancer --
+    - name: Add host back to load balancer
+      ansible.builtin.lineinfile:
+        path: "{{ parasol_demo_dir }}/lb/pool.conf"
+        line: "server {{ inventory_hostname }} active"
+        create: true
+        mode: "0644"
+      delegate_to: localhost
+
+    - name: Show load balancer restoration
+      ansible.builtin.debug:
+        msg: "Added {{ inventory_hostname }} back to load balancer pool"
+        verbosity: 0
+      delegate_to: localhost
+
+    # -- run_once: true --
+    # Notification fires only once, not per host
+    - name: Send deployment notification
+      ansible.builtin.debug:
+        msg: >-
+          Deployment notification: version {{ parasol_app_version }}
+          deployed to {{ ansible_play_hosts | length }} hosts
+          ({{ ansible_play_hosts | join(', ') }})
+        verbosity: 0
+      run_once: true
+      delegate_to: localhost

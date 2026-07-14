@@ -1,0 +1,26 @@
+---
+# Shared task file used by include-vs-import.yml
+# Demonstrates how the same file behaves differently
+# when imported vs included.
+
+- name: Create application directory
+  ansible.builtin.file:
+    path: "{{ parasol_demo_dir }}/app"
+    state: directory
+    mode: "0755"
+
+- name: Deploy application marker
+  ansible.builtin.copy:
+    content: |
+      application={{ parasol_app_name | default('parasol-web') }}
+      version={{ parasol_app_version | default('1.0') }}
+      iteration={{ parasol_iteration | default('unknown') }}
+    dest: "{{ parasol_demo_dir }}/app/{{ parasol_app_name | default('parasol-web') }}.marker"
+    mode: "0644"
+
+- name: Report setup completion
+  ansible.builtin.debug:
+    msg: >-
+      Application {{ parasol_app_name | default('parasol-web') }}
+      setup complete (iteration: {{ parasol_iteration | default('unknown') }})
+    verbosity: 0

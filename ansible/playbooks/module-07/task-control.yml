@@ -1,0 +1,104 @@
+---
+# Module 7 - Fine-grained task control
+# Demonstrates changed_when, failed_when, ignore_errors,
+# and ansible.builtin.assert for precondition validation.
+#
+# Run it:
+#   ansible-navigator run playbooks/module-07/task-control.yml --mode stdout
+#
+# Run with a missing version to trigger assert failure:
+#   ansible-navigator run playbooks/module-07/task-control.yml --mode stdout \
+#     -e "parasol_app_version=0.5"
+
+- name: Demonstrate fine-grained task control
+  hosts: localhost
+  connection: local
+  gather_facts: true
+
+  vars:
+    parasol_demo_dir: "~/ansible-demo/module-07"
+    parasol_app_version: "2.1.0"
+
+  tasks:
+    - name: Ensure demo directory exists
+      ansible.builtin.file:
+        path: "{{ parasol_demo_dir }}/app"
+        state: directory
+        mode: "0755"
+
+    - name: Create sample config for demonstrations
+      ansible.builtin.copy:
+        content: |
+          [application]
+          version={{ parasol_app_version }}
+          log_level=info
+        dest: "{{ parasol_demo_dir }}/app/config.ini"
+        mode: "0644"
+
+    # -- changed_when: false --
+    # Without this, command would always report "changed"
+    - name: Check application version (read-only command)
+      ansible.builtin.command:
+        cmd: cat {{ parasol_demo_dir }}/app/config.ini
+      register: parasol_version_check
+      changed_when: false
+
+    - name: Display current config
+      ansible.builtin.debug:
+        msg: "Current config: {{ parasol_version_check.stdout_lines }}"
+        verbosity: 0
+
+    # -- failed_when: redefine what failure means --
+    # grep returns exit code 1 when no matches found (not an error)
+    - name: Check for deprecated configuration entries
+      ansible.builtin.command:
+        cmd: grep -c "deprecated" {{ parasol_demo_dir }}/app/config.ini
+      register: parasol_deprecated_check
+      failed_when: parasol_deprecated_check.rc > 1
+      changed_when: false
+
+    - name: Report deprecated entries
+      ansible.builtin.debug:
+        msg: >-
+          {{ (parasol_deprecated_check.rc == 0) |
+             ternary('Found ' ~ parasol_deprecated_check.stdout ~ ' deprecated entries',
+                      'No deprecated entries found') }}
+        verbosity: 0
+
+    # -- ansible.builtin.assert: precondition checks --
+    - name: Validate deployment preconditions
+      ansible.builtin.assert:
+        that:
+          - parasol_app_version is defined
+          - parasol_app_version is version('1.0', '>=')
+        fail_msg: >-
+          parasol_app_version must be defined and >= 1.0.
+          Got: '{{ parasol_app_version | default('undefined') }}'.
+        success_msg: >-
+          Preconditions met: deploying version {{ parasol_app_version }}
+
+    # -- ignore_errors: for truly optional tasks --
+    - name: Remove optional cache directory (may not exist)
+      ansible.builtin.file:
+        path: "{{ parasol_demo_dir }}/cache"
+        state: absent
+      ignore_errors: true
+
+    # -- changed_when with expression --
+    - name: Initialize application marker
+      ansible.builtin.command:
+        cmd: >-
+          bash -c '
+          if [ ! -f {{ parasol_demo_dir }}/app/initialized ]; then
+            touch {{ parasol_demo_dir }}/app/initialized
+            echo "Created"
+          else
+            echo "Already exists"
+          fi'
+      register: parasol_init_result
+      changed_when: "'Created' in parasol_init_result.stdout"
+
+    - name: Report initialization status
+      ansible.builtin.debug:
+        msg: "Initialization: {{ parasol_init_result.stdout }}"
+        verbosity: 0

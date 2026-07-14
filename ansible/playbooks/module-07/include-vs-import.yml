@@ -1,0 +1,87 @@
+---
+# Module 7 - Include vs Import comparison
+# Demonstrates the behavioral differences between
+# import_tasks (static) and include_tasks (dynamic).
+#
+# Run it:
+#   ansible-navigator run playbooks/module-07/include-vs-import.yml --mode stdout
+#
+# List tasks (shows visibility difference):
+#   ansible-navigator run playbooks/module-07/include-vs-import.yml --mode stdout --list-tasks
+#
+# Run with tags (shows inheritance difference):
+#   ansible-navigator run playbooks/module-07/include-vs-import.yml --mode stdout --tags setup
+
+- name: Compare include_tasks vs import_tasks
+  hosts: localhost
+  connection: local
+  gather_facts: true
+
+  vars:
+    parasol_demo_dir: "~/ansible-demo/module-07"
+    parasol_app_version: "2.1.0"
+
+  tasks:
+    - name: Ensure demo directory exists
+      ansible.builtin.file:
+        path: "{{ parasol_demo_dir }}"
+        state: directory
+        mode: "0755"
+
+    # ============================================================
+    # IMPORT: Static, pre-processed at parse time
+    # - --list-tasks shows individual task names
+    # - Tags flow down to imported tasks
+    # - when: applies to EACH imported task individually
+    # ============================================================
+    - name: Import application setup (static)
+      ansible.builtin.import_tasks:
+        file: tasks/setup-app.yml
+      vars:
+        parasol_app_name: "parasol-imported"
+        parasol_iteration: "import"
+      tags:
+        - setup
+
+    # ============================================================
+    # INCLUDE: Dynamic, processed at runtime
+    # - --list-tasks shows only the include statement
+    # - Tags apply to the include itself, not tasks within
+    # - when: applies to the include statement only
+    # ============================================================
+    - name: Include application setup (dynamic)
+      ansible.builtin.include_tasks:
+        file: tasks/setup-app.yml
+      vars:
+        parasol_app_name: "parasol-included"
+        parasol_iteration: "include"
+      tags:
+        - setup
+
+    # ============================================================
+    # INCLUDE with loop: only include_tasks supports this
+    # import_tasks would fail here
+    # ============================================================
+    - name: Include setup in a loop (dynamic only)
+      ansible.builtin.include_tasks:
+        file: tasks/setup-app.yml
+      vars:
+        parasol_app_name: "parasol-{{ item }}"
+        parasol_iteration: "loop-{{ item }}"
+      loop:
+        - frontend
+        - backend
+
+    # ============================================================
+    # Summary: show what was created
+    # ============================================================
+    - name: List all created markers
+      ansible.builtin.command:
+        cmd: ls -1 {{ parasol_demo_dir }}/app/
+      register: parasol_markers
+      changed_when: false
+
+    - name: Display created files
+      ansible.builtin.debug:
+        msg: "Files created: {{ parasol_markers.stdout_lines }}"
+        verbosity: 0
