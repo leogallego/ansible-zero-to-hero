@@ -1,0 +1,6 @@
+---
+ansible-navigator:
+  logging:
+    level: critical
+  playbook-artifact:
+    enable: false
