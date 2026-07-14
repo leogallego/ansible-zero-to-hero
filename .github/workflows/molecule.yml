@@ -43,6 +43,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: molecule-logs-${{ matrix.scenario }}
-          path: >-
-            ansible/collections/parasoltech/infrastructure/
-            extensions/molecule/${{ matrix.scenario }}/.molecule/
+          path: ansible/collections/parasoltech/infrastructure/extensions/molecule/${{ matrix.scenario }}/.molecule/

@@ -4,6 +4,8 @@ name: Collection Tests
 on:
   push:
     branches: [main]
+    paths:
+      - 'ansible/**'
   pull_request:
     branches: [main]
     paths:

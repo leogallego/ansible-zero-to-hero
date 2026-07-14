@@ -40,7 +40,7 @@ Hay dos usos muy diferentes de la frase "CI/CD y Ansible":
 Este módulo cubre la primera columna: probar código de automatización en un runner efímero. Nada toca producción. El runner de CI aplica tu rol a localhost, verifica los resultados y se destruye. El Módulo 12 cubre la segunda columna -- usar Ansible Automation Platform para ejecutar automatización contra infraestructura real con RBAC, registros de auditoría e integración con webhooks.
 
 !!! info "CI para Ansible prueba tu código, no tu infraestructura"
-    CI/CD para contenido Ansible significa ejecutar lint, sanidad y tests de integración contra tus roles y colecciones en un runner efímero en la nube. Nada toca producción. El runner de CI aplica tu rol a localhost, verifica los resultados y se destruye.
+    Esta es la distinción más importante de este módulo. Si te llevas una sola cosa, que sea esta: CI para contenido Ansible valida tu código de automatización en un runner desechable. Nunca toca la infraestructura de producción.
 
 ### La Pirámide de Tests en CI
 
@@ -48,16 +48,16 @@ La pirámide de tests del Módulo 9 se mapea directamente a las etapas de CI:
 
 ```text
          ┌─────────────┐
-         │ Integración  │  Molecule      — minutos
+         │ Integración  │  Molecule      -- minutos
          │  (Molecule)  │
         ┌┴─────────────┴┐
-        │   Tests Unit   │  pytest        — segundos
+        │   Tests Unit   │  pytest        -- segundos
         │  (pytest)      │
        ┌┴───────────────┴┐
-       │  Tests Sanidad   │  ansible-test  — segundos
+       │  Tests Sanidad   │  ansible-test  -- segundos
        │  (ansible-test)  │
       ┌┴─────────────────┴┐
-      │   Lint             │  ansible-lint  — segundos
+      │   Lint             │  ansible-lint  -- segundos
       │   (ansible-lint)   │
       └───────────────────┘
 ```
@@ -193,9 +193,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: molecule-logs-${{ matrix.scenario }}
-          path: >-
-            ansible/collections/parasoltech/infrastructure/
-            extensions/molecule/${{ matrix.scenario }}/.molecule/
+          path: ansible/collections/parasoltech/infrastructure/extensions/molecule/${{ matrix.scenario }}/.molecule/
 ```
 
 Este workflow introduce varios conceptos nuevos:
@@ -245,6 +243,8 @@ name: Collection Tests
 on:
   push:
     branches: [main]
+    paths:
+      - 'ansible/**'
   pull_request:
     branches: [main]
     paths:
@@ -376,7 +376,7 @@ Agrega estos pasos al workflow de Molecule antes del paso `Run Molecule tests`:
 
 ```yaml
       - name: Write vault password file
-        run: echo "${{ secrets.VAULT_PASSWORD }}" > .vault-password
+        run: echo "$VAULT_PASSWORD" > .vault-password
         env:
           VAULT_PASSWORD: ${{ secrets.VAULT_PASSWORD }}
 
@@ -453,15 +453,26 @@ Los workflows de este módulo usan GitHub Actions, pero las herramientas son las
 
 ### GitLab CI
 
-`ansible-creator` puede generar pipelines de GitLab CI automáticamente:
+GitLab CI usa `.gitlab-ci.yml` en lugar de `.github/workflows/`. Las mismas herramientas se ejecutan de la misma manera -- solo cambia el formato de configuración:
 
-```bash
-ansible-creator init execution_env \
-  --scm-provider gitlab \
-  my-ee
+```yaml
+---
+stages:
+  - lint
+  - test
+
+ansible-lint:
+  stage: lint
+  image: ghcr.io/ansible/community-ansible-dev-tools:latest
+  script:
+    - ansible-lint
+
+collection-tests:
+  stage: test
+  image: ghcr.io/ansible/community-ansible-dev-tools:latest
+  script:
+    - tox --ansible -c tox-ansible.ini
 ```
-
-Esto genera un `.gitlab-ci.yml` con etapas para construir y probar el EE.
 
 ### Jenkins
 
