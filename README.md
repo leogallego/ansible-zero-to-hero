@@ -13,9 +13,12 @@ Follow **Lionel**, a platform engineer at **Parasol Tech**, as they discover Ans
 | 3 | [Managing Inventory](docs/en/modules/3-managing-inventory.md) | Structured inventory, groups, host/group vars, patterns |
 | 4 | [Variables and Facts](docs/en/modules/4-variables-and-facts.md) | Precedence, facts, conditionals, debugging |
 | 5 | [Templates and Handlers](docs/en/modules/5-templates-and-handlers.md) | Jinja2 templates, `ansible_managed`, handler chains |
+| 6 | [Protecting Your Data](docs/en/modules/6-protecting-your-data.md) | `ansible-vault`, lookup plugins, `no_log` |
+| 7 | [Controlling Execution Flow](docs/en/modules/7-controlling-execution-flow.md) | Blocks, error handling, tags, delegation, includes vs imports |
 | 8 | [Roles and Collections](docs/en/modules/8-roles-and-collections.md) | `ansible-creator`, `ade`, Galaxy, argument specs, FQCNs |
 | 9 | [Testing Your Automation](docs/en/modules/9-testing-your-automation.md) | `ansible-lint`, Molecule, `pytest-ansible`, `tox-ansible` |
 | 10 | [Packaging and Deployment](docs/en/modules/10-packaging-and-deployment.md) | Execution Environments, `ansible-builder`, `ansible-sign` |
+| 11 | [CI/CD for Ansible Content](docs/en/modules/11-cicd-for-ansible.md) | GitHub Actions, lint/test pipelines, branch protection |
 | 12 | [Scaling with AAP](docs/en/modules/12-scaling-with-aap.md) | Controller, Hub, EDA, workflows, RBAC |
 
 ## Getting Started
