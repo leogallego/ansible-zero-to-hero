@@ -585,12 +585,12 @@ Lo que comenzó como una persona resolviendo un problema es ahora una práctica 
 
 El viaje principal está completo, pero hay más por explorar:
 
-**Tracks de dominio (Módulos 10-11)**
+**Tracks de dominio (Módulos 13-14)**
 
 - [Módulo 13 -- Sistemas Linux](13-linux-systems.md): Aplica todo lo que has aprendido a la administración de sistemas Linux: gestión de usuarios, hardening, parcheado y cumplimiento a escala
 - [Módulo 14 -- Automatización de Redes](14-network-automation.md): Extiende Ansible a dispositivos de red con `network_cli`, módulos de recursos e integración con NetBox como fuente de verdad
 
-Estos tracks son opcionales y autocontenidos. No introducen nuevos conceptos fundamentales; aplican las habilidades de los módulos 1-9 a dominios específicos.
+Estos tracks son opcionales y autocontenidos. No introducen nuevos conceptos fundamentales; aplican las habilidades de los módulos principales a dominios específicos.
 
 **Comunidad y certificación**
 

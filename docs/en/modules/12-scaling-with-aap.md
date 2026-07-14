@@ -582,12 +582,12 @@ What started as one person solving one problem is now an enterprise automation p
 
 The core journey is complete, but there is more to explore:
 
-**Domain tracks (Modules 10-11)**
+**Domain tracks (Modules 13-14)**
 
 - [Module 13 -- Linux Systems](13-linux-systems.md): Apply everything you have learned to Linux system administration: user management, hardening, patching, and compliance at scale
 - [Module 14 -- Network Automation](14-network-automation.md): Extend Ansible to network devices with `network_cli`, resource modules, and integration with NetBox as a source of truth
 
-These tracks are optional and self-contained. They do not introduce new core concepts; they apply the skills from modules 1-9 to specific domains.
+These tracks are optional and self-contained. They do not introduce new core concepts; they apply the skills from the core modules to specific domains.
 
 **Community and certification**
 
