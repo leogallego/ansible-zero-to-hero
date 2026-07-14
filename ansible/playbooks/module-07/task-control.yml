@@ -78,27 +78,35 @@
           Preconditions met: deploying version {{ parasol_app_version }}
 
     # -- ignore_errors: for truly optional tasks --
-    - name: Remove optional cache directory (may not exist)
-      ansible.builtin.file:
-        path: "{{ parasol_demo_dir }}/cache"
-        state: absent
+    # This command fails (exit code 1) but the playbook continues.
+    # Use ignore_errors only when you genuinely do not care about
+    # the outcome -- prefer failed_when or block/rescue otherwise.
+    - name: Check connectivity to optional metrics endpoint
+      ansible.builtin.command:
+        cmd: cat /nonexistent/metrics/endpoint
       ignore_errors: true
+      changed_when: false
 
     # -- changed_when with expression --
     - name: Initialize application marker
       ansible.builtin.command:
-        cmd: >-
-          bash -c '
-          if [ ! -f {{ parasol_demo_dir }}/app/initialized ]; then
-            touch {{ parasol_demo_dir }}/app/initialized
-            echo "Created"
-          else
-            echo "Already exists"
-          fi'
+        cmd: cat {{ parasol_demo_dir }}/app/initialized
+        creates: "{{ parasol_demo_dir }}/app/initialized"
       register: parasol_init_result
-      changed_when: "'Created' in parasol_init_result.stdout"
+      changed_when: false
+      failed_when: false
+
+    - name: Create application marker if missing
+      ansible.builtin.copy:
+        content: "initialized\n"
+        dest: "{{ parasol_demo_dir }}/app/initialized"
+        mode: "0644"
+      when: parasol_init_result.rc is defined and parasol_init_result.rc != 0
 
     - name: Report initialization status
       ansible.builtin.debug:
-        msg: "Initialization: {{ parasol_init_result.stdout }}"
+        msg: >-
+          Initialization:
+          {{ (parasol_init_result.rc is defined and parasol_init_result.rc == 0) |
+             ternary('Already exists', 'Created') }}
         verbosity: 0

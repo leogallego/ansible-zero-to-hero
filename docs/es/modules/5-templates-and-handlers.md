@@ -567,4 +567,4 @@ Lionel y Jordan ahora despliegan archivos de configuración como templates. Un s
 
 ## Próximos Pasos
 
-Siguiente: [Módulo 6 -- Protegiendo Tus Datos](6-protecting-your-data.md)
+Siguiente: [Módulo 8 -- Roles y Colecciones](8-roles-and-collections.md)

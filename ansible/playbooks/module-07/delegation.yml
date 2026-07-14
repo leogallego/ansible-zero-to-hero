@@ -5,11 +5,15 @@
 #
 # Run it:
 #   ansible-navigator run playbooks/module-07/delegation.yml --mode stdout
+#
+# Because the lab environment uses connection: local, delegation
+# is demonstrated structurally. In production, remove connection: local
+# and delegate_to moves tasks to the control node while non-delegated
+# tasks run on remote webservers.
 
 - name: Rolling deployment with delegation
   hosts: webservers
   connection: local
-  serial: 2
   gather_facts: true
 
   vars:
@@ -29,8 +33,8 @@
       run_once: true
 
     # -- delegate_to: localhost --
-    # Runs on the control node but inventory_hostname
-    # still refers to the current target host
+    # In production, this runs on the control node while
+    # inventory_hostname still refers to the current target host.
     - name: Remove host from load balancer
       ansible.builtin.lineinfile:
         path: "{{ parasol_demo_dir }}/lb/pool.conf"
@@ -46,23 +50,24 @@
         verbosity: 0
       delegate_to: localhost
 
-    # -- Deploy on target host --
+    # -- Non-delegated tasks --
+    # In production, these run on the remote webserver.
+    # With connection: local, they run locally but demonstrate
+    # the structural difference.
     - name: Deploy application to target host
       ansible.builtin.copy:
         content: |
           version={{ parasol_app_version }}
           host={{ inventory_hostname }}
-          deployed={{ ansible_date_time.iso8601 }}
         dest: "{{ parasol_demo_dir }}/app/{{ inventory_hostname }}-release.txt"
         mode: "0644"
-      delegate_to: localhost
 
     - name: Simulate service restart
       ansible.builtin.debug:
         msg: "Restarting application on {{ inventory_hostname }}"
         verbosity: 0
 
-    # -- Add back to load balancer --
+    # -- Add back to load balancer (delegated) --
     - name: Add host back to load balancer
       ansible.builtin.lineinfile:
         path: "{{ parasol_demo_dir }}/lb/pool.conf"
@@ -78,7 +83,7 @@
       delegate_to: localhost
 
     # -- run_once: true --
-    # Notification fires only once, not per host
+    # Runs on the first host only; all others skip it.
     - name: Send deployment notification
       ansible.builtin.debug:
         msg: >-

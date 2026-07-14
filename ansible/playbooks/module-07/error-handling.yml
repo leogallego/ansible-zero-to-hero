@@ -79,22 +79,16 @@
 
       always:
         - name: Record deployment attempt
-          ansible.builtin.lineinfile:
-            path: "{{ parasol_demo_dir }}/deploy.log"
-            line: >-
-              {{ ansible_date_time.iso8601 }} -
+          ansible.builtin.copy:
+            content: >-
               version={{ parasol_app_version }}
               result={{ (ansible_failed_task is defined) | ternary('FAILED', 'SUCCESS') }}
-            create: true
+            dest: "{{ parasol_demo_dir }}/deploy.log"
             mode: "0644"
 
-        - name: Display deployment log
-          ansible.builtin.command:
-            cmd: cat {{ parasol_demo_dir }}/deploy.log
-          register: parasol_deploy_log
-          changed_when: false
-
-        - name: Show deployment log contents
+        - name: Show deployment result
           ansible.builtin.debug:
-            msg: "{{ parasol_deploy_log.stdout_lines }}"
+            msg: >-
+              Deployment log: version={{ parasol_app_version }},
+              result={{ (ansible_failed_task is defined) | ternary('FAILED', 'SUCCESS') }}
             verbosity: 0

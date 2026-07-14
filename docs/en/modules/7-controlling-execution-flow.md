@@ -89,7 +89,7 @@ The real power of blocks is error handling. A block with `rescue` and `always` w
     - name: Record deployment attempt
       ansible.builtin.lineinfile:
         path: "{{ parasol_demo_dir }}/deploy.log"
-        line: "{{ ansible_date_time.iso8601 }} - Deployment attempt completed"
+        line: "{{ ansible_facts['date_time']['iso8601'] }} - Deployment attempt completed"
         create: true
         mode: "0644"
 ```
@@ -204,15 +204,17 @@ Assert is a much better alternative to silently skipping tasks with `when`. If a
 The `ignore_errors: true` directive makes a task continue regardless of failure. It has its place, but it is overused:
 
 ```yaml
-- name: Remove optional cache directory
-  ansible.builtin.file:
-    path: "{{ parasol_demo_dir }}/cache"
-    state: absent
+- name: Check connectivity to optional metrics endpoint
+  ansible.builtin.command:
+    cmd: cat /nonexistent/metrics/endpoint
   ignore_errors: true
+  changed_when: false
 ```
 
+This task fails (the path does not exist), but the playbook continues. The error is visible in the output but does not stop execution.
+
 !!! warning "`ignore_errors` is a code smell"
-    `ignore_errors: true` silences **all** errors on a task, including unexpected ones. Prefer `failed_when` to define exactly what constitutes failure, or use `block`/`rescue` to handle errors explicitly. Reserve `ignore_errors` for tasks where you genuinely do not care about the outcome -- like removing an optional file that may not exist. If you find yourself using it frequently, your playbook likely has a design problem.
+    `ignore_errors: true` silences **all** errors on a task, including unexpected ones. Prefer `failed_when` to define exactly what constitutes failure, or use `block`/`rescue` to handle errors explicitly. Reserve `ignore_errors` for tasks where you genuinely do not care about the outcome -- like checking an optional external endpoint. If you find yourself using it frequently, your playbook likely has a design problem.
 
 ### Batch Failure Control
 
@@ -419,7 +421,7 @@ As playbooks grow, splitting them into smaller files makes them easier to mainta
 
 ### Tag Inheritance Example
 
-This is the most common source of confusion. Consider a task file `tasks/setup-app.yml` with two tasks inside it. If you import it with a tag:
+This is the most common source of confusion. Consider a task file `tasks/setup-app.yml` with three tasks inside it. If you import it with a tag:
 
 ```yaml
 - name: Import setup tasks
@@ -487,7 +489,7 @@ Observe each technique:
 1. The `command` task reports `ok` (not `changed`) thanks to `changed_when: false`
 2. The `failed_when` task does not fail despite `grep` returning exit code 1
 3. The `assert` task validates preconditions with a clear error message
-4. The `ignore_errors` task logs a warning but the playbook continues
+4. The `ignore_errors` task fails visibly but the playbook continues
 
 Run it a second time -- the output should be identical, confirming idempotency.
 
@@ -523,12 +525,12 @@ Run the delegation playbook:
 ansible-navigator run playbooks/module-07/delegation.yml --mode stdout
 ```
 
-Observe the rolling deployment pattern:
+Observe the delegation pattern:
 
-1. "Remove from load balancer" runs on localhost but references `inventory_hostname`
-2. Deployment tasks run on the target host
-3. "Add back to load balancer" runs on localhost
-4. The notification task runs only once despite multiple hosts
+1. "Remove from load balancer" uses `delegate_to: localhost` and references `inventory_hostname`
+2. Deployment tasks have no `delegate_to` -- in production, they would run on the target host
+3. "Add back to load balancer" uses `delegate_to: localhost`
+4. The notification task runs only once (first host executes it, the rest skip it)
 
 ### Exercise 5: Include vs Import
 

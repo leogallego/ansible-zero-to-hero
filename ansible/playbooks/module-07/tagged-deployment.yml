@@ -34,7 +34,7 @@
       ansible.builtin.debug:
         msg: >-
           Deployment started for version {{ parasol_app_version }}
-          at {{ ansible_date_time.iso8601 }}
+          at {{ ansible_facts['date_time']['iso8601'] }}
         verbosity: 0
       tags:
         - always

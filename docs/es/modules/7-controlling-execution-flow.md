@@ -89,7 +89,7 @@ El verdadero poder de los bloques es el manejo de errores. Un bloque con `rescue
     - name: Record deployment attempt
       ansible.builtin.lineinfile:
         path: "{{ parasol_demo_dir }}/deploy.log"
-        line: "{{ ansible_date_time.iso8601 }} - Deployment attempt completed"
+        line: "{{ ansible_facts['date_time']['iso8601'] }} - Deployment attempt completed"
         create: true
         mode: "0644"
 ```
@@ -204,15 +204,17 @@ Assert es una alternativa mucho mejor que saltar tareas silenciosamente con `whe
 La directiva `ignore_errors: true` hace que una tarea continúe sin importar el fallo. Tiene su lugar, pero se usa en exceso:
 
 ```yaml
-- name: Remove optional cache directory
-  ansible.builtin.file:
-    path: "{{ parasol_demo_dir }}/cache"
-    state: absent
+- name: Check connectivity to optional metrics endpoint
+  ansible.builtin.command:
+    cmd: cat /nonexistent/metrics/endpoint
   ignore_errors: true
+  changed_when: false
 ```
 
+Esta tarea falla (la ruta no existe), pero el playbook continúa. El error es visible en la salida pero no detiene la ejecución.
+
 !!! warning "`ignore_errors` es un indicador de problemas"
-    `ignore_errors: true` silencia **todos** los errores en una tarea, incluyendo los inesperados. Prefiere `failed_when` para definir exactamente qué constituye un fallo, o usa `block`/`rescue` para manejar errores explícitamente. Reserva `ignore_errors` para tareas donde genuinamente no te importa el resultado -- como eliminar un archivo opcional que puede no existir. Si te encuentras usándolo frecuentemente, tu playbook probablemente tiene un problema de diseño.
+    `ignore_errors: true` silencia **todos** los errores en una tarea, incluyendo los inesperados. Prefiere `failed_when` para definir exactamente qué constituye un fallo, o usa `block`/`rescue` para manejar errores explícitamente. Reserva `ignore_errors` para tareas donde genuinamente no te importa el resultado -- como verificar un endpoint externo opcional. Si te encuentras usándolo frecuentemente, tu playbook probablemente tiene un problema de diseño.
 
 ### Control de Fallos por Lote
 
@@ -419,7 +421,7 @@ A medida que los playbooks crecen, dividirlos en archivos más pequeños los hac
 
 ### Ejemplo de Herencia de Tags
 
-Esta es la fuente de confusión más común. Considera un archivo de tareas `tasks/setup-app.yml` con dos tareas dentro. Si lo importas con un tag:
+Esta es la fuente de confusión más común. Considera un archivo de tareas `tasks/setup-app.yml` con tres tareas dentro. Si lo importas con un tag:
 
 ```yaml
 - name: Import setup tasks
@@ -487,7 +489,7 @@ Observa cada técnica:
 1. La tarea `command` reporta `ok` (no `changed`) gracias a `changed_when: false`
 2. La tarea `failed_when` no falla a pesar de que `grep` devuelve código de salida 1
 3. La tarea `assert` valida precondiciones con un mensaje de error claro
-4. La tarea `ignore_errors` registra una advertencia pero el playbook continúa
+4. La tarea `ignore_errors` falla visiblemente pero el playbook continúa
 
 Ejecútalo una segunda vez -- la salida debería ser idéntica, confirmando idempotencia.
 
@@ -525,10 +527,10 @@ ansible-navigator run playbooks/module-07/delegation.yml --mode stdout
 
 Observa el patrón de despliegue progresivo:
 
-1. "Remove from load balancer" se ejecuta en localhost pero referencia `inventory_hostname`
-2. Las tareas de despliegue se ejecutan en el host objetivo
-3. "Add back to load balancer" se ejecuta en localhost
-4. La tarea de notificación se ejecuta solo una vez a pesar de múltiples hosts
+1. "Remove from load balancer" usa `delegate_to: localhost` y referencia `inventory_hostname`
+2. Las tareas de despliegue no tienen `delegate_to` -- en producción, se ejecutarían en el host objetivo
+3. "Add back to load balancer" usa `delegate_to: localhost`
+4. La tarea de notificación se ejecuta solo una vez (el primer host la ejecuta, el resto la salta)
 
 ### Ejercicio 5: Include vs Import
 
