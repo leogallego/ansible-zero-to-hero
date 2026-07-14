@@ -229,7 +229,9 @@ ansible/inventory/
 │   ├── all.yml          # Applies to every host
 │   ├── dev.yml          # Applies to the dev group
 │   ├── staging.yml      # Applies to the staging group
-│   └── production.yml   # Applies to the production group
+│   └── production/      # Applies to the production group
+│       ├── vars.yml     #   Plaintext variables
+│       └── vault.yml    #   Encrypted secrets (Module 6)
 └── host_vars/
     ├── db01.prod.parasol.example.yml
     └── db02.prod.parasol.example.yml
@@ -257,7 +259,7 @@ parasol_monitoring_enabled: false
 parasol_backup_schedule: "weekly"
 ```
 
-**`group_vars/production.yml`**: variables for the production environment:
+**`group_vars/production/vars.yml`**: variables for the production environment:
 
 ```yaml
 ---
@@ -266,6 +268,9 @@ parasol_log_level: "warning"
 parasol_monitoring_enabled: true
 parasol_backup_schedule: "hourly"
 ```
+
+!!! tip "Directories instead of files"
+    You can use a directory instead of a single file for a group's variables. Ansible loads all `.yml` files inside the directory and merges them. This is useful when you want to separate plaintext variables from encrypted secrets. We will use this pattern in Module 6.
 
 When Ansible runs against `web01.dev.parasol.example`, it merges variables from `all.yml` and `dev.yml`. The host gets both `parasol_organization` (from `all`) and `parasol_log_level: debug` (from `dev`). A production host gets `parasol_log_level: warning` instead.
 
@@ -314,7 +319,9 @@ inventory/
 │   ├── all.yml            # Variables for every host
 │   ├── dev.yml            # Variables for the dev group
 │   ├── staging.yml        # Variables for the staging group
-│   └── production.yml     # Variables for the production group
+│   └── production/        # Variables for the production group
+│       ├── vars.yml
+│       └── vault.yml
 └── host_vars/
     ├── db01.prod.parasol.example.yml
     └── db02.prod.parasol.example.yml
@@ -513,7 +520,7 @@ Run the following command to see all variables that Ansible would assign to a sp
 ansible-navigator inventory --host db01.prod.parasol.example --mode stdout
 ```
 
-Notice how the output includes variables from `group_vars/all.yml`, `group_vars/production.yml`, and `host_vars/db01.prod.parasol.example.yml`, all merged together.
+Notice how the output includes variables from `group_vars/all.yml`, `group_vars/production/vars.yml`, and `host_vars/db01.prod.parasol.example.yml`, all merged together.
 
 ## Summary
 
