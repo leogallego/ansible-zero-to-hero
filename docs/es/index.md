@@ -15,10 +15,10 @@ Seguirás a **Lionel**, un ingeniero de plataformas en **Parasol Tech**, mientra
 | 3 | [Gestión del Inventario](modules/3-managing-inventory.md) | Inventario estructurado, grupos |
 | 4 | [Variables y Facts](modules/4-variables-and-facts.md) | Precedencia, facts, condicionales |
 | 5 | [Templates y Handlers](modules/5-templates-and-handlers.md) | Templates Jinja2, handlers |
-| 6 | [Roles y Colecciones](modules/6-roles-and-collections.md) | Reutilización de código, Galaxy, `ansible-creator` |
-| 7 | [Testing de tu Automatización](modules/7-testing-your-automation.md) | Molecule, linting, pytest |
-| 8 | [Empaquetado y Despliegue](modules/8-packaging-and-deployment.md) | Execution Environments, firma |
-| 9 | [Escalando con AAP](modules/9-scaling-with-aap.md) | Controller, workflows, RBAC |
+| 8 | [Roles y Colecciones](modules/8-roles-and-collections.md) | Reutilización de código, Galaxy, `ansible-creator` |
+| 9 | [Testing de tu Automatización](modules/9-testing-your-automation.md) | Molecule, linting, pytest |
+| 10 | [Empaquetado y Despliegue](modules/10-packaging-and-deployment.md) | Execution Environments, firma |
+| 12 | [Escalando con AAP](modules/12-scaling-with-aap.md) | Controller, workflows, RBAC |
 
 ## Prerrequisitos
 

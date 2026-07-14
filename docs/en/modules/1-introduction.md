@@ -59,14 +59,14 @@ Here is what the bundle includes:
 |------|---------|------------|
 | `ansible-core` | The core engine: `ansible-playbook`, `ansible-galaxy`, ad-hoc commands | This module |
 | `ansible-navigator` | TUI for running and inspecting playbook runs | Module 2 |
-| `ansible-creator` | Scaffolding for roles, collections, and playbook projects | Module 6 |
-| `ade` | Development environment management (install, dependency trees) | Module 6 |
-| `ansible-lint` | Static analysis and auto-fix for Ansible content | Module 7 |
-| `molecule` | Integration testing for roles and collections | Module 7 |
-| `pytest-ansible` | Functional testing of modules and plugins | Module 7 |
-| `tox-ansible` | Test orchestration and matrix management | Module 7 |
-| `ansible-builder` | Execution Environment (container image) creation | Module 8 |
-| `ansible-sign` | Content signing for supply chain security | Module 8 |
+| `ansible-creator` | Scaffolding for roles, collections, and playbook projects | Module 8 |
+| `ade` | Development environment management (install, dependency trees) | Module 8 |
+| `ansible-lint` | Static analysis and auto-fix for Ansible content | Module 9 |
+| `molecule` | Integration testing for roles and collections | Module 9 |
+| `pytest-ansible` | Functional testing of modules and plugins | Module 9 |
+| `tox-ansible` | Test orchestration and matrix management | Module 9 |
+| `ansible-builder` | Execution Environment (container image) creation | Module 10 |
+| `ansible-sign` | Content signing for supply chain security | Module 10 |
 
 !!! tip "You don't need to memorize this"
     You will learn each tool when it becomes relevant in the course. For now, just know that `adt` installs everything you need in one shot.

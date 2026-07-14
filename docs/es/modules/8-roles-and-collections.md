@@ -1,4 +1,4 @@
-# Módulo 6: Roles y Colecciones
+# Módulo 8: Roles y Colecciones
 
 ## Objetivos de Aprendizaje
 
@@ -940,4 +940,4 @@ La CoP en Parasol Tech ahora tiene un estándar: toda automatización reutilizab
 
 ## Próximos Pasos
 
-Siguiente: [Módulo 7 -- Testing de tu Automatización](7-testing-your-automation.md)
+Siguiente: [Módulo 9 -- Testing de tu Automatización](9-testing-your-automation.md)

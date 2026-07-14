@@ -1,4 +1,4 @@
-# Módulo 8: Empaquetado y Despliegue
+# Módulo 10: Empaquetado y Despliegue
 
 ## Objetivos de Aprendizaje
 
@@ -692,8 +692,8 @@ En este módulo:
 - Comprendiste el flujo de seguridad de la cadena de suministro donde los desarrolladores firman contenido, lo suben a Git, y el Controller de AAP verifica la firma GPG antes de permitir la ejecución
 - Publicaste imágenes de EE en registros de contenedores y colecciones en Automation Hub, completando el ciclo de vida de empaquetado
 
-La CoP en Parasol Tech ahora tiene un pipeline completo: el código se prueba (Módulo 7), se empaqueta en Execution Environments, se firma para integridad y se publica para consumo. No más conflictos de dependencias, no más "funciona en mi máquina" y no más contenido sin verificar ejecutándose en producción.
+La CoP en Parasol Tech ahora tiene un pipeline completo: el código se prueba (Módulo 9), se empaqueta en Execution Environments, se firma para integridad y se publica para consumo. No más conflictos de dependencias, no más "funciona en mi máquina" y no más contenido sin verificar ejecutándose en producción.
 
 ## Próximos Pasos
 
-Siguiente: [Módulo 9: Escalando con AAP](9-scaling-with-aap.md)
+Siguiente: [Módulo 12: Escalando con AAP](12-scaling-with-aap.md)

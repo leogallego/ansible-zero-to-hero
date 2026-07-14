@@ -59,14 +59,14 @@ Esto es lo que incluye el paquete:
 |-------------|-----------|------------|
 | `ansible-core` | El motor central: `ansible-playbook`, `ansible-galaxy`, comandos ad-hoc | Este módulo |
 | `ansible-navigator` | TUI para ejecutar e inspeccionar ejecuciones de playbooks | Módulo 2 |
-| `ansible-creator` | Scaffolding para roles, colecciones y proyectos de playbooks | Módulo 6 |
-| `ade` | Gestión de entornos de desarrollo (instalación, árboles de dependencias) | Módulo 6 |
-| `ansible-lint` | Análisis estático y corrección automática de contenido Ansible | Módulo 7 |
-| `molecule` | Pruebas de integración para roles y colecciones | Módulo 7 |
-| `pytest-ansible` | Pruebas funcionales de módulos y plugins | Módulo 7 |
-| `tox-ansible` | Orquestación de pruebas y gestión de matrices | Módulo 7 |
-| `ansible-builder` | Creación de Execution Environments (imágenes de contenedor) | Módulo 8 |
-| `ansible-sign` | Firma de contenido para seguridad de la cadena de suministro | Módulo 8 |
+| `ansible-creator` | Scaffolding para roles, colecciones y proyectos de playbooks | Módulo 8 |
+| `ade` | Gestión de entornos de desarrollo (instalación, árboles de dependencias) | Módulo 8 |
+| `ansible-lint` | Análisis estático y corrección automática de contenido Ansible | Módulo 9 |
+| `molecule` | Pruebas de integración para roles y colecciones | Módulo 9 |
+| `pytest-ansible` | Pruebas funcionales de módulos y plugins | Módulo 9 |
+| `tox-ansible` | Orquestación de pruebas y gestión de matrices | Módulo 9 |
+| `ansible-builder` | Creación de Execution Environments (imágenes de contenedor) | Módulo 10 |
+| `ansible-sign` | Firma de contenido para seguridad de la cadena de suministro | Módulo 10 |
 
 !!! tip "No necesitas memorizar esto"
     Aprenderás cada herramienta cuando sea relevante en el curso. Por ahora, solo debes saber que `adt` instala todo lo que necesitas de una sola vez.

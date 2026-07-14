@@ -567,4 +567,4 @@ Lionel and Jordan now deploy configuration files as templates. One `nginx.conf.j
 
 ## Next Steps
 
-Next: [Module 6 -- Roles and Collections](6-roles-and-collections.md)
+Next: [Module 8 -- Roles and Collections](8-roles-and-collections.md)

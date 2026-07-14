@@ -1,4 +1,4 @@
-# Módulo 7: Testing de tu Automatización
+# Módulo 9: Testing de tu Automatización
 
 ## Objetivos de Aprendizaje
 
@@ -667,4 +667,4 @@ La CoP en Parasol Tech ahora tiene controles de calidad: `ansible-lint` detecta 
 
 ## Próximos Pasos
 
-Siguiente: [Módulo 8: Empaquetado y Despliegue](8-packaging-and-deployment.md)
+Siguiente: [Módulo 10: Empaquetado y Despliegue](10-packaging-and-deployment.md)

@@ -1,4 +1,4 @@
-# Module 6: Roles and Collections
+# Module 8: Roles and Collections
 
 ## Learning Objectives
 
@@ -940,4 +940,4 @@ The CoP at Parasol Tech now has a standard: all reusable automation goes into th
 
 ## Next Steps
 
-Next: [Module 7 -- Testing Your Automation](7-testing-your-automation.md)
+Next: [Module 9 -- Testing Your Automation](9-testing-your-automation.md)

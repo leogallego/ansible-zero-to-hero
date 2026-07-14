@@ -1,4 +1,4 @@
-# Module 8: Packaging and Deployment
+# Module 10: Packaging and Deployment
 
 ## Learning Objectives
 
@@ -691,8 +691,8 @@ In this module you:
 - Understood the supply chain security workflow where developers sign content, push to Git, and AAP Controller verifies the GPG signature before allowing execution
 - Published EE images to container registries and collections to Automation Hub, completing the packaging lifecycle
 
-The CoP at Parasol Tech now has a complete pipeline: code is tested (Module 7), packaged into Execution Environments, signed for integrity, and published for consumption. No more dependency conflicts, no more "works on my machine," and no more unverified content running in production.
+The CoP at Parasol Tech now has a complete pipeline: code is tested (Module 9), packaged into Execution Environments, signed for integrity, and published for consumption. No more dependency conflicts, no more "works on my machine," and no more unverified content running in production.
 
 ## Next Steps
 
-Next: [Module 9: Scaling with AAP](9-scaling-with-aap.md)
+Next: [Module 12: Scaling with AAP](12-scaling-with-aap.md)

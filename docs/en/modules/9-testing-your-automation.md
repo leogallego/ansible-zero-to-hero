@@ -1,4 +1,4 @@
-# Module 7: Testing Your Automation
+# Module 9: Testing Your Automation
 
 ## Learning Objectives
 
@@ -667,4 +667,4 @@ The CoP at Parasol Tech now has quality gates: `ansible-lint` catches style viol
 
 ## Next Steps
 
-Next: [Module 8: Packaging and Deployment](8-packaging-and-deployment.md)
+Next: [Module 10: Packaging and Deployment](10-packaging-and-deployment.md)

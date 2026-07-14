@@ -45,7 +45,7 @@ Good variable names prevent collisions and make the source obvious:
 - **Use snake_case**: `parasol_backup_schedule`, not `parasolBackupSchedule` or `parasol-backup-schedule`.
 - **No special characters** other than underscores; dashes and dots break variable resolution.
 
-When working inside a role (Module 6), you will prefix every variable with the role name. For now, Parasol Tech prefixes everything with `parasol_` as an organizational namespace.
+When working inside a role (Module 8), you will prefix every variable with the role name. For now, Parasol Tech prefixes everything with `parasol_` as an organizational namespace.
 
 ## Variable Precedence
 

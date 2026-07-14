@@ -45,7 +45,7 @@ Buenos nombres de variables previenen colisiones y hacen evidente su origen:
 - **Usa snake_case**: `parasol_backup_schedule`, no `parasolBackupSchedule` ni `parasol-backup-schedule`.
 - **Sin caracteres especiales** más allá de guiones bajos; los guiones y puntos rompen la resolución de variables.
 
-Cuando trabajes dentro de un rol (Módulo 6), prefijarás cada variable con el nombre del rol. Por ahora, Parasol Tech prefija todo con `parasol_` como espacio de nombres organizacional.
+Cuando trabajes dentro de un rol (Módulo 8), prefijarás cada variable con el nombre del rol. Por ahora, Parasol Tech prefija todo con `parasol_` como espacio de nombres organizacional.
 
 ## Precedencia de Variables
 

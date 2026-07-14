@@ -1,4 +1,4 @@
-# Module 9: Scaling with AAP
+# Module 12: Scaling with AAP
 
 ## Learning Objectives
 
@@ -50,7 +50,7 @@ Controller is where the CoP will do most of their work. It replaces the pattern 
 
 1. **Collection registry**: Teams publish collections to Hub instead of sharing tarballs or pointing at Git repositories. Other teams install collections from Hub using `ansible-galaxy`. Hub can host certified collections (from Red Hat and partners), validated community collections, and the organization's own private collections like `parasoltech.infrastructure`.
 
-2. **EE container registry**: Hub stores Execution Environment images. Controller pulls EE images from Hub when running jobs, ensuring every execution uses the approved, tested image. This is where the EE built in Module 8 would be published for production use.
+2. **EE container registry**: Hub stores Execution Environment images. Controller pulls EE images from Hub when running jobs, ensuring every execution uses the approved, tested image. This is where the EE built in Module 10 would be published for production use.
 
 Hub solves the content distribution problem. Instead of each team maintaining their own copy of collections and EE images, there is a single, governed source of truth.
 
@@ -134,11 +134,11 @@ A **Project** in Controller is a reference to a source control repository contai
 - Where the Git repository lives (URL)
 - Which branch or tag to use
 - Which credential to use for authentication (SSH key or token)
-- Whether to verify content signatures (using the GPG credential from Module 8)
+- Whether to verify content signatures (using the GPG credential from Module 10)
 
 Controller clones the repository and makes its contents available for Job Templates. When the repository changes, you sync the Project to pull the latest content.
 
-This is how the signed content from Module 8 gets into Controller. The supply chain security workflow completes here:
+This is how the signed content from Module 10 gets into Controller. The supply chain security workflow completes here:
 
 ```text
 Developer signs content → Pushes to Git → Controller syncs Project → Verifies GPG signature
@@ -159,7 +159,7 @@ A **Job Template** is the most fundamental unit of work in Controller. It bundle
 
 ### Creating a Job Template
 
-To create a Job Template for the webserver deployment from Module 6:
+To create a Job Template for the webserver deployment from Module 8:
 
 1. **Create a Project** pointing to the Git repository that contains the `parasoltech.infrastructure` collection and its playbooks
 2. **Create or select an Inventory** with the target hosts
@@ -245,7 +245,7 @@ The CoP designs a deployment workflow that chains the automation from previous m
 
 This workflow:
 
-1. **Syncs the Project** and verifies the GPG signature (Module 8). If the content has been tampered with, the workflow stops and sends a notification.
+1. **Syncs the Project** and verifies the GPG signature (Module 10). If the content has been tampered with, the workflow stops and sends a notification.
 2. **Deploys the web server** using the job template. If deployment fails, a notification is sent.
 3. **Verifies the service** is healthy. If the health check fails, it triggers a rollback and then notifies regardless of the rollback's outcome.
 
@@ -373,7 +373,7 @@ This is the governance the CoP was missing when everyone ran `ansible-playbook` 
 
 ## EE Integration
 
-The Execution Environment built in Module 8 integrates directly with Controller. Instead of running playbooks with whatever Python happens to be on a server, Controller runs every job inside an EE container.
+The Execution Environment built in Module 10 integrates directly with Controller. Instead of running playbooks with whatever Python happens to be on a server, Controller runs every job inside an EE container.
 
 ### Adding EEs to Controller
 
@@ -381,7 +381,7 @@ Controller needs to know where to pull EE images from. There are two approaches:
 
 **From a container registry (recommended for production):**
 
-1. Push the EE image to a container registry (Private Automation Hub, Quay.io, or any OCI registry), as shown in Module 8
+1. Push the EE image to a container registry (Private Automation Hub, Quay.io, or any OCI registry), as shown in Module 10
 2. In Controller, create an **Execution Environment** resource pointing to the image URL (e.g., `hub.parasol.example/ee-images/parasoltech-ee:1.0.0`)
 3. If the registry requires authentication, create a **Container Registry** credential and attach it to the EE
 
@@ -394,11 +394,11 @@ Controller needs to know where to pull EE images from. There are two approaches:
 
 Each job template can specify which EE to use. When the job launches, Controller pulls the EE image (if not already cached) and runs the playbook inside it.
 
-This completes the portability story from Module 8:
+This completes the portability story from Module 10:
 
 ```text
-Module 8:  Build EE → Test locally with ansible-navigator
-Module 9:  Push EE to registry → Controller pulls and uses it for every job
+Module 10:  Build EE → Test locally with ansible-navigator
+Module 12:  Push EE to registry → Controller pulls and uses it for every job
 ```
 
 Every execution, whether triggered by a user, a schedule, a workflow, or an API call, uses the same EE image with the same dependencies. The "works on my machine" problem is eliminated at the platform level, not just the individual developer level.
@@ -430,7 +430,7 @@ The sync process:
 
 ### Content Verification with GPG
 
-This is where the content signing from Module 8 closes the loop. When a Project has GPG content verification enabled:
+This is where the content signing from Module 10 closes the loop. When a Project has GPG content verification enabled:
 
 1. Upload the public GPG key to Controller as a **GPG Public Key** credential
 2. Configure the Project to use this credential for content verification
@@ -487,7 +487,7 @@ Create a Project in Controller:
 
 3. Sync the Project and verify it succeeds
 
-If you set up content signing in Module 8 and have a GPG public key, configure the Project to verify signatures during sync.
+If you set up content signing in Module 10 and have a GPG public key, configure the Project to verify signatures during sync.
 
 ### Exercise 3: Create an Inventory
 
@@ -553,10 +553,10 @@ In this module you:
 - Built Workflows that chain job templates with success, failure, and always edges to create robust multi-step automation pipelines with approval gates
 - Configured Inventories from static hosts and SCM sources, and used Credentials to securely store and inject secrets without exposing them to users
 - Set up RBAC with Organizations, Teams, and granular per-resource roles (Admin, Use, Execute, Read) to govern who can do what
-- Integrated the Execution Environment from Module 8 with Controller, ensuring every job uses the same versioned, tested runtime
+- Integrated the Execution Environment from Module 10 with Controller, ensuring every job uses the same versioned, tested runtime
 - Completed the supply chain security workflow: developers sign content with `ansible-sign`, push to Git, and Controller verifies the GPG signature on every Project Sync before allowing execution
 
-The CoP at Parasol Tech now has a complete automation practice. Content is developed collaboratively (Module 6), tested rigorously (Module 7), packaged reproducibly (Module 8), and managed through a governed platform with RBAC, audit logging, and workflow orchestration (Module 9). The journey from Lionel running ad-hoc commands on a laptop to a fully governed enterprise automation practice is complete.
+The CoP at Parasol Tech now has a complete automation practice. Content is developed collaboratively (Module 8), tested rigorously (Module 9), packaged reproducibly (Module 10), and managed through a governed platform with RBAC, audit logging, and workflow orchestration (Module 12). The journey from Lionel running ad-hoc commands on a laptop to a fully governed enterprise automation practice is complete.
 
 ## Course Conclusion
 
@@ -571,10 +571,10 @@ It is hard to believe this started with a single ad-hoc command on a laptop.
 - **Module 3** -- Playbooks grew beyond localhost. Structured inventories organized hosts across environments.
 - **Module 4** -- Variables and facts made playbooks flexible. The same automation adapted to different environments.
 - **Module 5** -- Templates and handlers turned playbooks into configuration management tools. Services restarted when configs changed.
-- **Module 6** -- The CoP formed. Roles and collections turned individual playbooks into reusable, shareable components. `ansible-creator` scaffolded the collection. `ade` managed the development environment.
-- **Module 7** -- Quality gates went up. `ansible-lint` caught style issues, Molecule tested roles end-to-end, pytest validated logic, and tox-ansible orchestrated the matrix. No untested code reached production.
-- **Module 8** -- Execution Environments eliminated "works on my machine." Content signing with `ansible-sign` proved that what runs in production is what the CoP reviewed. The supply chain was secured.
-- **Module 9** -- Controller brought governance. Job templates, workflows, RBAC, audit logging, and centralized credential management replaced the chaos of everyone running playbooks from their own laptop.
+- **Module 8** -- The CoP formed. Roles and collections turned individual playbooks into reusable, shareable components. `ansible-creator` scaffolded the collection. `ade` managed the development environment.
+- **Module 9** -- Quality gates went up. `ansible-lint` caught style issues, Molecule tested roles end-to-end, pytest validated logic, and tox-ansible orchestrated the matrix. No untested code reached production.
+- **Module 10** -- Execution Environments eliminated "works on my machine." Content signing with `ansible-sign` proved that what runs in production is what the CoP reviewed. The supply chain was secured.
+- **Module 12** -- Controller brought governance. Job templates, workflows, RBAC, audit logging, and centralized credential management replaced the chaos of everyone running playbooks from their own laptop.
 
 What started as one person solving one problem is now an enterprise automation practice with testing, packaging, signing, and governance.
 
@@ -584,8 +584,8 @@ The core journey is complete, but there is more to explore:
 
 **Domain tracks (Modules 10-11)**
 
-- [Module 10 -- Linux Systems](10-linux-systems.md): Apply everything you have learned to Linux system administration: user management, hardening, patching, and compliance at scale
-- [Module 11 -- Network Automation](11-network-automation.md): Extend Ansible to network devices with `network_cli`, resource modules, and integration with NetBox as a source of truth
+- [Module 13 -- Linux Systems](13-linux-systems.md): Apply everything you have learned to Linux system administration: user management, hardening, patching, and compliance at scale
+- [Module 14 -- Network Automation](14-network-automation.md): Extend Ansible to network devices with `network_cli`, resource modules, and integration with NetBox as a source of truth
 
 These tracks are optional and self-contained. They do not introduce new core concepts; they apply the skills from modules 1-9 to specific domains.
 

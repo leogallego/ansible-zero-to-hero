@@ -1,4 +1,4 @@
-# Módulo 9: Escalando con AAP
+# Módulo 12: Escalando con AAP
 
 ## Objetivos de Aprendizaje
 
@@ -50,7 +50,7 @@ Controller es donde la CoP realizará la mayor parte de su trabajo. Reemplaza el
 
 1. **Registro de colecciones**: Los equipos publican colecciones en Hub en lugar de compartir tarballs o apuntar a repositorios Git. Otros equipos instalan colecciones desde Hub usando `ansible-galaxy`. Hub puede alojar colecciones certificadas (de Red Hat y socios), colecciones comunitarias validadas y las colecciones privadas de la organización como `parasoltech.infrastructure`.
 
-2. **Registro de contenedores EE**: Hub almacena imágenes de Execution Environments. Controller obtiene las imágenes EE de Hub cuando ejecuta trabajos, asegurando que cada ejecución use la imagen aprobada y probada. Aquí es donde se publicaría el EE construido en el Módulo 8 para uso en producción.
+2. **Registro de contenedores EE**: Hub almacena imágenes de Execution Environments. Controller obtiene las imágenes EE de Hub cuando ejecuta trabajos, asegurando que cada ejecución use la imagen aprobada y probada. Aquí es donde se publicaría el EE construido en el Módulo 10 para uso en producción.
 
 Hub resuelve el problema de distribución de contenido. En lugar de que cada equipo mantenga su propia copia de colecciones e imágenes EE, hay una única fuente de verdad gobernada.
 
@@ -134,11 +134,11 @@ Un **Proyecto** en Controller es una referencia a un repositorio de control de v
 - Dónde vive el repositorio Git (URL)
 - Qué rama o etiqueta usar
 - Qué credencial usar para la autenticación (clave SSH o token)
-- Si verificar las firmas de contenido (usando la credencial GPG del Módulo 8)
+- Si verificar las firmas de contenido (usando la credencial GPG del Módulo 10)
 
 Controller clona el repositorio y pone su contenido disponible para los Job Templates. Cuando el repositorio cambia, sincronizas el Proyecto para obtener el contenido más reciente.
 
-Así es como el contenido firmado del Módulo 8 llega a Controller. El flujo de seguridad de la cadena de suministro se completa aquí:
+Así es como el contenido firmado del Módulo 10 llega a Controller. El flujo de seguridad de la cadena de suministro se completa aquí:
 
 ```text
 Desarrollador firma contenido → Push a Git → Controller sincroniza Proyecto → Verifica firma GPG
@@ -159,7 +159,7 @@ Un **Job Template** es la unidad de trabajo más fundamental en Controller. Agru
 
 ### Creando un Job Template
 
-Para crear un Job Template para el despliegue del servidor web del Módulo 6:
+Para crear un Job Template para el despliegue del servidor web del Módulo 8:
 
 1. **Crear un Proyecto** apuntando al repositorio Git que contiene la colección `parasoltech.infrastructure` y sus playbooks
 2. **Crear o seleccionar un Inventario** con los hosts destino
@@ -248,7 +248,7 @@ La CoP diseña un workflow de despliegue que encadena la automatización de mód
 
 Este workflow:
 
-1. **Sincroniza el Proyecto** y verifica la firma GPG (Módulo 8). Si el contenido ha sido manipulado, el workflow se detiene y envía una notificación.
+1. **Sincroniza el Proyecto** y verifica la firma GPG (Módulo 10). Si el contenido ha sido manipulado, el workflow se detiene y envía una notificación.
 2. **Despliega el servidor web** usando el job template. Si el despliegue falla, se envía una notificación.
 3. **Verifica que el servicio** esté saludable. Si la verificación de salud falla, dispara un rollback y luego notifica sin importar el resultado del rollback.
 
@@ -376,7 +376,7 @@ Esta es la gobernanza que la CoP necesitaba cuando todos ejecutaban `ansible-pla
 
 ## Integración de EE
 
-El Execution Environment construido en el Módulo 8 se integra directamente con Controller. En lugar de ejecutar playbooks con el Python que esté instalado en un servidor, Controller ejecuta cada trabajo dentro de un contenedor EE.
+El Execution Environment construido en el Módulo 10 se integra directamente con Controller. En lugar de ejecutar playbooks con el Python que esté instalado en un servidor, Controller ejecuta cada trabajo dentro de un contenedor EE.
 
 ### Agregando EEs a Controller
 
@@ -384,7 +384,7 @@ Controller necesita saber de dónde obtener las imágenes EE. Hay dos enfoques:
 
 **Desde un registro de contenedores (recomendado para producción):**
 
-1. Sube la imagen EE a un registro de contenedores (Private Automation Hub, Quay.io, o cualquier registro OCI), como se mostró en el Módulo 8
+1. Sube la imagen EE a un registro de contenedores (Private Automation Hub, Quay.io, o cualquier registro OCI), como se mostró en el Módulo 10
 2. En Controller, crea un recurso de **Execution Environment** apuntando a la URL de la imagen (ej., `hub.parasol.example/ee-images/parasoltech-ee:1.0.0`)
 3. Si el registro requiere autenticación, crea una credencial de **Container Registry** y adjúntala al EE
 
@@ -397,11 +397,11 @@ Controller necesita saber de dónde obtener las imágenes EE. Hay dos enfoques:
 
 Cada job template puede especificar qué EE usar. Cuando el trabajo se lanza, Controller obtiene la imagen EE (si no está en caché) y ejecuta el playbook dentro de ella.
 
-Esto completa la historia de portabilidad del Módulo 8:
+Esto completa la historia de portabilidad del Módulo 10:
 
 ```text
-Modulo 8:  Construir EE → Probar localmente con ansible-navigator
-Modulo 9:  Subir EE al registro → Controller lo obtiene y usa para cada trabajo
+Modulo 10:  Construir EE → Probar localmente con ansible-navigator
+Modulo 12:  Subir EE al registro → Controller lo obtiene y usa para cada trabajo
 ```
 
 Cada ejecución, ya sea disparada por un usuario, un horario, un workflow o una llamada API, usa la misma imagen EE con las mismas dependencias. El problema de "funciona en mi máquina" se elimina a nivel de plataforma, no solo a nivel de desarrollador individual.
@@ -433,7 +433,7 @@ El proceso de sincronización:
 
 ### Verificación de Contenido con GPG
 
-Aquí es donde la firma de contenido del Módulo 8 cierra el ciclo. Cuando un Proyecto tiene habilitada la verificación de contenido GPG:
+Aquí es donde la firma de contenido del Módulo 10 cierra el ciclo. Cuando un Proyecto tiene habilitada la verificación de contenido GPG:
 
 1. Sube la clave pública GPG a Controller como una credencial de **GPG Public Key**
 2. Configura el Proyecto para usar esta credencial para la verificación de contenido
@@ -490,7 +490,7 @@ Crea un Proyecto en Controller:
 
 3. Sincroniza el Proyecto y verifica que tenga éxito
 
-Si configuraste la firma de contenido en el Módulo 8 y tienes una clave pública GPG, configura el Proyecto para verificar firmas durante la sincronización.
+Si configuraste la firma de contenido en el Módulo 10 y tienes una clave pública GPG, configura el Proyecto para verificar firmas durante la sincronización.
 
 ### Ejercicio 3: Crear un Inventario
 
@@ -556,10 +556,10 @@ En este módulo:
 - Construiste Workflows que encadenan job templates con aristas de éxito, fallo y siempre para crear pipelines de automatización robustos de múltiples pasos con puertas de aprobación
 - Configuraste Inventarios desde hosts estáticos y fuentes SCM, y usaste Credenciales para almacenar e inyectar secretos de forma segura sin exponerlos a los usuarios
 - Estableciste RBAC con Organizaciones, Equipos y roles granulares por recurso (Admin, Use, Execute, Read) para gobernar quién puede hacer qué
-- Integraste el Execution Environment del Módulo 8 con Controller, asegurando que cada trabajo use el mismo runtime versionado y probado
+- Integraste el Execution Environment del Módulo 10 con Controller, asegurando que cada trabajo use el mismo runtime versionado y probado
 - Completaste el flujo de seguridad de la cadena de suministro: los desarrolladores firman contenido con `ansible-sign`, hacen push a Git, y Controller verifica la firma GPG en cada sincronización de Proyecto antes de permitir la ejecución
 
-La CoP en Parasol Tech ahora tiene una práctica de automatización completa. El contenido se desarrolla colaborativamente (Módulo 6), se prueba rigurosamente (Módulo 7), se empaqueta reproduciblemente (Módulo 8) y se gestiona a través de una plataforma gobernada con RBAC, registro de auditoría y orquestación de workflows (Módulo 9). El viaje desde Lionel ejecutando comandos ad-hoc en un portátil hasta una práctica empresarial de automatización completamente gobernada está completo.
+La CoP en Parasol Tech ahora tiene una práctica de automatización completa. El contenido se desarrolla colaborativamente (Módulo 8), se prueba rigurosamente (Módulo 9), se empaqueta reproduciblemente (Módulo 10) y se gestiona a través de una plataforma gobernada con RBAC, registro de auditoría y orquestación de workflows (Módulo 12). El viaje desde Lionel ejecutando comandos ad-hoc en un portátil hasta una práctica empresarial de automatización completamente gobernada está completo.
 
 ## Conclusión del Curso
 
@@ -574,10 +574,10 @@ Es difícil creer que esto comenzó con un solo comando ad-hoc en un portátil.
 - **Módulo 3** -- Los playbooks crecieron más allá de localhost. Los inventarios estructurados organizaron hosts a través de los entornos.
 - **Módulo 4** -- Las variables y los facts hicieron los playbooks flexibles. La misma automatización se adaptó a diferentes entornos.
 - **Módulo 5** -- Las plantillas y los handlers convirtieron los playbooks en herramientas de gestión de configuración. Los servicios se reiniciaban cuando las configuraciones cambiaban.
-- **Módulo 6** -- La CoP se formó. Los roles y las colecciones convirtieron playbooks individuales en componentes reutilizables y compartibles. `ansible-creator` generó la colección. `ade` gestionó el entorno de desarrollo.
-- **Módulo 7** -- Las puertas de calidad se levantaron. `ansible-lint` detectó problemas de estilo, Molecule probó los roles de extremo a extremo, pytest validó la lógica, y tox-ansible orquestó la matriz. Ningún código no probado llegó a producción.
-- **Módulo 8** -- Los Execution Environments eliminaron "funciona en mi máquina." La firma de contenido con `ansible-sign` demostró que lo que se ejecuta en producción es lo que la CoP revisó. La cadena de suministro quedó asegurada.
-- **Módulo 9** -- Controller trajo gobernanza. Job templates, workflows, RBAC, registro de auditoría y gestión centralizada de credenciales reemplazaron el caos de todos ejecutando playbooks desde su propio portátil.
+- **Módulo 8** -- La CoP se formó. Los roles y las colecciones convirtieron playbooks individuales en componentes reutilizables y compartibles. `ansible-creator` generó la colección. `ade` gestionó el entorno de desarrollo.
+- **Módulo 9** -- Las puertas de calidad se levantaron. `ansible-lint` detectó problemas de estilo, Molecule probó los roles de extremo a extremo, pytest validó la lógica, y tox-ansible orquestó la matriz. Ningún código no probado llegó a producción.
+- **Módulo 10** -- Los Execution Environments eliminaron "funciona en mi máquina." La firma de contenido con `ansible-sign` demostró que lo que se ejecuta en producción es lo que la CoP revisó. La cadena de suministro quedó asegurada.
+- **Módulo 12** -- Controller trajo gobernanza. Job templates, workflows, RBAC, registro de auditoría y gestión centralizada de credenciales reemplazaron el caos de todos ejecutando playbooks desde su propio portátil.
 
 Lo que comenzó como una persona resolviendo un problema es ahora una práctica empresarial de automatización con pruebas, empaquetado, firma y gobernanza.
 
@@ -587,8 +587,8 @@ El viaje principal está completo, pero hay más por explorar:
 
 **Tracks de dominio (Módulos 10-11)**
 
-- [Módulo 10 -- Sistemas Linux](10-linux-systems.md): Aplica todo lo que has aprendido a la administración de sistemas Linux: gestión de usuarios, hardening, parcheado y cumplimiento a escala
-- [Módulo 11 -- Automatización de Redes](11-network-automation.md): Extiende Ansible a dispositivos de red con `network_cli`, módulos de recursos e integración con NetBox como fuente de verdad
+- [Módulo 13 -- Sistemas Linux](13-linux-systems.md): Aplica todo lo que has aprendido a la administración de sistemas Linux: gestión de usuarios, hardening, parcheado y cumplimiento a escala
+- [Módulo 14 -- Automatización de Redes](14-network-automation.md): Extiende Ansible a dispositivos de red con `network_cli`, módulos de recursos e integración con NetBox como fuente de verdad
 
 Estos tracks son opcionales y autocontenidos. No introducen nuevos conceptos fundamentales; aplican las habilidades de los módulos 1-9 a dominios específicos.
 

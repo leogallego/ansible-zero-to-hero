@@ -15,10 +15,10 @@ You'll follow **Lionel**, a platform engineer at **Parasol Tech**, as they disco
 | 3 | [Managing Inventory](modules/3-managing-inventory.md) | Structured inventory, groups |
 | 4 | [Variables and Facts](modules/4-variables-and-facts.md) | Precedence, facts, conditionals |
 | 5 | [Templates and Handlers](modules/5-templates-and-handlers.md) | Jinja2 templates, handlers |
-| 6 | [Roles and Collections](modules/6-roles-and-collections.md) | Code reuse, Galaxy, `ansible-creator` |
-| 7 | [Testing Your Automation](modules/7-testing-your-automation.md) | Molecule, linting, pytest |
-| 8 | [Packaging and Deployment](modules/8-packaging-and-deployment.md) | Execution Environments, signing |
-| 9 | [Scaling with AAP](modules/9-scaling-with-aap.md) | Controller, workflows, RBAC |
+| 8 | [Roles and Collections](modules/8-roles-and-collections.md) | Code reuse, Galaxy, `ansible-creator` |
+| 9 | [Testing Your Automation](modules/9-testing-your-automation.md) | Molecule, linting, pytest |
+| 10 | [Packaging and Deployment](modules/10-packaging-and-deployment.md) | Execution Environments, signing |
+| 12 | [Scaling with AAP](modules/12-scaling-with-aap.md) | Controller, workflows, RBAC |
 
 ## Prerequisites
 
